@@ -15,5 +15,9 @@
         android:layout_marginRight="@dimen/cardMarginHorizontal"
         android:layout_marginTop="@dimen/cardMarginVertical"
         app:cardPreventCornerOverlap="false"
-        app:contentPadding="0dp"></android.support.v7.widget.CardView>
+        app:contentPadding="0dp">
+
+        <include layout="@layout/app_permisos" />
+
+    </android.support.v7.widget.CardView>
 </FrameLayout>

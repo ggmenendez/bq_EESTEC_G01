@@ -1,26 +1,63 @@
 package com.josedlpozo.adapters;
 
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.TextView;
 
+import com.josedlpozo.optimiza.AppsPermisos;
 import com.josedlpozo.optimiza.R;
 
-import java.util.List;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 
 /**
  * Created by florentchampigny on 24/04/15.
  */
-public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapter.AppsViewHolder> implements View.OnClickListener {
 
-    List<Object> contents;
+    private View.OnClickListener listener;
+    private ArrayList<AppsPermisos> datos;
+
+    public static class AppsViewHolder
+            extends RecyclerView.ViewHolder {
+
+        private ImageView img;
+        private TextView txtName;
+        private TextView txtNum;
+
+        public AppsViewHolder(View itemView) {
+            super(itemView);
+
+            img = (ImageView) itemView.findViewById(R.id.img);
+            txtName = (TextView) itemView.findViewById(R.id.name);
+            txtNum = (TextView) itemView.findViewById(R.id.num);
+        }
+
+        public void bindTitular(AppsPermisos t) {
+            Log.i("HOLDER", t.getNombre());
+            txtName.setText(t.getNombre());
+            txtNum.setText(" " + t.getNumPermisos());
+            img.setImageDrawable(t.getImagen());
+        }
+    }
+
 
     static final int TYPE_HEADER = 0;
     static final int TYPE_CELL = 1;
 
-    public RecyclerViewAdapter(List<Object> contents) {
-        this.contents = contents;
+    public RecyclerViewAdapter(ArrayList<AppsPermisos> datos) {
+        this.datos = datos;
+        Collections.sort(this.datos, new Comparator<AppsPermisos>() {
+            @Override
+            public int compare(AppsPermisos lhs, AppsPermisos rhs) {
+                return rhs.getNumPermisos() - lhs.getNumPermisos();
+            }
+        });
     }
 
     @Override
@@ -35,24 +72,26 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
 
     @Override
     public int getItemCount() {
-        return contents.size();
+        return datos.size();
     }
 
     @Override
-    public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public AppsViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view;
+
+        Log.i("HOLDER", " " + viewType);
 
         switch (viewType) {
             case TYPE_HEADER: {
                 view = LayoutInflater.from(parent.getContext())
                         .inflate(R.layout.list_item_card_big, parent, false);
-                return new RecyclerView.ViewHolder(view) {
+                return new AppsViewHolder(view) {
                 };
             }
             case TYPE_CELL: {
                 view = LayoutInflater.from(parent.getContext())
                         .inflate(R.layout.list_item_card_small, parent, false);
-                return new RecyclerView.ViewHolder(view) {
+                return new AppsViewHolder(view) {
                 };
             }
         }
@@ -61,13 +100,29 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
 
 
     @Override
-    public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
+    public void onBindViewHolder(AppsViewHolder holder, int position) {
         switch (getItemViewType(position)) {
             case TYPE_HEADER:
                 break;
             case TYPE_CELL:
                 break;
         }
+
+        Log.i("HOLDER", "" + position);
+        AppsPermisos item = datos.get(position);
+
+        holder.bindTitular(item);
+    }
+
+
+    public void setOnClickListener(View.OnClickListener listener) {
+        this.listener = listener;
+    }
+
+    @Override
+    public void onClick(View view) {
+        if (listener != null)
+            listener.onClick(view);
     }
 }
 
