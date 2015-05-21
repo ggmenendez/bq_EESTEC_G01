@@ -11,8 +11,9 @@ public class AppsPermisos {
     private int numPermisos;
     private Drawable imagen;
     private String nombre;
+    private String nombrePaquete;
 
-    public AppsPermisos(Drawable imagen, String nombre, String[] requestedPermissions) {
+    public AppsPermisos(Drawable imagen, String nombre, String[] requestedPermissions, String nombrePaquete) {
         this.requestedPermissions = requestedPermissions;
         if (requestedPermissions == null) {
             this.numPermisos = 0;
@@ -21,6 +22,7 @@ public class AppsPermisos {
         }
         this.imagen = imagen;
         this.nombre = nombre;
+        this.nombrePaquete = nombrePaquete;
     }
 
     public int getNumPermisos() {
@@ -37,5 +39,9 @@ public class AppsPermisos {
 
     public String[] getRequestedPermissions() {
         return requestedPermissions;
+    }
+
+    public String getNombrePaquete() {
+        return nombrePaquete;
     }
 }

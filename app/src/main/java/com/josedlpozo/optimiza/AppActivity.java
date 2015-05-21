@@ -1,11 +1,7 @@
 package com.josedlpozo.optimiza;
 
-import android.content.ContentValues;
-import android.content.pm.ApplicationInfo;
-import android.content.pm.PackageInfo;
+import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentStatePagerAdapter;
@@ -14,21 +10,17 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.ViewGroup;
-import android.widget.Toast;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.github.florent37.materialviewpager.MaterialViewPager;
-import com.josedlpozo.database.AppDbAdapter;
-import com.josedlpozo.database.AppsDbHelper;
-import com.josedlpozo.fragments.RecyclerViewFragment;
+import com.josedlpozo.fragments.RecyclerViewFragmentPermisos;
 
-import java.util.List;
-
-public class MainActivity extends ActionBarActivity {
-
+/**
+ * Created by josedlpozo on 17/5/15.
+ */
+public class AppActivity extends ActionBarActivity {
 
     private MaterialViewPager mViewPager;
 
@@ -36,11 +28,34 @@ public class MainActivity extends ActionBarActivity {
     private ActionBarDrawerToggle mDrawerToggle;
     private Toolbar toolbar;
 
+    private ImageView img;
+    private TextView txtName;
+    private TextView permisos;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.apps_permisos);
 
+        img = (ImageView) findViewById(R.id.img2);
+        txtName = (TextView) findViewById(R.id.name2);
+        permisos = (TextView) findViewById(R.id.num2);
+
+        Intent intent = getIntent();
+
+        Bundle bundle = intent.getExtras();
+
+        try {
+            img.setImageDrawable(this.getPackageManager().getApplicationIcon(bundle.getString("PAQUETE")));
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+        }
+
+        txtName.setText(bundle.getString("NOMBRE"));
+        String[] permisos_req = bundle.getStringArray("PERMISOS");
+        for (int i = 0; i < permisos_req.length; i++) {
+            permisos.setText(permisos.getText() + " " + permisos_req[i]);
+        }
 
         setTitle("");
 
@@ -82,7 +97,7 @@ public class MainActivity extends ActionBarActivity {
                     //case 3:
                     //    return WebViewFragment.newInstance();
                     default:
-                        return RecyclerViewFragment.newInstance();
+                        return RecyclerViewFragmentPermisos.newInstance();
                 }
             }
 
@@ -124,7 +139,7 @@ public class MainActivity extends ActionBarActivity {
 
             @Override
             public int getCount() {
-                return 4;
+                return 1;
             }
 
             @Override
@@ -146,87 +161,6 @@ public class MainActivity extends ActionBarActivity {
         mViewPager.getPagerTitleStrip().setViewPager(mViewPager.getViewPager());
 
 
-        /*
-    * Declaramos el controlador de la BBDD y accedemos en modo escritura
-    */
-        AppsDbHelper dbHelper = new AppsDbHelper(getBaseContext());
-
-        SQLiteDatabase db = dbHelper.getWritableDatabase();
-
-        AppDbAdapter dbAdapter = new AppDbAdapter(getBaseContext());
-
-        Toast.makeText(getBaseContext(), "Base de datos preparada", Toast.LENGTH_LONG).show();
-        Cursor mCursor = db.rawQuery("SELECT * FROM " + "Permisos_App", null);
-        Boolean rowExists;
-
-        if (mCursor.moveToFirst()) {
-            // DO SOMETHING WITH CURSOR
-            rowExists = true;
-
-        } else {
-            // I AM EMPTY
-            rowExists = false;
-        }
-
-        if (!rowExists) {
-            PackageManager pm = getPackageManager();
-            List<ApplicationInfo> packages = pm.getInstalledApplications(PackageManager.GET_META_DATA);
-
-            for (ApplicationInfo applicationInfo : packages) {
-                Log.d("test", "App: " + pm.getApplicationLabel(applicationInfo) + " Package: " + applicationInfo.packageName);
-
-                try {
-                    PackageInfo packageInfo = pm.getPackageInfo(applicationInfo.packageName, PackageManager.GET_PERMISSIONS);
-
-                    //Get Permissions
-                    String[] requestedPermissions = packageInfo.requestedPermissions;
-                    int numpermissions;
-                    if (requestedPermissions == null) numpermissions = 0;
-                    else numpermissions = requestedPermissions.length;
-                    ContentValues registro = new ContentValues();
-
-                    registro.put(AppDbAdapter.COLUMNA_NOMBRE, pm.getApplicationLabel(applicationInfo).toString());
-                    registro.put(AppDbAdapter.COLUMNA_PAQUETES, applicationInfo.packageName);
-                    registro.put(AppDbAdapter.COLUMNA_PERMISOS, dbHelper.convertArrayToString(requestedPermissions));
-                    registro.put(AppDbAdapter.COLUMNA_NUM_PERMISOS, numpermissions);
-
-
-                    dbAdapter.insert(registro);
-                } catch (PackageManager.NameNotFoundException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
     }
 
-
-    @Override
-    protected void onPostCreate(Bundle savedInstanceState) {
-        super.onPostCreate(savedInstanceState);
-        mDrawerToggle.syncState();
-    }
-
-
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_main, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
-    }
 }

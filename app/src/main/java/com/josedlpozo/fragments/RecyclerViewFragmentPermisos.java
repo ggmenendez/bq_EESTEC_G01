@@ -1,0 +1,59 @@
+package com.josedlpozo.fragments;
+
+import android.os.Bundle;
+import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+
+import com.github.florent37.materialviewpager.MaterialViewPagerHelper;
+import com.github.florent37.materialviewpager.adapter.RecyclerViewMaterialAdapter;
+import com.josedlpozo.adapters.RecyclerViewAdapter;
+import com.josedlpozo.optimiza.AppsPermisos;
+import com.josedlpozo.optimiza.R;
+
+import java.util.ArrayList;
+
+import jp.wasabeef.recyclerview.animators.adapters.AlphaInAnimationAdapter;
+import jp.wasabeef.recyclerview.animators.adapters.ScaleInAnimationAdapter;
+
+
+public class RecyclerViewFragmentPermisos extends Fragment {
+
+    private RecyclerView mRecyclerView;
+    private RecyclerView.Adapter mAdapter;
+
+    private ArrayList<AppsPermisos> mContentItems = new ArrayList<>();
+
+    public static RecyclerViewFragmentPermisos newInstance() {
+        return new RecyclerViewFragmentPermisos();
+    }
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        return inflater.inflate(R.layout.fragment_recyclerview, container, false);
+    }
+
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        mRecyclerView = (RecyclerView) view.findViewById(R.id.recyclerView);
+
+
+        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getActivity());
+        mRecyclerView.setLayoutManager(layoutManager);
+        mRecyclerView.setHasFixedSize(true);
+
+
+        RecyclerViewAdapter adapter = new RecyclerViewAdapter(mContentItems);
+        mAdapter = new RecyclerViewMaterialAdapter(adapter);
+        AlphaInAnimationAdapter alphaAdapter = new AlphaInAnimationAdapter(mAdapter);
+        mRecyclerView.setAdapter(new ScaleInAnimationAdapter(alphaAdapter));
+
+
+        MaterialViewPagerHelper.registerRecyclerView(getActivity(), mRecyclerView, null);
+    }
+}

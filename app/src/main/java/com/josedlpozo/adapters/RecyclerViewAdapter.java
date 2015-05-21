@@ -20,8 +20,9 @@ import java.util.Comparator;
  */
 public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapter.AppsViewHolder> implements View.OnClickListener {
 
-    private View.OnClickListener listener;
     private ArrayList<AppsPermisos> datos;
+
+    private View.OnClickListener listener;
 
     public static class AppsViewHolder
             extends RecyclerView.ViewHolder {
@@ -29,10 +30,10 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         private ImageView img;
         private TextView txtName;
         private TextView txtNum;
+        private String[] permisos;
 
         public AppsViewHolder(View itemView) {
             super(itemView);
-
             img = (ImageView) itemView.findViewById(R.id.img);
             txtName = (TextView) itemView.findViewById(R.id.name);
             txtNum = (TextView) itemView.findViewById(R.id.num);
@@ -43,6 +44,23 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
             txtName.setText(t.getNombre());
             txtNum.setText(" " + t.getNumPermisos());
             img.setImageDrawable(t.getImagen());
+            permisos = t.getRequestedPermissions();
+        }
+
+        public ImageView getImg() {
+            return img;
+        }
+
+        public TextView getTxtName() {
+            return txtName;
+        }
+
+        public TextView getTxtNum() {
+            return txtNum;
+        }
+
+        public String[] getPermisos() {
+            return permisos;
         }
     }
 
@@ -85,12 +103,14 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
             case TYPE_HEADER: {
                 view = LayoutInflater.from(parent.getContext())
                         .inflate(R.layout.list_item_card_big, parent, false);
+                view.setOnClickListener(this);
                 return new AppsViewHolder(view) {
                 };
             }
             case TYPE_CELL: {
                 view = LayoutInflater.from(parent.getContext())
                         .inflate(R.layout.list_item_card_small, parent, false);
+                view.setOnClickListener(this);
                 return new AppsViewHolder(view) {
                 };
             }
@@ -112,8 +132,8 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         AppsPermisos item = datos.get(position);
 
         holder.bindTitular(item);
-    }
 
+    }
 
     public void setOnClickListener(View.OnClickListener listener) {
         this.listener = listener;

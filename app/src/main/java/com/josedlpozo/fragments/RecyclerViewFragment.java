@@ -1,8 +1,9 @@
 package com.josedlpozo.fragments;
 
-import android.content.pm.ApplicationInfo;
-import android.content.pm.PackageInfo;
+import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -12,17 +13,23 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.github.florent37.materialviewpager.MaterialViewPagerHelper;
 import com.github.florent37.materialviewpager.adapter.RecyclerViewMaterialAdapter;
 import com.josedlpozo.adapters.RecyclerViewAdapter;
+import com.josedlpozo.database.AppDbAdapter;
+import com.josedlpozo.database.AppsDbHelper;
+import com.josedlpozo.optimiza.AppActivity;
 import com.josedlpozo.optimiza.AppsPermisos;
 import com.josedlpozo.optimiza.R;
 import com.melnykov.fab.FloatingActionButton;
 import com.melnykov.fab.ScrollDirectionListener;
 
 import java.util.ArrayList;
-import java.util.List;
+
+import jp.wasabeef.recyclerview.animators.adapters.AlphaInAnimationAdapter;
+import jp.wasabeef.recyclerview.animators.adapters.ScaleInAnimationAdapter;
 
 
 public class RecyclerViewFragment extends Fragment {
@@ -45,6 +52,12 @@ public class RecyclerViewFragment extends Fragment {
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         mRecyclerView = (RecyclerView) view.findViewById(R.id.recyclerView);
+
+        AppDbAdapter db = new AppDbAdapter(getActivity().getBaseContext());
+        AppsDbHelper dbHelper = new AppsDbHelper(getActivity().getBaseContext());
+
+        SQLiteDatabase dbSQ = dbHelper.getWritableDatabase();
+
         FloatingActionButton fab = (FloatingActionButton) view.findViewById(R.id.fab);
         fab.attachToRecyclerView(mRecyclerView, new ScrollDirectionListener() {
             @Override
@@ -62,30 +75,42 @@ public class RecyclerViewFragment extends Fragment {
         mRecyclerView.setLayoutManager(layoutManager);
         mRecyclerView.setHasFixedSize(true);
 
-        PackageManager pm = getActivity().getPackageManager();
-        List<ApplicationInfo> packages = pm.getInstalledApplications(PackageManager.GET_META_DATA);
-
-        for (ApplicationInfo applicationInfo : packages) {
-            Log.d("test", "App: " + pm.getApplicationLabel(applicationInfo) + " Package: " + applicationInfo.packageName);
-
-            try {
-                PackageInfo packageInfo = pm.getPackageInfo(applicationInfo.packageName, PackageManager.GET_PERMISSIONS);
-
-                //Get Permissions
-                String[] requestedPermissions = packageInfo.requestedPermissions;
-
-                AppsPermisos app = new AppsPermisos(pm.getApplicationIcon(applicationInfo), pm.getApplicationLabel(applicationInfo).toString(), requestedPermissions);
-
-
+        Cursor cursor = dbSQ.rawQuery("SELECT * FROM " + "Permisos_App", null);
+        if (cursor == null) {
+            Toast.makeText(getActivity().getBaseContext(), "PUTO NULL", Toast.LENGTH_LONG).show();
+        } else {
+            cursor.moveToFirst();
+            while (cursor.moveToNext()) {
+                AppsPermisos app = null;
+                try {
+                    app = new AppsPermisos(getActivity().getPackageManager().getApplicationIcon(cursor.getString(cursor.getColumnIndex(db.COLUMNA_PAQUETES))), cursor.getString(cursor.getColumnIndex(db.COLUMNA_NOMBRE)), dbHelper.convertStringToArray(cursor.getString(cursor.getColumnIndex(db.COLUMNA_PERMISOS))), cursor.getString(cursor.getColumnIndex(db.COLUMNA_PAQUETES)));
+                } catch (PackageManager.NameNotFoundException e) {
+                    e.printStackTrace();
+                }
                 mContentItems.add(app);
-            } catch (PackageManager.NameNotFoundException e) {
-                e.printStackTrace();
             }
+            RecyclerViewAdapter adapter = new RecyclerViewAdapter(mContentItems);
+            mAdapter = new RecyclerViewMaterialAdapter(adapter);
+            AlphaInAnimationAdapter alphaAdapter = new AlphaInAnimationAdapter(mAdapter);
+            mRecyclerView.setAdapter(new ScaleInAnimationAdapter(alphaAdapter));
+
+            adapter.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Log.i("DemoRecView", "Pulsado el elemento " + mContentItems.get(mRecyclerView.getChildAdapterPosition(v) - 1).getNombre());
+                    AppsPermisos app = mContentItems.get(mRecyclerView.getChildAdapterPosition(v) - 1);
+                    Bundle bundle = new Bundle();
+                    bundle.putStringArray("PERMISOS", app.getRequestedPermissions());
+                    bundle.putString("PAQUETE", app.getNombrePaquete());
+                    bundle.putString("NOMBRE", app.getNombre());
+
+                    Intent intent = new Intent(getActivity(), AppActivity.class);
+                    intent.putExtras(bundle);
+                    startActivity(intent);
+                }
+            });
+
+            MaterialViewPagerHelper.registerRecyclerView(getActivity(), mRecyclerView, null);
         }
-
-        mAdapter = new RecyclerViewMaterialAdapter(new RecyclerViewAdapter(mContentItems));
-        mRecyclerView.setAdapter(mAdapter);
-
-        MaterialViewPagerHelper.registerRecyclerView(getActivity(), mRecyclerView, null);
     }
 }
