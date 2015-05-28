@@ -31,14 +31,21 @@ public class RecyclerViewPermisosAdapter extends RecyclerView.Adapter<RecyclerVi
 
         public void bindTitular(String t) {
             Log.i("PERMISOS", t);
-            txtPermiso.setText(t.toString());
+            int comienzo = 0;
+            for (int i = 0; i < t.length(); i++) {
+                if (Character.isUpperCase(t.charAt(i))) {
+                    comienzo = i;
+                    break;
+                }
+                if (comienzo != 0) break;
+            }
+            txtPermiso.setText(t.substring(comienzo, t.length()));
         }
 
 
     }
 
 
-    static final int TYPE_HEADER = 0;
     static final int TYPE_CELL = 1;
 
     public RecyclerViewPermisosAdapter(List<String> datos) {
