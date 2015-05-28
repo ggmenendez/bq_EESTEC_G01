@@ -11,11 +11,11 @@ import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
 import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.TextView;
 
 import com.github.florent37.materialviewpager.MaterialViewPager;
 import com.josedlpozo.fragments.RecyclerViewFragmentPermisos;
+
+import de.hdodenhof.circleimageview.CircleImageView;
 
 /**
  * Created by josedlpozo on 17/5/15.
@@ -28,38 +28,30 @@ public class AppActivity extends ActionBarActivity {
     private ActionBarDrawerToggle mDrawerToggle;
     private Toolbar toolbar;
 
-    private ImageView img;
-    private TextView txtName;
-    private TextView permisos;
+    private CircleImageView image;
 
+    private String nombre;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.apps_permisos);
 
-        img = (ImageView) findViewById(R.id.img2);
-        txtName = (TextView) findViewById(R.id.name2);
-        permisos = (TextView) findViewById(R.id.num2);
 
         Intent intent = getIntent();
 
-        Bundle bundle = intent.getExtras();
+        final Bundle bundle = intent.getExtras();
 
+        nombre = bundle.getString("NOMBRE");
+
+        image = (CircleImageView) findViewById(R.id.app_img);
         try {
-            img.setImageDrawable(this.getPackageManager().getApplicationIcon(bundle.getString("PAQUETE")));
+            image.setImageDrawable(getPackageManager().getApplicationIcon(bundle.getString("PAQUETE")));
         } catch (PackageManager.NameNotFoundException e) {
             e.printStackTrace();
         }
-
-        txtName.setText(bundle.getString("NOMBRE"));
-        String[] permisos_req = bundle.getStringArray("PERMISOS");
-        for (int i = 0; i < permisos_req.length; i++) {
-            permisos.setText(permisos.getText() + " " + permisos_req[i]);
-        }
-
         setTitle("");
 
-        mViewPager = (MaterialViewPager) findViewById(R.id.materialViewPager);
+        mViewPager = (MaterialViewPager) findViewById(R.id.materialViewPager2);
 
         toolbar = mViewPager.getToolbar();
         mDrawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -97,7 +89,9 @@ public class AppActivity extends ActionBarActivity {
                     //case 3:
                     //    return WebViewFragment.newInstance();
                     default:
-                        return RecyclerViewFragmentPermisos.newInstance();
+                        RecyclerViewFragmentPermisos r = new RecyclerViewFragmentPermisos();
+                        r.setArguments(bundle);
+                        return r;
                 }
             }
 
@@ -117,18 +111,6 @@ public class AppActivity extends ActionBarActivity {
                         imageUrl = "http://cdn1.tnwcdn.com/wp-content/blogs.dir/1/files/2014/06/wallpaper_51.jpg";
                         color = getResources().getColor(R.color.blue);
                         break;
-                    case 1:
-                        imageUrl = "https://fs01.androidpit.info/a/63/0e/android-l-wallpapers-630ea6-h900.jpg";
-                        color = getResources().getColor(R.color.green);
-                        break;
-                    case 2:
-                        imageUrl = "http://www.droid-life.com/wp-content/uploads/2014/10/lollipop-wallpapers10.jpg";
-                        color = getResources().getColor(R.color.cyan);
-                        break;
-                    case 3:
-                        imageUrl = "http://www.tothemobile.com/wp-content/uploads/2014/07/original.jpg";
-                        color = getResources().getColor(R.color.red);
-                        break;
                 }
 
                 final int fadeDuration = 400;
@@ -146,13 +128,7 @@ public class AppActivity extends ActionBarActivity {
             public CharSequence getPageTitle(int position) {
                 switch (position) {
                     case 0:
-                        return "Permisos";
-                    case 1:
-                        return "Batería";
-                    case 2:
-                        return "JOSEE";
-                    case 3:
-                        return "CRUSTOS";
+                        return nombre;
                 }
                 return "";
             }
@@ -163,4 +139,7 @@ public class AppActivity extends ActionBarActivity {
 
     }
 
+    public String getNombre() {
+        return nombre;
+    }
 }

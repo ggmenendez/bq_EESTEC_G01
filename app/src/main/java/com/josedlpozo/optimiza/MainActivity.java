@@ -155,7 +155,6 @@ public class MainActivity extends ActionBarActivity {
 
         AppDbAdapter dbAdapter = new AppDbAdapter(getBaseContext());
 
-        Toast.makeText(getBaseContext(), "Base de datos preparada", Toast.LENGTH_LONG).show();
         Cursor mCursor = db.rawQuery("SELECT * FROM " + "Permisos_App", null);
         Boolean rowExists;
 
@@ -164,11 +163,12 @@ public class MainActivity extends ActionBarActivity {
             rowExists = true;
 
         } else {
-            // I AM EMPTY
+
             rowExists = false;
         }
 
         if (!rowExists) {
+            Toast.makeText(this, "I AM EMPTY", Toast.LENGTH_LONG).show();
             PackageManager pm = getPackageManager();
             List<ApplicationInfo> packages = pm.getInstalledApplications(PackageManager.GET_META_DATA);
 

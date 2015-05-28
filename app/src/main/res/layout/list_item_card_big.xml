@@ -18,7 +18,7 @@
         app:cardPreventCornerOverlap="false"
         app:contentPadding="0dp">
 
-        <include layout="@layout/app_permisos" />
+        <include layout="@layout/permisos_main" />
 
 
     </android.support.v7.widget.CardView>

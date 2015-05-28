@@ -15,9 +15,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 
-/**
- * Created by florentchampigny on 24/04/15.
- */
 public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapter.AppsViewHolder> implements View.OnClickListener {
 
     private ArrayList<AppsPermisos> datos;
@@ -144,6 +141,6 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         if (listener != null)
             listener.onClick(view);
     }
-}
 
+}
 

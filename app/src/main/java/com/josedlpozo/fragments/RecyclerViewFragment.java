@@ -89,6 +89,7 @@ public class RecyclerViewFragment extends Fragment {
                 }
                 mContentItems.add(app);
             }
+            dbSQ.close();
             RecyclerViewAdapter adapter = new RecyclerViewAdapter(mContentItems);
             mAdapter = new RecyclerViewMaterialAdapter(adapter);
             AlphaInAnimationAdapter alphaAdapter = new AlphaInAnimationAdapter(mAdapter);
