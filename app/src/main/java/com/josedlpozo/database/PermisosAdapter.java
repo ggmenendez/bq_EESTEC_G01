@@ -10,21 +10,19 @@ import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 
-public class AppDbAdapter {
+public class PermisosAdapter {
 
     /**
      * Definimos constante con el nombre de la tabla
      */
-    public static final String C_TABLA = "Permisos_APP";
+    public static final String C_TABLA = "PERMISOS";
 
     /**
      * Definimos constantes con el nombre de las columnas de la tabla
      */
-    public static final String COLUMNA_ID = "_id";
-    public static final String COLUMNA_NOMBRE = "nombre";
-    public static final String COLUMNA_PAQUETES = "packages";
-    public static final String COLUMNA_PERMISOS = "permisos";
-    public static final String COLUMNA_NUM_PERMISOS = "num_permisos";
+    public static final String COLUMNA_ID = "_ID";
+    public static final String COLUMNA_PERMISO = "PERMISO";
+    public static final String COLUMNA_DESCRIPCION = "DESCRIPCION";
 
 
     private Context contexto;
@@ -34,13 +32,13 @@ public class AppDbAdapter {
     /**
      * Definimos lista de columnas de la tabla para utilizarla en las consultas a la base de datos
      */
-    private String[] columnas = new String[]{COLUMNA_ID, COLUMNA_NOMBRE, COLUMNA_PAQUETES, COLUMNA_PERMISOS, COLUMNA_NUM_PERMISOS};
+    private String[] columnas = new String[]{COLUMNA_ID, COLUMNA_PERMISO, COLUMNA_DESCRIPCION};
 
-    public AppDbAdapter(Context context) {
+    public PermisosAdapter(Context context) {
         this.contexto = context;
     }
 
-    public AppDbAdapter abrir() throws SQLException {
+    public PermisosAdapter abrir() throws SQLException {
         dbHelper = new AppsDbHelper(contexto);
         db = dbHelper.getWritableDatabase();
         return this;

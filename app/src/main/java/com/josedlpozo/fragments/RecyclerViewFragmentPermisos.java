@@ -1,5 +1,9 @@
 package com.josedlpozo.fragments;
 
+import android.content.ContentValues;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -9,12 +13,23 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.github.florent37.materialviewpager.MaterialViewPagerHelper;
 import com.github.florent37.materialviewpager.adapter.RecyclerViewMaterialAdapter;
 import com.josedlpozo.adapters.RecyclerViewPermisosAdapter;
+import com.josedlpozo.database.AppsDbHelper;
+import com.josedlpozo.database.PermisosAdapter;
 import com.josedlpozo.optimiza.R;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -31,6 +46,11 @@ public class RecyclerViewFragmentPermisos extends Fragment {
 
     private List<String> mContentItems = new ArrayList<>();
     private MaterialDialog mMaterialDialog;
+
+    public static final String INFO_FILE = "https://dl.dropbox.com/s/ect48h40rx5ul3y/jose.txt?dl=0";
+    private String permiso = "";
+    private String descripcion = "No disponible";
+
 
     public static RecyclerViewFragmentPermisos newInstance() {
         return new RecyclerViewFragmentPermisos();
@@ -67,13 +87,101 @@ public class RecyclerViewFragmentPermisos extends Fragment {
             public void onClick(View v) {
                 Log.i("DemoRecView", "Pulsado el elemento " + mContentItems.get(mRecyclerView.getChildAdapterPosition(v) - 1).toString());
                 int longitud = mContentItems.get(mRecyclerView.getChildAdapterPosition(v) - 1).length();
-                mMaterialDialog = new MaterialDialog(getActivity());
-                mMaterialDialog.setTitle(mContentItems.get(mRecyclerView.getChildAdapterPosition(v) - 1).toString().substring(19, longitud))
-                        .setMessage("hola chabo").show();
+                permiso = mContentItems.get(mRecyclerView.getChildAdapterPosition(v) - 1).toString();
+                Toast.makeText(getActivity(), mContentItems.get(mRecyclerView.getChildAdapterPosition(v) - 1).toString(), Toast.LENGTH_LONG).show();
+                PermisosAdapter perm = new PermisosAdapter(getActivity());
+                AppsDbHelper dbHelper = new AppsDbHelper(getActivity());
+                SQLiteDatabase db = dbHelper.getWritableDatabase();
+                Cursor mCursor = db.rawQuery("SELECT PERMISO, DESCRIPCION FROM PERMISOS where PERMISO='" + mContentItems.get(mRecyclerView.getChildAdapterPosition(v) - 1).toString() + "'", null);
+                if (mCursor.moveToFirst()) {
+                    mMaterialDialog = new MaterialDialog(getActivity());
+                    mMaterialDialog.setTitle(permiso.substring(19, longitud))
+                            .setMessage(mCursor.getString(mCursor.getColumnIndex(perm.COLUMNA_DESCRIPCION))).show();
+                } else {
+                    new GetJson().execute(permiso);
+
+                }
+
 
             }
         });
 
         MaterialViewPagerHelper.registerRecyclerView(getActivity(), mRecyclerView, null);
+    }
+
+    private class GetJson extends AsyncTask<String, Void, Void> {
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+
+        }
+
+        @Override
+        protected Void doInBackground(String... arg) {
+
+            HttpURLConnection c = null;
+            BufferedReader reader = null;
+            StringBuilder stringBuilder = new StringBuilder();
+            try {
+                c = (HttpURLConnection) (new URL(INFO_FILE)).openConnection();
+                c.setRequestMethod("GET");
+                c.connect();
+                c.setReadTimeout(15 * 1000);
+                //c.setUseCaches(false);
+                reader = new BufferedReader(new InputStreamReader(c.getInputStream()));
+                String line = null;
+                while ((line = reader.readLine()) != null) {
+                    stringBuilder.append(line + "n");
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+
+            String data = stringBuilder.toString();
+            JSONObject json = null;
+            try {
+                json = new JSONObject(data);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
+            //Log.d("Create Prediction Request: ", "> " + json);
+
+            if (json != null) {
+                try {
+                    String descr = json.getString(arg[0]);
+                    if (descr != null) {
+                        PermisosAdapter perm = new PermisosAdapter(getActivity());
+                        AppsDbHelper dbHelper = new AppsDbHelper(getActivity());
+                        SQLiteDatabase db = dbHelper.getWritableDatabase();
+                        ContentValues content = new ContentValues();
+                        content.put(perm.COLUMNA_PERMISO, arg[0]);
+                        content.put(perm.COLUMNA_DESCRIPCION, descr);
+                        db = dbHelper.getWritableDatabase();
+                        perm.insert(content);
+                        db.close();
+                        descripcion = descr;
+                        Log.i("JSON", descripcion);
+                    }
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+            } else {
+                Log.e("JSON Data", "JSON data error!");
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void result) {
+            super.onPostExecute(result);
+            mMaterialDialog = new MaterialDialog(getActivity());
+            mMaterialDialog.setTitle(permiso.substring(19, permiso.length()))
+                    .setMessage(descripcion).show();
+        }
     }
 }

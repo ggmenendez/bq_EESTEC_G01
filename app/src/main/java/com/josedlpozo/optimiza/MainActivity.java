@@ -124,7 +124,7 @@ public class MainActivity extends ActionBarActivity {
 
             @Override
             public int getCount() {
-                return 4;
+                return 2;
             }
 
             @Override
@@ -134,10 +134,6 @@ public class MainActivity extends ActionBarActivity {
                         return "Permisos";
                     case 1:
                         return "Batería";
-                    case 2:
-                        return "JOSEE";
-                    case 3:
-                        return "CRUSTOS";
                 }
                 return "";
             }
@@ -145,15 +141,16 @@ public class MainActivity extends ActionBarActivity {
         mViewPager.getViewPager().setOffscreenPageLimit(mViewPager.getViewPager().getAdapter().getCount());
         mViewPager.getPagerTitleStrip().setViewPager(mViewPager.getViewPager());
 
-
         /*
-    * Declaramos el controlador de la BBDD y accedemos en modo escritura
-    */
+        * Declaramos el controlador de la BBDD y accedemos en modo escritura
+        */
+
         AppsDbHelper dbHelper = new AppsDbHelper(getBaseContext());
 
         SQLiteDatabase db = dbHelper.getWritableDatabase();
 
         AppDbAdapter dbAdapter = new AppDbAdapter(getBaseContext());
+
 
         Cursor mCursor = db.rawQuery("SELECT * FROM " + "Permisos_App", null);
         Boolean rowExists;
