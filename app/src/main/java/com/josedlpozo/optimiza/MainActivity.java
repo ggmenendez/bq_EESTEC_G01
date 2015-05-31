@@ -23,8 +23,12 @@ import android.widget.Toast;
 import com.github.florent37.materialviewpager.MaterialViewPager;
 import com.josedlpozo.database.AppDbAdapter;
 import com.josedlpozo.database.AppsDbHelper;
+import com.josedlpozo.fragments.BatteryFragment;
 import com.josedlpozo.fragments.RecyclerViewFragment;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 public class MainActivity extends ActionBarActivity {
@@ -73,10 +77,10 @@ public class MainActivity extends ActionBarActivity {
             @Override
             public Fragment getItem(int position) {
                 switch (position) {
-                    //case 0:
-                    //    return RecyclerViewFragment.newInstance();
-                    //case 1:
-                    //    return ScrollFragment.newInstance();
+                    case 0:
+                        return RecyclerViewFragment.newInstance();
+                    case 1:
+                        return BatteryFragment.newInstance();
                     //case 2:
                     //    return ListViewFragment.newInstance();
                     //case 3:
@@ -153,21 +157,13 @@ public class MainActivity extends ActionBarActivity {
 
 
         Cursor mCursor = db.rawQuery("SELECT * FROM " + "Permisos_App", null);
-        Boolean rowExists;
 
-        if (mCursor.moveToFirst()) {
-            // DO SOMETHING WITH CURSOR
-            rowExists = true;
-
-        } else {
-
-            rowExists = false;
-        }
-
-        if (!rowExists) {
+        if (!mCursor.moveToFirst()) {
+            Log.d("JOSE", "ENTRA");
             Toast.makeText(this, "I AM EMPTY", Toast.LENGTH_LONG).show();
             PackageManager pm = getPackageManager();
             List<ApplicationInfo> packages = pm.getInstalledApplications(PackageManager.GET_META_DATA);
+            ArrayList<AppsPermisos> apps = new ArrayList<>();
 
             for (ApplicationInfo applicationInfo : packages) {
                 Log.d("test", "App: " + pm.getApplicationLabel(applicationInfo) + " Package: " + applicationInfo.packageName);
@@ -177,23 +173,32 @@ public class MainActivity extends ActionBarActivity {
 
                     //Get Permissions
                     String[] requestedPermissions = packageInfo.requestedPermissions;
-                    int numpermissions;
-                    if (requestedPermissions == null) numpermissions = 0;
-                    else numpermissions = requestedPermissions.length;
-                    ContentValues registro = new ContentValues();
+                    if (requestedPermissions == null) continue;
+                    AppsPermisos app = new AppsPermisos(pm.getApplicationIcon(packageInfo.packageName), pm.getApplicationLabel(applicationInfo).toString(), requestedPermissions, applicationInfo.packageName);
 
-                    registro.put(AppDbAdapter.COLUMNA_NOMBRE, pm.getApplicationLabel(applicationInfo).toString());
-                    registro.put(AppDbAdapter.COLUMNA_PAQUETES, applicationInfo.packageName);
-                    registro.put(AppDbAdapter.COLUMNA_PERMISOS, dbHelper.convertArrayToString(requestedPermissions));
-                    registro.put(AppDbAdapter.COLUMNA_NUM_PERMISOS, numpermissions);
+                    apps.add(app);
 
-
-                    dbAdapter.insert(registro);
                 } catch (PackageManager.NameNotFoundException e) {
                     e.printStackTrace();
                 }
             }
+
+            Collections.sort(apps, new Comparator<AppsPermisos>() {
+                @Override
+                public int compare(AppsPermisos lhs, AppsPermisos rhs) {
+                    return rhs.getNumPermisos() - lhs.getNumPermisos();
+                }
+            });
+
+            for (AppsPermisos app : apps) {
+                ContentValues registro = new ContentValues();
+                registro.put(AppDbAdapter.COLUMNA_NOMBRE, app.getNombre());
+                registro.put(AppDbAdapter.COLUMNA_PAQUETES, app.getNombrePaquete());
+                dbAdapter.insert(registro);
+            }
+            db.close();
         }
+        db.close();
     }
 
 

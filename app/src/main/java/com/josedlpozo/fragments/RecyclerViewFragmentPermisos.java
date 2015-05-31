@@ -13,7 +13,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import com.github.florent37.materialviewpager.MaterialViewPagerHelper;
 import com.github.florent37.materialviewpager.adapter.RecyclerViewMaterialAdapter;
@@ -34,6 +33,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import fr.castorflex.android.circularprogressbar.CircularProgressBar;
+import fr.castorflex.android.circularprogressbar.CircularProgressDrawable;
 import jp.wasabeef.recyclerview.animators.adapters.AlphaInAnimationAdapter;
 import jp.wasabeef.recyclerview.animators.adapters.ScaleInAnimationAdapter;
 import me.drakeet.materialdialog.MaterialDialog;
@@ -50,6 +51,8 @@ public class RecyclerViewFragmentPermisos extends Fragment {
     public static final String INFO_FILE = "https://dl.dropbox.com/s/ect48h40rx5ul3y/jose.txt?dl=0";
     private String permiso = "";
     private String descripcion = "No disponible";
+
+    private CircularProgressBar progress;
 
 
     public static RecyclerViewFragmentPermisos newInstance() {
@@ -71,7 +74,7 @@ public class RecyclerViewFragmentPermisos extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         mRecyclerView = (RecyclerView) view.findViewById(R.id.recyclerView);
 
-
+        progress = (CircularProgressBar) view.findViewById(R.id.circularProgress);
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getActivity());
         mRecyclerView.setLayoutManager(layoutManager);
         mRecyclerView.setHasFixedSize(true);
@@ -88,18 +91,30 @@ public class RecyclerViewFragmentPermisos extends Fragment {
                 Log.i("DemoRecView", "Pulsado el elemento " + mContentItems.get(mRecyclerView.getChildAdapterPosition(v) - 1).toString());
                 int longitud = mContentItems.get(mRecyclerView.getChildAdapterPosition(v) - 1).length();
                 permiso = mContentItems.get(mRecyclerView.getChildAdapterPosition(v) - 1).toString();
-                Toast.makeText(getActivity(), mContentItems.get(mRecyclerView.getChildAdapterPosition(v) - 1).toString(), Toast.LENGTH_LONG).show();
                 PermisosAdapter perm = new PermisosAdapter(getActivity());
                 AppsDbHelper dbHelper = new AppsDbHelper(getActivity());
                 SQLiteDatabase db = dbHelper.getWritableDatabase();
                 Cursor mCursor = db.rawQuery("SELECT PERMISO, DESCRIPCION FROM PERMISOS where PERMISO='" + mContentItems.get(mRecyclerView.getChildAdapterPosition(v) - 1).toString() + "'", null);
+                showLoadingProgress();
                 if (mCursor.moveToFirst()) {
+                    hideLoadingProgress();
                     mMaterialDialog = new MaterialDialog(getActivity());
                     mMaterialDialog.setTitle(permiso.substring(19, longitud))
-                            .setMessage(mCursor.getString(mCursor.getColumnIndex(perm.COLUMNA_DESCRIPCION))).show();
-                } else {
-                    new GetJson().execute(permiso);
+                            .setMessage(mCursor.getString(mCursor.getColumnIndex(perm.COLUMNA_DESCRIPCION)))
+                            .setPositiveButton(
+                                    "OK", new View.OnClickListener() {
+                                        @Override
+                                        public void onClick(View v) {
+                                            mMaterialDialog.dismiss();
+                                            descripcion = "No disponible.";
 
+                                        }
+                                    }
+                            ).show();
+                    db.close();
+                } else {
+                    showLoadingProgress();
+                    new GetJson().execute(permiso);
                 }
 
 
@@ -107,6 +122,21 @@ public class RecyclerViewFragmentPermisos extends Fragment {
         });
 
         MaterialViewPagerHelper.registerRecyclerView(getActivity(), mRecyclerView, null);
+    }
+
+    public CircularProgressBar getCircularProgressBar() {
+        return progress;
+    }
+
+    private void hideLoadingProgress() {
+        ((CircularProgressDrawable) getCircularProgressBar().getIndeterminateDrawable()).progressiveStop();
+        getCircularProgressBar().setVisibility(View.INVISIBLE);
+
+    }
+
+    private void showLoadingProgress() {
+        getCircularProgressBar().setVisibility(View.VISIBLE);
+        ((CircularProgressDrawable) getCircularProgressBar().getIndeterminateDrawable()).start();
     }
 
     private class GetJson extends AsyncTask<String, Void, Void> {
@@ -179,9 +209,19 @@ public class RecyclerViewFragmentPermisos extends Fragment {
         @Override
         protected void onPostExecute(Void result) {
             super.onPostExecute(result);
+            hideLoadingProgress();
             mMaterialDialog = new MaterialDialog(getActivity());
             mMaterialDialog.setTitle(permiso.substring(19, permiso.length()))
-                    .setMessage(descripcion).show();
+                    .setMessage(descripcion).setPositiveButton(
+                    "OK", new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            mMaterialDialog.dismiss();
+                            descripcion = "No disponible.";
+
+                        }
+                    }
+            ).show();
         }
     }
 }

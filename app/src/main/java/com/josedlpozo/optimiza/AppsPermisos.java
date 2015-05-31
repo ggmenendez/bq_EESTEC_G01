@@ -14,10 +14,11 @@ public class AppsPermisos {
     private String nombrePaquete;
 
     public AppsPermisos(Drawable imagen, String nombre, String[] requestedPermissions, String nombrePaquete) {
-        this.requestedPermissions = requestedPermissions;
         if (requestedPermissions == null) {
+            this.requestedPermissions = new String[]{};
             this.numPermisos = 0;
         } else {
+            this.requestedPermissions = requestedPermissions;
             this.numPermisos = requestedPermissions.length;
         }
         this.imagen = imagen;

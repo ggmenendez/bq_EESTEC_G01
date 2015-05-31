@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<fr.castorflex.android.circularprogressbar.CircularProgressBar xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/circularProgress"
+    android:layout_width="64dp"
+    android:layout_height="64dp"
+    android:layout_gravity="center|bottom"
+    android:layout_centerInParent="true"
+    android:layout_margin="12dp"
+    android:indeterminate="true"
+    android:indeterminateOnly="false"
+    android:visibility="invisible"
+    app:cpb_colors="@array/fragment_colors"
+    app:cpb_rotation_speed="1.0"
+    app:cpb_sweep_speed="2.0"
+    xmlns:app="http://schemas.android.com/apk/res-auto" />

@@ -19,5 +19,8 @@
         fab:fab_colorNormal="@color/red"
         fab:fab_colorPressed="@color/red"
         fab:fab_colorRipple="@color/green" />
+
+    <include layout="@layout/circular_progress" />
+
 </FrameLayout>
 

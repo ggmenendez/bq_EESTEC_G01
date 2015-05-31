@@ -44,8 +44,6 @@ public class RecyclerViewPermisosAdapter extends RecyclerView.Adapter<RecyclerVi
 
 
     }
-
-
     static final int TYPE_CELL = 1;
 
     public RecyclerViewPermisosAdapter(List<String> datos) {

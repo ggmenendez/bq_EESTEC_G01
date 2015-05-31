@@ -4,5 +4,9 @@
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
 
-
+    <integer-array name="fragment_colors">
+        <item>@color/colorPrimary</item>
+        <item>@color/cyan</item>
+        <item>@color/card_background</item>
+    </integer-array>
 </resources>
