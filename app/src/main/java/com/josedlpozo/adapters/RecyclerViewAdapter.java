@@ -27,7 +27,6 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         private ImageView img;
         private TextView txtName;
         private TextView txtNum;
-        private String[] permisos;
 
         public AppsViewHolder(View itemView) {
             super(itemView);
@@ -39,26 +38,10 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         public void bindTitular(AppsPermisos t) {
             Log.i("HOLDER", t.getNombre());
             txtName.setText(t.getNombre());
-            txtNum.setText(" " + t.getNumPermisos());
+            txtNum.setText("Número de permisos: " + t.getNumPermisos());
             img.setImageDrawable(t.getImagen());
-            permisos = t.getRequestedPermissions();
         }
 
-        public ImageView getImg() {
-            return img;
-        }
-
-        public TextView getTxtName() {
-            return txtName;
-        }
-
-        public TextView getTxtNum() {
-            return txtNum;
-        }
-
-        public String[] getPermisos() {
-            return permisos;
-        }
     }
 
 
@@ -79,8 +62,8 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     @Override
     public int getItemViewType(int position) {
         switch (position) {
-            case 0:
-                return TYPE_HEADER;
+            //case 0:
+            //  return TYPE_HEADER;
             default:
                 return TYPE_CELL;
         }

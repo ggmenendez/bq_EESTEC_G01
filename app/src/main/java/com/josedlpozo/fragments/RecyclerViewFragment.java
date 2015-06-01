@@ -227,4 +227,5 @@ public class RecyclerViewFragment extends Fragment {
         }
         db.close();
     }
+
 }

@@ -21,6 +21,7 @@ public abstract class EndlessRecyclerOnScrollListener extends
 
     private int current_page = 1;
 
+
     private LinearLayoutManager mLinearLayoutManager;
 
     public EndlessRecyclerOnScrollListener(
@@ -51,7 +52,6 @@ public abstract class EndlessRecyclerOnScrollListener extends
             showFAB(1);
         }
 
-
         if (loading) {
             if (totalItemCount > previousTotal) {
                 loading = false;
@@ -79,5 +79,6 @@ public abstract class EndlessRecyclerOnScrollListener extends
     public abstract void onLoadMore(int current_page);
 
     public abstract void showFAB(int mostrar);
+
 }
 

@@ -38,7 +38,7 @@ public class BatteryFragment extends Fragment {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        texto = (TextView) view.findViewById(R.id.description);
+        texto = (TextView) view.findViewById(R.id.plugged);
         IntentFilter ifilter = new IntentFilter(Intent.ACTION_BATTERY_CHANGED);
         Intent batteryStatus = getActivity().getApplicationContext().registerReceiver(null, ifilter);
         // Are we charging / charged?
@@ -65,6 +65,8 @@ public class BatteryFragment extends Fragment {
             avg = bm.getIntProperty(BatteryManager.BATTERY_PROPERTY_CURRENT_AVERAGE);
         }
         float batteryPct = level / (float) scale;
+
+        texto.setText("Is charging? " + isCharging + " -- Usb charge? " + usbCharge + " -- AC charge? " + acCharge);
 
         Log.i(TAG, "Is charging " + isCharging);
         Log.i(TAG, "Usb charge " + usbCharge);
