@@ -20,6 +20,7 @@ import com.josedlpozo.adapters.RecyclerViewPermisosAdapter;
 import com.josedlpozo.database.AppsDbHelper;
 import com.josedlpozo.database.PermisosAdapter;
 import com.josedlpozo.optimiza.R;
+import com.melnykov.fab.FloatingActionButton;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -79,7 +80,8 @@ public class RecyclerViewFragmentPermisos extends Fragment {
         mRecyclerView.setLayoutManager(layoutManager);
         mRecyclerView.setHasFixedSize(true);
 
-
+        FloatingActionButton fab = (FloatingActionButton) view.findViewById(R.id.fab);
+        fab.setVisibility(View.INVISIBLE);
         RecyclerViewPermisosAdapter adapter = new RecyclerViewPermisosAdapter(mContentItems);
         mAdapter = new RecyclerViewMaterialAdapter(adapter);
         AlphaInAnimationAdapter alphaAdapter = new AlphaInAnimationAdapter(mAdapter);

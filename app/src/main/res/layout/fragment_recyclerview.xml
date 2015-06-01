@@ -16,9 +16,10 @@
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|right"
         android:layout_margin="16dp"
-        fab:fab_colorNormal="@color/red"
-        fab:fab_colorPressed="@color/red"
-        fab:fab_colorRipple="@color/green" />
+        android:src="@drawable/ic_autorenew_black_24dp"
+        fab:fab_colorNormal="@color/colorPrimary"
+        fab:fab_colorPressed="@color/colorPrimaryDark"
+        fab:fab_colorRipple="@color/card_background" />
 
     <include layout="@layout/circular_progress" />
 

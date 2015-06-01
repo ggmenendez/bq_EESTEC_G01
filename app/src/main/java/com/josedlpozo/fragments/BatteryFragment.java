@@ -7,6 +7,7 @@ package com.josedlpozo.fragments;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.BatteryManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -52,12 +53,25 @@ public class BatteryFragment extends Fragment {
 
         int level = batteryStatus.getIntExtra(BatteryManager.EXTRA_LEVEL, -1);
         int scale = batteryStatus.getIntExtra(BatteryManager.EXTRA_SCALE, -1);
-
+        BatteryManager bm = new BatteryManager();
+        int bat = 0;
+        int ma = 0;
+        int avg = 0;
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP)
+            return;
+        else {
+            bat = bm.getIntProperty(BatteryManager.BATTERY_PROPERTY_CAPACITY);
+            ma = bm.getIntProperty(BatteryManager.BATTERY_PROPERTY_CHARGE_COUNTER);
+            avg = bm.getIntProperty(BatteryManager.BATTERY_PROPERTY_CURRENT_AVERAGE);
+        }
         float batteryPct = level / (float) scale;
 
         Log.i(TAG, "Is charging " + isCharging);
         Log.i(TAG, "Usb charge " + usbCharge);
         Log.i(TAG, "AC charge " + acCharge);
         Log.i(TAG, "Level " + batteryPct);
+        Log.i(TAG, "CA " + bat);
+        Log.i(TAG, "MA " + ma);
+        Log.i(TAG, "AVG " + avg);
     }
 }

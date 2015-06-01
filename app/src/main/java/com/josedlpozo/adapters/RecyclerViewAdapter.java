@@ -12,6 +12,8 @@ import com.josedlpozo.optimiza.AppsPermisos;
 import com.josedlpozo.optimiza.R;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 
 public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapter.AppsViewHolder> implements View.OnClickListener {
 
@@ -65,6 +67,12 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
     public RecyclerViewAdapter(ArrayList<AppsPermisos> datos) {
         this.datos = datos;
+        Collections.sort(this.datos, new Comparator<AppsPermisos>() {
+            @Override
+            public int compare(AppsPermisos lhs, AppsPermisos rhs) {
+                return rhs.getNumPermisos() - lhs.getNumPermisos();
+            }
+        });
 
     }
 
