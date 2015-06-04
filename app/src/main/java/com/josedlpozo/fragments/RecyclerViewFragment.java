@@ -12,6 +12,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.helper.ItemTouchHelper;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -36,8 +37,10 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
+import jp.wasabeef.recyclerview.animators.SlideInLeftAnimator;
 import jp.wasabeef.recyclerview.animators.adapters.AlphaInAnimationAdapter;
 import jp.wasabeef.recyclerview.animators.adapters.ScaleInAnimationAdapter;
+import me.drakeet.materialdialog.MaterialDialog;
 
 
 public class RecyclerViewFragment extends Fragment {
@@ -62,10 +65,9 @@ public class RecyclerViewFragment extends Fragment {
     }
 
     @Override
-    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+    public void onViewCreated(final View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         mRecyclerView = (RecyclerView) view.findViewById(R.id.recyclerView);
-
         AppDbAdapter db = new AppDbAdapter(getActivity().getBaseContext());
         AppsDbHelper dbHelper = new AppsDbHelper(getActivity().getBaseContext());
 
@@ -88,6 +90,7 @@ public class RecyclerViewFragment extends Fragment {
         mRecyclerView.setHasFixedSize(true);
 
 
+
         Cursor cursor = dbSQ.rawQuery("SELECT * FROM " + "Permisos_App LIMIT " + contador_apps + ",10", null);
         if (cursor == null) {
             Toast.makeText(getActivity().getBaseContext(), "No hay aplicaciones para mostrar.", Toast.LENGTH_LONG).show();
@@ -104,13 +107,65 @@ public class RecyclerViewFragment extends Fragment {
             }
             contador_apps += 10;
             dbSQ.close();
-
         }
+
+        ItemTouchHelper.SimpleCallback simpleItemTouchCallback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.RIGHT) {
+            @Override
+            public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder viewHolder1) {
+                return false;
+            }
+
+            @Override
+            public void onSwiped(final RecyclerView.ViewHolder viewHolder, int swipeDir) {
+                final MaterialDialog mMaterialDialog = new MaterialDialog(getActivity());
+                mMaterialDialog.setTitle(mContentItems.get(viewHolder.getAdapterPosition() - 1).getNombre())
+                        .setMessage("Are you sure to delete?")
+                        .setPositiveButton(
+                                "OK", new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View v) {
+                                        mMaterialDialog.dismiss();
+                                        AppDbAdapter db = new AppDbAdapter(getActivity().getBaseContext());
+                                        AppsDbHelper dbHelper = new AppsDbHelper(getActivity().getBaseContext());
+
+                                        SQLiteDatabase dbSQ = dbHelper.getWritableDatabase();
+                                        dbSQ.delete(AppDbAdapter.C_TABLA, AppDbAdapter.COLUMNA_NOMBRE + "='" + mContentItems.get(viewHolder.getAdapterPosition() - 1).getNombre() + "'", null);
+
+                                        mContentItems.remove(viewHolder.getAdapterPosition() - 1);
+                                        sAdapter.notifyDataSetChanged();
+                                        dbSQ.close();
+
+                                    }
+                                }
+                        )
+                        .setNegativeButton(
+                                R.id.fab, new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View v) {
+
+                                        mMaterialDialog.dismiss();
+                                        sAdapter.notifyDataSetChanged();
+
+                                    }
+                                }
+                        ).show();
+            }
+        };
+
+        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(simpleItemTouchCallback);
+        itemTouchHelper.attachToRecyclerView(mRecyclerView);
+
         RecyclerViewAdapter adapter = new RecyclerViewAdapter(mContentItems);
         mAdapter = new RecyclerViewMaterialAdapter(adapter);
         AlphaInAnimationAdapter alphaAdapter = new AlphaInAnimationAdapter(mAdapter);
         sAdapter = new ScaleInAnimationAdapter(alphaAdapter);
         mRecyclerView.setAdapter(sAdapter);
+
+        mRecyclerView.setItemAnimator(new SlideInLeftAnimator());
+        mRecyclerView.getItemAnimator().setAddDuration(1000);
+        mRecyclerView.getItemAnimator().setRemoveDuration(1000);
+        mRecyclerView.getItemAnimator().setMoveDuration(1000);
+        mRecyclerView.getItemAnimator().setChangeDuration(1000);
 
         adapter.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -133,6 +188,8 @@ public class RecyclerViewFragment extends Fragment {
             @Override
             public void onLoadMore(int current_page) {
                 Log.d("xxx", "ONLOADMORE");
+                ordenaPorNumeroPermisos();
+                sAdapter.notifyDataSetChanged();
                 loadMoreData(current_page);
             }
 
@@ -156,7 +213,7 @@ public class RecyclerViewFragment extends Fragment {
         AppsDbHelper dbHelper = new AppsDbHelper(getActivity().getBaseContext());
 
         SQLiteDatabase dbSQ = dbHelper.getWritableDatabase();
-        Cursor cursor = dbSQ.rawQuery("SELECT * FROM " + "Permisos_App LIMIT " + contador_apps + ",10", null);
+        Cursor cursor = dbSQ.rawQuery("SELECT * FROM " + "Permisos_App LIMIT " + contador_apps + ",5", null);
         if (cursor == null) {
             Toast.makeText(getActivity().getBaseContext(), "No hay aplicaciones para mostrar.", Toast.LENGTH_LONG).show();
         } else {
@@ -173,9 +230,20 @@ public class RecyclerViewFragment extends Fragment {
             contador_apps += 10;
             dbSQ.close();
             Log.i("XXX", "LLEGA" + contador_apps);
+            ordenaPorNumeroPermisos();
             sAdapter.notifyDataSetChanged();
 
         }
+
+    }
+
+    private void ordenaPorNumeroPermisos() {
+        Collections.sort(mContentItems, new Comparator<AppsPermisos>() {
+            @Override
+            public int compare(AppsPermisos lhs, AppsPermisos rhs) {
+                return rhs.getNumPermisos() - lhs.getNumPermisos();
+            }
+        });
     }
 
     private void actualizaDB() {
@@ -216,16 +284,22 @@ public class RecyclerViewFragment extends Fragment {
 
         for (AppsPermisos app : apps) {
             Cursor mCursor = db.rawQuery("SELECT nombre FROM Permisos_App where nombre='" + app.getNombre() + "'", null);
+
             if (!mCursor.moveToFirst()) {
+                Log.i("ACT", app.getNombre());
                 ContentValues registro = new ContentValues();
                 registro.put(AppDbAdapter.COLUMNA_NOMBRE, app.getNombre());
                 registro.put(AppDbAdapter.COLUMNA_PAQUETES, app.getNombrePaquete());
                 dbAdapter.insert(registro);
                 mContentItems.add(app);
+                ordenaPorNumeroPermisos();
                 sAdapter.notifyDataSetChanged();
             }
         }
+        ordenaPorNumeroPermisos();
+        sAdapter.notifyDataSetChanged();
         db.close();
     }
+
 
 }

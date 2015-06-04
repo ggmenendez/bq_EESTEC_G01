@@ -16,6 +16,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.josedlpozo.optimiza.R;
 
@@ -58,7 +59,7 @@ public class BatteryFragment extends Fragment {
         int ma = 0;
         int avg = 0;
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP)
-            return;
+            Toast.makeText(getActivity(), "NO TIENES LOLLIPOP", Toast.LENGTH_LONG).show();
         else {
             bat = bm.getIntProperty(BatteryManager.BATTERY_PROPERTY_CAPACITY);
             ma = bm.getIntProperty(BatteryManager.BATTERY_PROPERTY_CHARGE_COUNTER);
@@ -66,7 +67,8 @@ public class BatteryFragment extends Fragment {
         }
         float batteryPct = level / (float) scale;
 
-        texto.setText("Is charging? " + isCharging + " -- Usb charge? " + usbCharge + " -- AC charge? " + acCharge);
+        texto.setText("Is charging? " + isCharging + " -- Usb charge? " + usbCharge + "\n -- AC charge? " + acCharge + " -- Level? " + level + "\n --  " +
+                "CA? " + bat + " -- MA? " + ma + " -- AVG? " + avg);
 
         Log.i(TAG, "Is charging " + isCharging);
         Log.i(TAG, "Usb charge " + usbCharge);

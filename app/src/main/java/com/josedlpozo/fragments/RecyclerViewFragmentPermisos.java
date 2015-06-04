@@ -20,7 +20,6 @@ import com.josedlpozo.adapters.RecyclerViewPermisosAdapter;
 import com.josedlpozo.database.AppsDbHelper;
 import com.josedlpozo.database.PermisosAdapter;
 import com.josedlpozo.optimiza.R;
-import com.melnykov.fab.FloatingActionButton;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -31,7 +30,6 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import fr.castorflex.android.circularprogressbar.CircularProgressBar;
@@ -55,6 +53,7 @@ public class RecyclerViewFragmentPermisos extends Fragment {
 
     private CircularProgressBar progress;
 
+    private int contador = 0;
 
     public static RecyclerViewFragmentPermisos newInstance() {
         return new RecyclerViewFragmentPermisos();
@@ -64,28 +63,32 @@ public class RecyclerViewFragmentPermisos extends Fragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
         String[] permisos = getArguments().getStringArray("PERMISOS");
-        mContentItems = Arrays.asList(permisos);
+        String paquete = getArguments().getString("PAQUETE");
+        for (String i : permisos) {
+            mContentItems.add(i);
+        }
+        mContentItems.add(0, paquete);
 
-
-        return inflater.inflate(R.layout.fragment_recyclerview, container, false);
+        return inflater.inflate(R.layout.fragment_recyclerview_app, container, false);
     }
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        mRecyclerView = (RecyclerView) view.findViewById(R.id.recyclerView);
-
+        mRecyclerView = (RecyclerView) view.findViewById(R.id.recyclerView_app);
         progress = (CircularProgressBar) view.findViewById(R.id.circularProgress);
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getActivity());
         mRecyclerView.setLayoutManager(layoutManager);
         mRecyclerView.setHasFixedSize(true);
 
-        FloatingActionButton fab = (FloatingActionButton) view.findViewById(R.id.fab);
-        fab.setVisibility(View.INVISIBLE);
+
+        mRecyclerView.setHasFixedSize(true);
+
         RecyclerViewPermisosAdapter adapter = new RecyclerViewPermisosAdapter(mContentItems);
         mAdapter = new RecyclerViewMaterialAdapter(adapter);
         AlphaInAnimationAdapter alphaAdapter = new AlphaInAnimationAdapter(mAdapter);
         mRecyclerView.setAdapter(new ScaleInAnimationAdapter(alphaAdapter));
+
 
         adapter.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -122,7 +125,6 @@ public class RecyclerViewFragmentPermisos extends Fragment {
 
             }
         });
-
         MaterialViewPagerHelper.registerRecyclerView(getActivity(), mRecyclerView, null);
     }
 

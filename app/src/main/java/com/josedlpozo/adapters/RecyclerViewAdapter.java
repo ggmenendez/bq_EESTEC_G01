@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.josedlpozo.optimiza.AppsPermisos;
@@ -33,6 +34,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
             img = (ImageView) itemView.findViewById(R.id.img);
             txtName = (TextView) itemView.findViewById(R.id.name);
             txtNum = (TextView) itemView.findViewById(R.id.num);
+
         }
 
         public void bindTitular(AppsPermisos t) {
@@ -47,6 +49,8 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
     static final int TYPE_HEADER = 0;
     static final int TYPE_CELL = 1;
+    private LinearLayout first;
+    private LinearLayout second;
 
     public RecyclerViewAdapter(ArrayList<AppsPermisos> datos) {
         this.datos = datos;
@@ -77,6 +81,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     @Override
     public AppsViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view;
+
 
         Log.i("HOLDER", " " + viewType);
 

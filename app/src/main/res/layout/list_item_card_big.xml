@@ -8,7 +8,7 @@
         xmlns:app="http://schemas.android.com/apk/res-auto"
         android:id="@+id/card_view"
         android:layout_width="match_parent"
-        android:layout_height="200dp"
+        android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/cardMarginVertical"
         android:layout_marginLeft="@dimen/cardMarginHorizontal"
         android:layout_marginRight="@dimen/cardMarginHorizontal"
@@ -17,7 +17,6 @@
         app:cardElevation="2dp"
         app:cardPreventCornerOverlap="false"
         app:contentPadding="0dp">
-
 
         <include layout="@layout/permisos_big" />
 
