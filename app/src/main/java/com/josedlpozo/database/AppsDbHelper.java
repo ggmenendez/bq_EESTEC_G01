@@ -13,7 +13,7 @@ import android.util.Log;
 
 public class AppsDbHelper extends SQLiteOpenHelper {
 
-    private static int version = 8;
+    private static int version = 9;
 
     private static final String DB_NAME = "OCTIMIZA";
 
@@ -29,12 +29,13 @@ public class AppsDbHelper extends SQLiteOpenHelper {
     public static final String COLUMNA_PAQUETES = "packages";
     public static final String COLUMNA_PERMISOS = "permisos";
     public static final String COLUMNA_NUM_PERMISOS = "num_permisos";
+    public static final String COLUMNA_IGNORADA = "ignorada";
 
 
     private static CursorFactory factory = null;
 
     private static final String CREATE_TABLE_APP_PERMISOS = "CREATE TABLE " + TABLE_NAME + "(" + COLUMNA_ID + " INTEGER PRIMARY KEY," + COLUMNA_NOMBRE + " " + TYPE_TEXT + " NOT NULL, " +
-            COLUMNA_PAQUETES + " " + TYPE_TEXT + " NOT NULL)";
+            COLUMNA_PAQUETES + " " + TYPE_TEXT + " NOT NULL," + COLUMNA_IGNORADA + " " + TYPE_INTEGER + ")";
 
     private static final String CREATE_TABLE_PERMISOS = "CREATE TABLE PERMISOS (_ID INTEGER PRIMARY KEY, PERMISO TEXT NOT NULL, DESCRIPCION TEXT NOT NULL)";
 

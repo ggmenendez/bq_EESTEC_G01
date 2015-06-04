@@ -97,13 +97,15 @@ public class RecyclerViewFragment extends Fragment {
         } else {
             cursor.moveToFirst();
             while (cursor.moveToNext()) {
-                AppsPermisos app = null;
-                try {
-                    app = new AppsPermisos(getActivity().getPackageManager().getApplicationIcon(cursor.getString(cursor.getColumnIndex(db.COLUMNA_PAQUETES))), cursor.getString(cursor.getColumnIndex(db.COLUMNA_NOMBRE)), getActivity().getPackageManager().getPackageInfo(cursor.getString(cursor.getColumnIndex(db.COLUMNA_PAQUETES)), PackageManager.GET_PERMISSIONS).requestedPermissions, cursor.getString(cursor.getColumnIndex(db.COLUMNA_PAQUETES)));
-                } catch (PackageManager.NameNotFoundException e) {
-                    e.printStackTrace();
+                if (cursor.getInt(cursor.getColumnIndex(AppDbAdapter.COLUMNA_IGNORADA)) == 0) {
+                    AppsPermisos app = null;
+                    try {
+                        app = new AppsPermisos(getActivity().getPackageManager().getApplicationIcon(cursor.getString(cursor.getColumnIndex(db.COLUMNA_PAQUETES))), cursor.getString(cursor.getColumnIndex(db.COLUMNA_NOMBRE)), getActivity().getPackageManager().getPackageInfo(cursor.getString(cursor.getColumnIndex(db.COLUMNA_PAQUETES)), PackageManager.GET_PERMISSIONS).requestedPermissions, cursor.getString(cursor.getColumnIndex(db.COLUMNA_PAQUETES)));
+                    } catch (PackageManager.NameNotFoundException e) {
+                        e.printStackTrace();
+                    }
+                    mContentItems.add(app);
                 }
-                mContentItems.add(app);
             }
             contador_apps += 10;
             dbSQ.close();
@@ -129,8 +131,7 @@ public class RecyclerViewFragment extends Fragment {
                                         AppsDbHelper dbHelper = new AppsDbHelper(getActivity().getBaseContext());
 
                                         SQLiteDatabase dbSQ = dbHelper.getWritableDatabase();
-                                        dbSQ.delete(AppDbAdapter.C_TABLA, AppDbAdapter.COLUMNA_NOMBRE + "='" + mContentItems.get(viewHolder.getAdapterPosition() - 1).getNombre() + "'", null);
-
+                                        dbSQ.execSQL("UPDATE Permisos_APP set " + AppDbAdapter.COLUMNA_IGNORADA + "=1 where " + AppDbAdapter.COLUMNA_NOMBRE + "='" + mContentItems.get(viewHolder.getAdapterPosition() - 1).getNombre() + "'");
                                         mContentItems.remove(viewHolder.getAdapterPosition() - 1);
                                         sAdapter.notifyDataSetChanged();
                                         dbSQ.close();
@@ -218,14 +219,16 @@ public class RecyclerViewFragment extends Fragment {
             Toast.makeText(getActivity().getBaseContext(), "No hay aplicaciones para mostrar.", Toast.LENGTH_LONG).show();
         } else {
             cursor.moveToFirst();
-            while (cursor.moveToNext()) {
-                AppsPermisos app = null;
-                try {
-                    app = new AppsPermisos(getActivity().getPackageManager().getApplicationIcon(cursor.getString(cursor.getColumnIndex(db.COLUMNA_PAQUETES))), cursor.getString(cursor.getColumnIndex(db.COLUMNA_NOMBRE)), getActivity().getPackageManager().getPackageInfo(cursor.getString(cursor.getColumnIndex(db.COLUMNA_PAQUETES)), PackageManager.GET_PERMISSIONS).requestedPermissions, cursor.getString(cursor.getColumnIndex(db.COLUMNA_PAQUETES)));
-                } catch (PackageManager.NameNotFoundException e) {
-                    e.printStackTrace();
+            if (cursor.getInt(cursor.getColumnIndex(AppDbAdapter.COLUMNA_IGNORADA)) == 0) {
+                while (cursor.moveToNext()) {
+                    AppsPermisos app = null;
+                    try {
+                        app = new AppsPermisos(getActivity().getPackageManager().getApplicationIcon(cursor.getString(cursor.getColumnIndex(db.COLUMNA_PAQUETES))), cursor.getString(cursor.getColumnIndex(db.COLUMNA_NOMBRE)), getActivity().getPackageManager().getPackageInfo(cursor.getString(cursor.getColumnIndex(db.COLUMNA_PAQUETES)), PackageManager.GET_PERMISSIONS).requestedPermissions, cursor.getString(cursor.getColumnIndex(db.COLUMNA_PAQUETES)));
+                    } catch (PackageManager.NameNotFoundException e) {
+                        e.printStackTrace();
+                    }
+                    mContentItems.add(app);
                 }
-                mContentItems.add(app);
             }
             contador_apps += 10;
             dbSQ.close();
@@ -294,7 +297,11 @@ public class RecyclerViewFragment extends Fragment {
                 mContentItems.add(app);
                 ordenaPorNumeroPermisos();
                 sAdapter.notifyDataSetChanged();
-            }
+            }/*else if(mCursor.moveToFirst() && mCursor.getInt(mCursor.getColumnIndex(AppDbAdapter.COLUMNA_IGNORADA)) == 0){
+                mContentItems.add(app);
+                ordenaPorNumeroPermisos();
+                sAdapter.notifyDataSetChanged();
+            }*/
         }
         ordenaPorNumeroPermisos();
         sAdapter.notifyDataSetChanged();

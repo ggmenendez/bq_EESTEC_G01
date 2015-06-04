@@ -195,6 +195,7 @@ public class MainActivity extends ActionBarActivity {
                 ContentValues registro = new ContentValues();
                 registro.put(AppDbAdapter.COLUMNA_NOMBRE, app.getNombre());
                 registro.put(AppDbAdapter.COLUMNA_PAQUETES, app.getNombrePaquete());
+                registro.put(AppDbAdapter.COLUMNA_IGNORADA, 0);
                 dbAdapter.insert(registro);
             }
             db.close();
@@ -227,6 +228,14 @@ public class MainActivity extends ActionBarActivity {
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
+            AppsDbHelper dbHelper = new AppsDbHelper(getBaseContext());
+
+            SQLiteDatabase db = dbHelper.getWritableDatabase();
+
+            AppDbAdapter dbAdapter = new AppDbAdapter(getBaseContext());
+
+            db.execSQL("UPDATE Permisos_APP set ignorada=0");
+            db.close();
             return true;
         }
 

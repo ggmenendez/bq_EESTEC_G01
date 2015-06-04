@@ -25,7 +25,7 @@ public class AppDbAdapter {
     public static final String COLUMNA_PAQUETES = "packages";
     public static final String COLUMNA_PERMISOS = "permisos";
     public static final String COLUMNA_NUM_PERMISOS = "num_permisos";
-
+    public static final String COLUMNA_IGNORADA = "ignorada";
 
     private Context contexto;
     private AppsDbHelper dbHelper;
