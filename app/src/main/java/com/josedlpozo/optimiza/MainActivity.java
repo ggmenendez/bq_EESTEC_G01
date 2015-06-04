@@ -201,6 +201,7 @@ public class MainActivity extends ActionBarActivity {
             db.close();
         }
         db.close();
+
     }
 
 

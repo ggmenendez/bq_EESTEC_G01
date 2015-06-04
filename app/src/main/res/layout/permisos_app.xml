@@ -1,13 +1,42 @@
-<RelativeLayout
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:padding="16dp"
-    xmlns:android="http://schemas.android.com/apk/res/android">
+    android:layout_height="match_parent">
 
-
-    <TextView
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/description" />
+        android:id="@+id/first">
 
-</RelativeLayout>
+        <ImageView
+            android:id="@+id/img_warning"
+            android:visibility="gone"
+            android:transitionName="appIcon"
+            android:layout_margin="8dp"
+            android:layout_width="56dp"
+            android:layout_height="56dp" />
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center_vertical">
+
+            <TextView
+                android:id="@+id/permiso"
+                android:layout_width="match_parent"
+                android:gravity="center_vertical"
+                android:layout_marginStart="10dp"
+                android:layout_marginTop="4dp"
+                android:layout_marginBottom="4dp"
+                android:layout_marginEnd="10dp"
+                android:layout_height="wrap_content"
+                android:textSize="20sp"
+                android:maxLines="1"
+                android:textColor="@color/text" />
+
+        </LinearLayout>
+    </LinearLayout>
+
+</LinearLayout>

@@ -218,8 +218,8 @@ public class RecyclerViewFragment extends Fragment {
         if (cursor == null) {
             Toast.makeText(getActivity().getBaseContext(), "No hay aplicaciones para mostrar.", Toast.LENGTH_LONG).show();
         } else {
-            cursor.moveToFirst();
-            if (cursor.getInt(cursor.getColumnIndex(AppDbAdapter.COLUMNA_IGNORADA)) == 0) {
+
+            if (cursor.moveToFirst() && cursor.getInt(cursor.getColumnIndex(AppDbAdapter.COLUMNA_IGNORADA)) == 0) {
                 while (cursor.moveToNext()) {
                     AppsPermisos app = null;
                     try {

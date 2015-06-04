@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.josedlpozo.optimiza.R;
 
@@ -32,11 +33,12 @@ public class RecyclerViewPermisosAdapter extends RecyclerView.Adapter<RecyclerVi
         private TextView version;
         private TextView sdk;
         private ImageView img;
+        private ImageView img_warning;
         private int tipo;
 
         public AppsViewHolder(View itemView, int type) {
             super(itemView);
-            txtPermiso = (TextView) itemView.findViewById(R.id.description);
+            txtPermiso = (TextView) itemView.findViewById(R.id.permiso);
             txtNombre = (TextView) itemView.findViewById(R.id.name);
             txtNum = (TextView) itemView.findViewById(R.id.num);
             img = (ImageView) itemView.findViewById(R.id.img);
@@ -44,6 +46,7 @@ public class RecyclerViewPermisosAdapter extends RecyclerView.Adapter<RecyclerVi
             dateLast = (TextView) itemView.findViewById(R.id.date_last);
             version = (TextView) itemView.findViewById(R.id.version);
             sdk = (TextView) itemView.findViewById(R.id.sdk);
+            img_warning = (ImageView) itemView.findViewById(R.id.img_warning);
             this.tipo = type;
         }
 
@@ -59,6 +62,16 @@ public class RecyclerViewPermisosAdapter extends RecyclerView.Adapter<RecyclerVi
                     if (comienzo != 0) break;
                 }*/
                 txtPermiso.setText(t);
+                if (t.equals("android.permission.BLUETOOTH") || t.equals("android.permission.BLUETOOTH_ADMIN")) {
+                    img_warning.setVisibility(View.VISIBLE);
+                    img_warning.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            Toast.makeText(v.getContext(), "MALO", Toast.LENGTH_LONG).show();
+                        }
+                    });
+                    img_warning.setImageDrawable(itemView.getResources().getDrawable(R.drawable.ic_warning_black_36dp));
+                }
             } else {
                 try {
                     txtNombre.setText(itemView.getContext().getPackageManager().getApplicationLabel(itemView.getContext().getPackageManager().getApplicationInfo(t, 0)));
