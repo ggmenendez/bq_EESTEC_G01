@@ -9,4 +9,5 @@
         <item>@color/cyan</item>
         <item>@color/card_background</item>
     </integer-array>
+    <string name="title_activity_web_view">WebViewActivity</string>
 </resources>

@@ -1,5 +1,6 @@
 package com.josedlpozo.adapters;
 
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -11,6 +12,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.josedlpozo.optimiza.R;
+import com.josedlpozo.optimiza.WebViewActivity;
 
 import java.util.Date;
 import java.util.List;
@@ -34,6 +36,7 @@ public class RecyclerViewPermisosAdapter extends RecyclerView.Adapter<RecyclerVi
         private TextView sdk;
         private ImageView img;
         private ImageView img_warning;
+        private String packages;
         private int tipo;
 
         public AppsViewHolder(View itemView, int type) {
@@ -53,15 +56,15 @@ public class RecyclerViewPermisosAdapter extends RecyclerView.Adapter<RecyclerVi
         public void bindTitular(String t) {
             Log.i("PERMISOS", t);
             if (tipo == TYPE_CELL) {
-                /*int comienzo = 0;
+                int comienzo = 0;
                 for (int i = 0; i < t.length(); i++) {
                     if (Character.isUpperCase(t.charAt(i))) {
                         comienzo = i;
                         break;
                     }
                     if (comienzo != 0) break;
-                }*/
-                txtPermiso.setText(t);
+                }
+                txtPermiso.setText(t.substring(comienzo, t.length()));
                 if (t.equals("android.permission.BLUETOOTH") || t.equals("android.permission.BLUETOOTH_ADMIN")) {
                     img_warning.setVisibility(View.VISIBLE);
                     img_warning.setOnClickListener(new View.OnClickListener() {
@@ -73,6 +76,7 @@ public class RecyclerViewPermisosAdapter extends RecyclerView.Adapter<RecyclerVi
                     img_warning.setImageDrawable(itemView.getResources().getDrawable(R.drawable.ic_warning_black_36dp));
                 }
             } else {
+                packages = t;
                 try {
                     txtNombre.setText(itemView.getContext().getPackageManager().getApplicationLabel(itemView.getContext().getPackageManager().getApplicationInfo(t, 0)));
                     txtNum.setText("Paquete : " + itemView.getContext().getPackageManager().getApplicationInfo(t, 0).packageName);
@@ -83,6 +87,21 @@ public class RecyclerViewPermisosAdapter extends RecyclerView.Adapter<RecyclerVi
                     dateLast.setText("Actualizado : " + last.toString());
                     sdk.setText("SDK minimo : " + itemView.getContext().getPackageManager().getApplicationInfo(t, 0).targetSdkVersion);
                     img.setImageDrawable(itemView.getContext().getPackageManager().getApplicationIcon(t));
+                    img.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+
+                            try {
+                                Intent intent = new Intent(v.getContext(), WebViewActivity.class);
+                                intent.putExtra("PACKAGE", itemView.getContext().getPackageManager().getApplicationInfo(packages, 0).packageName);
+                                v.getContext().startActivity(intent);
+                            } catch (PackageManager.NameNotFoundException e) {
+                                e.printStackTrace();
+                            }
+
+
+                        }
+                    });
                 } catch (PackageManager.NameNotFoundException e) {
                     e.printStackTrace();
                 }
@@ -125,7 +144,7 @@ public class RecyclerViewPermisosAdapter extends RecyclerView.Adapter<RecyclerVi
             case TYPE_HEADER: {
                 view = LayoutInflater.from(parent.getContext())
                         .inflate(R.layout.list_item_card_big, parent, false);
-                view.setOnClickListener(this);
+                //view.setOnClickListener(this);
                 return new AppsViewHolder(view, TYPE_HEADER) {
                 };
             }

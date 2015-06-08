@@ -31,7 +31,9 @@ public class AppActivity extends ActionBarActivity {
 
     private CircleImageView image;
 
+
     private String nombre;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -144,9 +146,8 @@ public class AppActivity extends ActionBarActivity {
             }
         });
 
+
     }
 
-    public String getNombre() {
-        return nombre;
-    }
 }
+

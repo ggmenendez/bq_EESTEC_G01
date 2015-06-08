@@ -1,11 +1,14 @@
 package com.josedlpozo.optimiza;
 
+import android.app.AppOpsManager;
 import android.content.ContentValues;
+import android.content.Context;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentStatePagerAdapter;
@@ -201,6 +204,17 @@ public class MainActivity extends ActionBarActivity {
             db.close();
         }
         db.close();
+
+        AppOpsManager prueba = (AppOpsManager) getBaseContext().getSystemService(Context.APP_OPS_SERVICE);
+        ApplicationInfo app = getBaseContext().getApplicationInfo();
+        String pckg = getBaseContext().getPackageName();
+        boolean j = false;
+        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP) {
+            j = prueba.checkOpNoThrow(AppOpsManager.OPSTR_COARSE_LOCATION, app.uid, pckg) == AppOpsManager.MODE_ALLOWED;
+        }
+        String permission = "android.permission.INTERNET";
+        int res = getBaseContext().checkCallingOrSelfPermission(permission);
+        Toast.makeText(this, "" + j, Toast.LENGTH_LONG).show();
 
     }
 

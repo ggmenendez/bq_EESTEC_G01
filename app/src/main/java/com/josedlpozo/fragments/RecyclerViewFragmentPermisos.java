@@ -53,7 +53,6 @@ public class RecyclerViewFragmentPermisos extends Fragment {
 
     private CircularProgressBar progress;
 
-    private int contador = 0;
 
     public static RecyclerViewFragmentPermisos newInstance() {
         return new RecyclerViewFragmentPermisos();
@@ -125,6 +124,7 @@ public class RecyclerViewFragmentPermisos extends Fragment {
 
             }
         });
+
         MaterialViewPagerHelper.registerRecyclerView(getActivity(), mRecyclerView, null);
     }
 

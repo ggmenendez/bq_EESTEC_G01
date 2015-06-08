@@ -2,9 +2,9 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.josedlpozo.optimiza" >
 
-    <uses-permission android:name="android.permission.GET_TASKS"></uses-permission>
-    <uses-permission android:name="android.permission.INTERNET"></uses-permission>
-    <uses-permission android:name="android.permission.KILL_BACKGROUND_PROCESSES"></uses-permission>
+    <uses-permission android:name="android.permission.GET_TASKS" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.KILL_BACKGROUND_PROCESSES" />
 
     <application
         android:allowBackup="true"
@@ -20,8 +20,10 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
-        <activity android:name=".AppActivity"></activity>
+        <activity android:name=".AppActivity" />
+        <activity
+            android:name=".WebViewActivity"
+            android:label="@string/title_activity_web_view"></activity>
     </application>
 
 </manifest>
