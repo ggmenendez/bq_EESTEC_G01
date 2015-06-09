@@ -18,7 +18,6 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import com.github.florent37.materialviewpager.MaterialViewPager;
 import com.josedlpozo.database.AppDbAdapter;
@@ -40,6 +39,7 @@ public class MainActivity extends ActionBarActivity {
     private DrawerLayout mDrawer;
     private ActionBarDrawerToggle mDrawerToggle;
     private Toolbar toolbar;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -163,8 +163,6 @@ public class MainActivity extends ActionBarActivity {
         Cursor mCursor = db.rawQuery("SELECT * FROM " + "Permisos_App", null);
 
         if (!mCursor.moveToFirst()) {
-            Log.d("JOSE", "ENTRA");
-            Toast.makeText(this, "I AM EMPTY", Toast.LENGTH_LONG).show();
             PackageManager pm = getPackageManager();
             List<ApplicationInfo> packages = pm.getInstalledApplications(PackageManager.GET_META_DATA);
             ArrayList<AppsPermisos> apps = new ArrayList<>();

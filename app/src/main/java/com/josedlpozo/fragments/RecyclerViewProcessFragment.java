@@ -9,6 +9,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -31,10 +32,15 @@ import com.josedlpozo.taskmanager.PackagesInfo;
 import com.josedlpozo.taskmanager.ProcessInfo;
 import com.melnykov.fab.FloatingActionButton;
 
+import java.io.IOException;
+import java.io.RandomAccessFile;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import jp.wasabeef.recyclerview.animators.SlideInLeftAnimator;
 import jp.wasabeef.recyclerview.animators.adapters.AlphaInAnimationAdapter;
@@ -206,7 +212,7 @@ public class RecyclerViewProcessFragment extends Fragment {
 
             }
         });
-        MaterialViewPagerHelper.registerRecyclerView(getActivity(), mRecyclerView, null);
+
     }
 
     public ProcessInfo getProcessInfo() {
@@ -298,10 +304,17 @@ public class RecyclerViewProcessFragment extends Fragment {
             sAdapter = new ScaleInAnimationAdapter(alphaAdapter);
             sAdapter.notifyDataSetChanged();
             mRecyclerView.setAdapter(sAdapter);
-            MaterialViewPagerHelper.registerRecyclerView(getActivity(), mRecyclerView, null);
             ActivityManager activityManager = (ActivityManager) getActivity().getSystemService(Context.ACTIVITY_SERVICE);
             ActivityManager.MemoryInfo memoryInfo = new ActivityManager.MemoryInfo();
             activityManager.getMemoryInfo(memoryInfo);
+            long avail = memoryInfo.availMem;
+
+            if (Build.VERSION.SDK_INT > 16) {
+                long total = memoryInfo.totalMem;
+                float division = (float) avail / total;
+                Log.d("jj", "A:" + avail + "  -- T:" + total + " -- D:" + division);
+                Log.d("TOTAL", "" + division * 100.0);
+            }
             adapter.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -321,7 +334,7 @@ public class RecyclerViewProcessFragment extends Fragment {
                                             ActivityManager.MemoryInfo memoryInfo = new ActivityManager.MemoryInfo();
                                             activityManager.getMemoryInfo(memoryInfo);
                                             availMem2 = memoryInfo.availMem;
-                                            Toast.makeText(getActivity(), "He liberado: " + (availMem2 - availMem1) / (8.0 * 1024.0 * 1024.0), Toast.LENGTH_SHORT).show();
+                                            Toast.makeText(getActivity(), "He liberado: " + (availMem2 - availMem1) / (1024.0 * 1024.0), Toast.LENGTH_SHORT).show();
                                             contador = 0;
                                             refresh();
                                             return;
@@ -379,7 +392,7 @@ public class RecyclerViewProcessFragment extends Fragment {
                                             ActivityManager.MemoryInfo memoryInfo = new ActivityManager.MemoryInfo();
                                             activityManager.getMemoryInfo(memoryInfo);
                                             availMem2 = memoryInfo.availMem;
-                                            Toast.makeText(getActivity(), "He liberado: " + (availMem2 - availMem1) / (8.0 * 1024.0 * 1024.0), Toast.LENGTH_SHORT).show();
+                                            Toast.makeText(getActivity(), "He liberado: " + (availMem2 - availMem1) / (1024.0 * 1024.0), Toast.LENGTH_SHORT).show();
                                             contador = 0;
                                             refresh();
                                             return;
@@ -403,7 +416,59 @@ public class RecyclerViewProcessFragment extends Fragment {
                 availMem1 = memoryInfo.availMem;
             }
             contador++;
+            Toast.makeText(getActivity(), getTotalRAM(), Toast.LENGTH_SHORT).show();
+            sAdapter.notifyDataSetChanged();
+            MaterialViewPagerHelper.registerRecyclerView(getActivity(), mRecyclerView, null);
         }
+
+    }
+
+    public String getTotalRAM() {
+
+        RandomAccessFile reader = null;
+        String load = null;
+        DecimalFormat twoDecimalForm = new DecimalFormat("#.##");
+        double totRam = 0;
+        String lastValue = "";
+        try {
+            reader = new RandomAccessFile("/proc/meminfo", "r");
+            load = reader.readLine();
+
+            // Get the Number value from the string
+            Pattern p = Pattern.compile("(\\d+)");
+            Matcher m = p.matcher(load);
+            String value = "";
+            while (m.find()) {
+                value = m.group(1);
+                // System.out.println("Ram : " + value);
+            }
+            reader.close();
+
+            totRam = Double.parseDouble(value);
+            // totRam = totRam / 1024;
+
+            double mb = totRam / 1024.0;
+            double gb = totRam / 1048576.0;
+            double tb = totRam / 1073741824.0;
+
+            if (tb > 1) {
+                lastValue = twoDecimalForm.format(tb).concat(" TB");
+            } else if (gb > 1) {
+                lastValue = twoDecimalForm.format(gb).concat(" GB");
+            } else if (mb > 1) {
+                lastValue = twoDecimalForm.format(mb).concat(" MB");
+            } else {
+                lastValue = twoDecimalForm.format(totRam).concat(" KB");
+            }
+
+
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        } finally {
+            // Streams.close(reader);
+        }
+
+        return lastValue;
     }
 
 

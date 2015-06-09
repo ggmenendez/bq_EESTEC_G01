@@ -74,8 +74,9 @@ public class BatteryFragment extends Fragment {
         int avg = 0;
 
 
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP)
-            Toast.makeText(getActivity(), "NO TIENES LOLLIPOP", Toast.LENGTH_LONG).show();
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
+
+        }
         else {
             bat = bm.getIntProperty(BatteryManager.BATTERY_PROPERTY_CAPACITY);
             ma = bm.getIntProperty(BatteryManager.BATTERY_PROPERTY_CHARGE_COUNTER);
