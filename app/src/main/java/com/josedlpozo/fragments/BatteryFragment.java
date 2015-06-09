@@ -87,7 +87,7 @@ public class BatteryFragment extends Fragment {
         img.setImageDrawable(Drawable.createFromPath(icon));
         texto.setText("Is charging? " + isCharging + " -- Usb charge? " + usbCharge + "\n -- AC charge? " + acCharge + " -- Level? " + level + "\n --  " +
                 "CA? " + bat + " -- MA? " + ma + " -- AVG? " + avg + " -- icon? " + icon + " -- temperature? " + temperature);
-        texto.setText("\n \n" + texto.getText() + " " + readUsage());
+        texto.setText("\n \n" + texto.getText() + " " + getInfo() + " JAJA -- " + readUsage());
 
         Log.i(TAG, "Is charging " + isCharging);
         Log.i(TAG, "Usb charge " + usbCharge);

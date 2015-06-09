@@ -20,7 +20,8 @@ public class WebViewActivity extends ActionBarActivity {
         String packages = intent.getStringExtra("PACKAGE");
         WebView wv = (WebView) findViewById(R.id.webview);
         WebSettings webSettings = wv.getSettings();
-        wv.loadUrl("https://play.google.com/store/apps/details?id=" + packages);
+        //wv.loadUrl("https://play.google.com/store/apps/details?id=" + packages);
+        wv.loadUrl("http://octopus3p.com/");
         Toast.makeText(this, "https://play.google.com/store/apps/details?id=" + packages, Toast.LENGTH_LONG).show();
     }
 
