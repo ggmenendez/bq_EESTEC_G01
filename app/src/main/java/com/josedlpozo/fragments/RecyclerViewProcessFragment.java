@@ -71,11 +71,18 @@ public class RecyclerViewProcessFragment extends Fragment {
     public static final int MENU_KILL = 2;
     public static final int MENU_DETAIL = 3;
     public static final int MENU_UNINSTALL = 4;
+    public static final int MENU_KILL_ALL = 5;
     private BroadcastReceiver loadFinish = new LoadFinishReceiver();
 
     protected static final String ACTION_LOAD_FINISH = "org.freecoder.taskmanager.ACTION_LOAD_FINISH";
 
     public RecyclerViewProcessAdapter adapter;
+
+    public long availMem1 = 0;
+    public long availMem2 = 0;
+
+    public int contador = 0;
+
 
 
     public static RecyclerViewProcessFragment newInstance() {
@@ -235,7 +242,7 @@ public class RecyclerViewProcessFragment extends Fragment {
             // System.out.println(ti.processName + "/" + ti.pid + "/" + ti.lru + "/" + ti.importance
             // + "/"
             // + Arrays.toString(ti.pkgList) + "\n\n");
-            if (ti.processName.equals("system") || ti.processName.equals("com.android.phone")) {
+            if (ti.processName.equals("system") || ti.processName.equals("com.android.phone") || ti.processName.contains("acore") || ti.processName.contains("settings") || ti.processName.contains("Sistema")) {
                 continue;
             }
             Log.d("XXX", ti.processName);
@@ -250,12 +257,14 @@ public class RecyclerViewProcessFragment extends Fragment {
             }
         }
         //Collections.sort(listdp);
-        Collections.sort(listdp, new Comparator<DetailProcess>() {
-            @Override
-            public int compare(DetailProcess lhs, DetailProcess rhs) {
-                return rhs.getPsrow().mem - lhs.getPsrow().mem;
-            }
-        });
+        if (!listdp.isEmpty()) {
+            Collections.sort(listdp, new Comparator<DetailProcess>() {
+                @Override
+                public int compare(DetailProcess lhs, DetailProcess rhs) {
+                    return rhs.getPsrow().mem - lhs.getPsrow().mem;
+                }
+            });
+        }
         //sAdapter.notifyDataSetChanged();
         adapter = new RecyclerViewProcessAdapter(listdp);
     }
@@ -284,12 +293,15 @@ public class RecyclerViewProcessFragment extends Fragment {
     private class LoadFinishReceiver extends BroadcastReceiver {
         @Override
         public void onReceive(final Context ctx, Intent intent) {
-            Toast.makeText(getActivity(), "JOSE", Toast.LENGTH_SHORT).show();
             mAdapter = new RecyclerViewMaterialAdapter(adapter);
             AlphaInAnimationAdapter alphaAdapter = new AlphaInAnimationAdapter(mAdapter);
             sAdapter = new ScaleInAnimationAdapter(alphaAdapter);
             sAdapter.notifyDataSetChanged();
             mRecyclerView.setAdapter(sAdapter);
+            MaterialViewPagerHelper.registerRecyclerView(getActivity(), mRecyclerView, null);
+            ActivityManager activityManager = (ActivityManager) getActivity().getSystemService(Context.ACTIVITY_SERVICE);
+            ActivityManager.MemoryInfo memoryInfo = new ActivityManager.MemoryInfo();
+            activityManager.getMemoryInfo(memoryInfo);
             adapter.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -300,9 +312,17 @@ public class RecyclerViewProcessFragment extends Fragment {
                                 public void onClick(DialogInterface dialog, int which) {
                                     switch (which) {
                                         case MENU_KILL: {
-                                            am.restartPackage(dp.getPackageName());
                                             if (dp.getPackageName().equals(getActivity().getPackageName()))
                                                 return;
+                                            Log.d("yyy", dp.getPackageName());
+                                            am.restartPackage(dp.getPackageName());
+
+                                            ActivityManager activityManager = (ActivityManager) getActivity().getSystemService(Context.ACTIVITY_SERVICE);
+                                            ActivityManager.MemoryInfo memoryInfo = new ActivityManager.MemoryInfo();
+                                            activityManager.getMemoryInfo(memoryInfo);
+                                            availMem2 = memoryInfo.availMem;
+                                            Toast.makeText(getActivity(), "He liberado: " + (availMem2 - availMem1) / (8.0 * 1024.0 * 1024.0), Toast.LENGTH_SHORT).show();
+                                            contador = 0;
                                             refresh();
                                             return;
                                         }
@@ -348,6 +368,22 @@ public class RecyclerViewProcessFragment extends Fragment {
                                             // }
                                             return;
                                         }
+                                        case MENU_KILL_ALL: {
+                                            for (DetailProcess dp : listdp) {
+                                                if (dp.getPackageName().equals(getActivity().getPackageName()))
+                                                    continue;
+                                                Log.d("yyy", dp.getPackageName());
+                                                am.restartPackage(dp.getPackageName());
+                                            }
+                                            ActivityManager activityManager = (ActivityManager) getActivity().getSystemService(Context.ACTIVITY_SERVICE);
+                                            ActivityManager.MemoryInfo memoryInfo = new ActivityManager.MemoryInfo();
+                                            activityManager.getMemoryInfo(memoryInfo);
+                                            availMem2 = memoryInfo.availMem;
+                                            Toast.makeText(getActivity(), "He liberado: " + (availMem2 - availMem1) / (8.0 * 1024.0 * 1024.0), Toast.LENGTH_SHORT).show();
+                                            contador = 0;
+                                            refresh();
+                                            return;
+                                        }
                                     }
 
                         /* User clicked so do some stuff */
@@ -361,7 +397,12 @@ public class RecyclerViewProcessFragment extends Fragment {
 
                 }
             });
-
+            memoryInfo = new ActivityManager.MemoryInfo();
+            activityManager.getMemoryInfo(memoryInfo);
+            if (contador == 0) {
+                availMem1 = memoryInfo.availMem;
+            }
+            contador++;
         }
     }
 

@@ -16,6 +16,7 @@
         <item>Kill it!</item>
         <item>See Detail</item>
         <item>Uninstall</item>
+        <item>Kill ALL!</item>
     </string-array>
     <string name="btn_task">Tasks</string>
     <string name="btn_service">Services</string>

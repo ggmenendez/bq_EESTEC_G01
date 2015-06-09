@@ -297,11 +297,11 @@ public class RecyclerViewFragment extends Fragment {
                 mContentItems.add(app);
                 ordenaPorNumeroPermisos();
                 sAdapter.notifyDataSetChanged();
-            }/*else if(mCursor.moveToFirst() && mCursor.getInt(mCursor.getColumnIndex(AppDbAdapter.COLUMNA_IGNORADA)) == 0){
+            } else if (mCursor != null && mCursor.getInt(mCursor.getColumnIndex(AppDbAdapter.COLUMNA_IGNORADA)) == 0) {
                 mContentItems.add(app);
                 ordenaPorNumeroPermisos();
                 sAdapter.notifyDataSetChanged();
-            }*/
+            }
         }
         ordenaPorNumeroPermisos();
         sAdapter.notifyDataSetChanged();
