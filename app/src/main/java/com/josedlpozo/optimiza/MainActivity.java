@@ -1,8 +1,6 @@
 package com.josedlpozo.optimiza;
 
-import android.app.ActivityManager;
 import android.content.ContentValues;
-import android.content.Context;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
@@ -27,6 +25,7 @@ import com.josedlpozo.database.AppDbAdapter;
 import com.josedlpozo.database.AppsDbHelper;
 import com.josedlpozo.fragments.BatteryFragment;
 import com.josedlpozo.fragments.RecyclerViewFragment;
+import com.josedlpozo.fragments.RecyclerViewProcessFragment;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -84,8 +83,8 @@ public class MainActivity extends ActionBarActivity {
                         return RecyclerViewFragment.newInstance();
                     case 1:
                         return BatteryFragment.newInstance();
-                    //case 2:
-                    //    return ListViewFragment.newInstance();
+                    case 2:
+                        return RecyclerViewProcessFragment.newInstance();
                     //case 3:
                     //    return WebViewFragment.newInstance();
                     default:
@@ -131,7 +130,7 @@ public class MainActivity extends ActionBarActivity {
 
             @Override
             public int getCount() {
-                return 2;
+                return 3;
             }
 
             @Override
@@ -141,6 +140,8 @@ public class MainActivity extends ActionBarActivity {
                         return "Permisos";
                     case 1:
                         return "Batería";
+                    case 2:
+                        return "Procesos";
                 }
                 return "";
             }
@@ -204,73 +205,8 @@ public class MainActivity extends ActionBarActivity {
         }
         db.close();
 
-        /*AppOpsManager prueba = (AppOpsManager) getBaseContext().getSystemService(Context.APP_OPS_SERVICE);
-        ApplicationInfo app = getBaseContext().getApplicationInfo();
-        String pckg = getBaseContext().getPackageName();
-        boolean j = false;
-        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP) {
-            j = prueba.checkOpNoThrow(AppOpsManager.OPSTR_COARSE_LOCATION, app.uid, pckg) == AppOpsManager.MODE_ALLOWED;
-        }
-        String permission = "android.permission.INTERNET";
-        int res = getBaseContext().checkCallingOrSelfPermission(permission);
-        Toast.makeText(this, "" + j, Toast.LENGTH_LONG).show();*/
-        killAppByName(this, "com.josedlpozo.optimiza");
-
     }
 
-    public void killAppByPermission(Context context, String permissionToKill) {
-        try {
-            PackageManager p = context.getPackageManager();
-            final List<PackageInfo> appinstall = p.getInstalledPackages(PackageManager.GET_PERMISSIONS);
-            for (PackageInfo pInfo : appinstall) {
-                String[] reqPermission = pInfo.requestedPermissions;
-                if (reqPermission != null) {
-                    for (int i = 0; i < reqPermission.length; i++) {
-                        if (((String) reqPermission[i]).toLowerCase().contains(permissionToKill.toLowerCase())) {
-                            killAppByPackName(pInfo.packageName.toString());
-                            break;
-                        }
-                    }
-                }
-            }
-        } catch (Throwable t) {
-            t.printStackTrace();
-        }
-    }
-
-    public void killAppByPackName(String packageToKill) {
-        try {
-            ActivityManager actvityManager = (ActivityManager) getBaseContext().getSystemService(Context.ACTIVITY_SERVICE);
-            final List<ActivityManager.RunningAppProcessInfo> procInfos = actvityManager.getRunningAppProcesses();
-            for (ActivityManager.RunningAppProcessInfo runningAppProcessInfo : procInfos) {
-                //Log.e("running",runningAppProcessInfo.processName);
-                if (runningAppProcessInfo.processName.toLowerCase().contains(packageToKill.toLowerCase())) {
-                    android.os.Process.sendSignal(runningAppProcessInfo.pid, android.os.Process.SIGNAL_KILL);
-                    actvityManager.killBackgroundProcesses(packageToKill);
-                    //Log.e("killed", "!!! killed "+ packageToKill);
-                }
-            }
-        } catch (Throwable t) {
-            t.printStackTrace();
-        }
-    }
-
-    public static void killAppByName(Context context, String appNameToKill) {
-        try {
-            ActivityManager manager = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
-            List<ActivityManager.RunningAppProcessInfo> listOfProcesses = manager.getRunningAppProcesses();
-            for (ActivityManager.RunningAppProcessInfo process : listOfProcesses) {
-                Log.d("xxxx", process.processName);
-                if (process.processName.toLowerCase().contains(appNameToKill.toLowerCase())) {
-                    Log.d("killed", process.processName);
-                    manager.killBackgroundProcesses(process.processName);
-                    break;
-                }
-            }
-        } catch (Throwable t) {
-            t.printStackTrace();
-        }
-    }
 
     @Override
     protected void onPostCreate(Bundle savedInstanceState) {

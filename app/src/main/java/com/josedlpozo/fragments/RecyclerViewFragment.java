@@ -121,7 +121,7 @@ public class RecyclerViewFragment extends Fragment {
             public void onSwiped(final RecyclerView.ViewHolder viewHolder, int swipeDir) {
                 final MaterialDialog mMaterialDialog = new MaterialDialog(getActivity());
                 mMaterialDialog.setTitle(mContentItems.get(viewHolder.getAdapterPosition() - 1).getNombre())
-                        .setMessage("Are you sure to delete?")
+                        .setMessage("Está seguro de ignorar " + mContentItems.get(viewHolder.getAdapterPosition() - 1).getNombre() + "? \n Más tarde podrá volver a reestablecerlo en ajustes.")
                         .setPositiveButton(
                                 "OK", new View.OnClickListener() {
                                     @Override

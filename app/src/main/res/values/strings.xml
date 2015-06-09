@@ -9,5 +9,28 @@
         <item>@color/cyan</item>
         <item>@color/card_background</item>
     </integer-array>
+
+    <string-array name="menu_task_operation">
+        <item>Cancel</item>
+        <item>Switch To</item>
+        <item>Kill it!</item>
+        <item>See Detail</item>
+        <item>Uninstall</item>
+    </string-array>
+    <string name="btn_task">Tasks</string>
+    <string name="btn_service">Services</string>
+    <string name="btn_system">System</string>
+
+    <string name="operation">Operation</string>
+    <string name="menu_switch">Switch To</string>
+    <string name="menu_kill">Kill it!</string>
+    <string name="menu_detail">See Detail</string>
+    <string name="menu_uninstall">Uninstall</string>
+    <string name="cancel">Cancel</string>
+
+    <string name="memory_unknown">Unknown</string>
+
+    <string name="message_switch_fail">Cant switch to this task, because it has no interface.</string>
+    <string name="message_no_market">Cant start Market, please check your phone.</string>
     <string name="title_activity_web_view">WebViewActivity</string>
 </resources>
