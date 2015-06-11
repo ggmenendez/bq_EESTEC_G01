@@ -4,6 +4,15 @@
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
 
+    <string name="cargando">Cargando :</string>
+    <string name="salud">Salud :</string>
+    <string name="nivel">Nivel carga :</string>
+    <string name="estado">Estado :</string>
+    <string name="tecnologia">Tecnología :</string>
+    <string name="escala">Escala :</string>
+    <string name="temperatura">Temperatura :</string>
+    <string name="voltage">Voltage :</string>
+
     <integer-array name="fragment_colors">
         <item>@color/colorPrimary</item>
         <item>@color/cyan</item>

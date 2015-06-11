@@ -248,7 +248,7 @@ public class RecyclerViewProcessFragment extends Fragment {
             // System.out.println(ti.processName + "/" + ti.pid + "/" + ti.lru + "/" + ti.importance
             // + "/"
             // + Arrays.toString(ti.pkgList) + "\n\n");
-            if (ti.processName.equals("system") || ti.processName.equals("com.android.phone") || ti.processName.contains("acore") || ti.processName.contains("settings") || ti.processName.contains("Sistema")) {
+            if (ti.processName.contains("system") || ti.processName.equals("com.android.phone") || ti.processName.contains("acore") || ti.processName.contains("settings") || ti.processName.contains("Sistema")) {
                 continue;
             }
             Log.d("XXX", ti.processName);

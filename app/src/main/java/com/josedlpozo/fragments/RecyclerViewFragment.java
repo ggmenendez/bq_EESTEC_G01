@@ -286,8 +286,8 @@ public class RecyclerViewFragment extends Fragment {
         });
 
         for (AppsPermisos app : apps) {
-            Cursor mCursor = db.rawQuery("SELECT nombre FROM Permisos_App where nombre='" + app.getNombre() + "'", null);
-
+            Cursor mCursor = db.rawQuery("SELECT nombre, ignorada FROM Permisos_App where nombre='" + app.getNombre() + "'", null);
+            int flag = 0;
             if (!mCursor.moveToFirst()) {
                 Log.i("ACT", app.getNombre());
                 ContentValues registro = new ContentValues();
@@ -297,10 +297,18 @@ public class RecyclerViewFragment extends Fragment {
                 mContentItems.add(app);
                 ordenaPorNumeroPermisos();
                 sAdapter.notifyDataSetChanged();
-            } else if (mCursor != null && mCursor.getInt(mCursor.getColumnIndex(AppDbAdapter.COLUMNA_IGNORADA)) == 0) {
-                mContentItems.add(app);
-                ordenaPorNumeroPermisos();
-                sAdapter.notifyDataSetChanged();
+            } else if (mCursor.getInt(mCursor.getColumnIndex(AppDbAdapter.COLUMNA_IGNORADA)) == 0) {
+                for (AppsPermisos aplicacion : mContentItems) {
+                    if (aplicacion.getNombre().equals(app.getNombre())) {
+                        flag = 1;
+                    }
+                }
+                if (flag == 0) {
+                    mContentItems.add(app);
+                    ordenaPorNumeroPermisos();
+                    sAdapter.notifyDataSetChanged();
+                }
+
             }
         }
         ordenaPorNumeroPermisos();

@@ -6,7 +6,6 @@ package com.josedlpozo.fragments;
 
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.graphics.drawable.Drawable;
 import android.os.BatteryManager;
 import android.os.Build;
 import android.os.Bundle;
@@ -85,7 +84,8 @@ public class BatteryFragment extends Fragment {
 
         }
         float batteryPct = level / (float) scale;
-        img.setImageDrawable(Drawable.createFromPath(icon));
+        int id = getResources().getIdentifier("com.josedlpozo.optimiza:drawable/" + icon, null, null);
+        img.setImageResource(id);
         texto.setText("Is charging? " + isCharging + " -- Usb charge? " + usbCharge + "\n -- AC charge? " + acCharge + " -- Level? " + level + "\n --  " +
                 "CA? " + bat + " -- MA? " + ma + " -- AVG? " + avg + " -- icon? " + icon + " -- temperature? " + temperature);
         texto.setText("\n \n" + texto.getText() + " " + getInfo() + " JAJA -- " + readUsage());

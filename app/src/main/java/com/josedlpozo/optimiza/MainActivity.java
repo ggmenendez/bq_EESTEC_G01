@@ -23,6 +23,7 @@ import com.github.florent37.materialviewpager.MaterialViewPager;
 import com.josedlpozo.database.AppDbAdapter;
 import com.josedlpozo.database.AppsDbHelper;
 import com.josedlpozo.fragments.BatteryFragment;
+import com.josedlpozo.fragments.MemoryFragment;
 import com.josedlpozo.fragments.RecyclerViewFragment;
 import com.josedlpozo.fragments.RecyclerViewProcessFragment;
 
@@ -85,8 +86,8 @@ public class MainActivity extends ActionBarActivity {
                         return BatteryFragment.newInstance();
                     case 2:
                         return RecyclerViewProcessFragment.newInstance();
-                    //case 3:
-                    //    return WebViewFragment.newInstance();
+                    case 3:
+                        return MemoryFragment.newInstance();
                     default:
                         return RecyclerViewFragment.newInstance();
                 }
@@ -130,7 +131,7 @@ public class MainActivity extends ActionBarActivity {
 
             @Override
             public int getCount() {
-                return 3;
+                return 4;
             }
 
             @Override
