@@ -11,6 +11,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.CardView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -35,6 +36,8 @@ public class BatteryFragment extends Fragment {
     private TextView texto;
     private ImageView img;
 
+    private CardView card;
+
     public static BatteryFragment newInstance() {
         return new BatteryFragment();
     }
@@ -47,7 +50,10 @@ public class BatteryFragment extends Fragment {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        texto = (TextView) view.findViewById(R.id.plugged);
+        card = (CardView) view.findViewById(R.id.bateria);
+
+
+        //texto = (TextView) view.findViewById(R.id.plugged);
         img = (ImageView) view.findViewById(R.id.img_batt);
         IntentFilter ifilter = new IntentFilter(Intent.ACTION_BATTERY_CHANGED);
         Intent batteryStatus = getActivity().getApplicationContext().registerReceiver(null, ifilter);
@@ -86,9 +92,9 @@ public class BatteryFragment extends Fragment {
         float batteryPct = level / (float) scale;
         int id = getResources().getIdentifier("com.josedlpozo.optimiza:drawable/" + icon, null, null);
         img.setImageResource(id);
-        texto.setText("Is charging? " + isCharging + " -- Usb charge? " + usbCharge + "\n -- AC charge? " + acCharge + " -- Level? " + level + "\n --  " +
-                "CA? " + bat + " -- MA? " + ma + " -- AVG? " + avg + " -- icon? " + icon + " -- temperature? " + temperature);
-        texto.setText("\n \n" + texto.getText() + " " + getInfo() + " JAJA -- " + readUsage());
+        //texto.setText("Is charging? " + isCharging + " -- Usb charge? " + usbCharge + "\n -- AC charge? " + acCharge + " -- Level? " + level + "\n --  " +
+        //        "CA? " + bat + " -- MA? " + ma + " -- AVG? " + avg + " -- icon? " + icon + " -- temperature? " + temperature);
+        //texto.setText("\n \n" + texto.getText() + " " + getInfo() + " JAJA -- " + readUsage());
 
         Log.i(TAG, "Is charging " + isCharging);
         Log.i(TAG, "Usb charge " + usbCharge);

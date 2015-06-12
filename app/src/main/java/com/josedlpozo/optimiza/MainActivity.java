@@ -4,6 +4,8 @@ import android.content.ContentValues;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.content.res.Configuration;
+import android.content.res.TypedArray;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
@@ -17,9 +19,12 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ListView;
 
 import com.github.florent37.materialviewpager.MaterialViewPager;
+import com.josedlpozo.adapters.NavigationAdapter;
 import com.josedlpozo.database.AppDbAdapter;
 import com.josedlpozo.database.AppsDbHelper;
 import com.josedlpozo.fragments.BatteryFragment;
@@ -41,12 +46,54 @@ public class MainActivity extends ActionBarActivity {
     private ActionBarDrawerToggle mDrawerToggle;
     private Toolbar toolbar;
 
+    private String mActivityTitle;
+
+    private ListView NavList;
+    private ArrayList<Item_objct> NavItms;
+    private TypedArray NavIcons;
+    NavigationAdapter NavAdapter;
+
+    private String[] titulos;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        //Lista
+        NavList = (ListView) findViewById(R.id.lista);
+        //Declaramos el header el caul sera el layout de header.xml
+        View header = getLayoutInflater().inflate(R.layout.header, null);
+        //Establecemos header
+        NavList.addHeaderView(header);
+        //Tomamos listado  de imgs desde drawable
+        NavIcons = getResources().obtainTypedArray(R.array.navigation_iconos);
+        //Tomamos listado  de titulos desde el string-array de los recursos @string/nav_options
+        titulos = getResources().getStringArray(R.array.nav_options);
+        //Listado de titulos de barra de navegacion
+        NavItms = new ArrayList<Item_objct>();
+        //Agregamos objetos Item_objct al array
+        //Perfil
+        NavItms.add(new Item_objct(titulos[0], NavIcons.getResourceId(0, -1)));
+        //Favoritos
+        NavItms.add(new Item_objct(titulos[1], NavIcons.getResourceId(1, -1)));
+        //Eventos
+        NavItms.add(new Item_objct(titulos[2], NavIcons.getResourceId(2, -1)));
+        //Lugares
+        NavItms.add(new Item_objct(titulos[3], NavIcons.getResourceId(3, -1)));
+        //Etiquetas
+        NavItms.add(new Item_objct(titulos[4], NavIcons.getResourceId(4, -1)));
+        //Configuracion
+        NavItms.add(new Item_objct(titulos[5], NavIcons.getResourceId(5, -1)));
+        //Share
+        NavItms.add(new Item_objct(titulos[6], NavIcons.getResourceId(6, -1)));
+        //Declaramos y seteamos nuestrp adaptador al cual le pasamos el array con los titulos
+        NavAdapter = new NavigationAdapter(this, NavItms);
+        NavList.setAdapter(NavAdapter);
+        //Siempre vamos a mostrar el mismo titulo
+
+        mActivityTitle = getTitle().toString();
 
         setTitle("");
 
@@ -69,7 +116,26 @@ public class MainActivity extends ActionBarActivity {
             }
         }
 
-        mDrawerToggle = new ActionBarDrawerToggle(this, mDrawer, 0, 0);
+        mDrawerToggle = new ActionBarDrawerToggle(this, mDrawer, R.string.drawer_open, R.string.drawer_close) {
+
+            /**
+             * Called when a drawer has settled in a completely open state.
+             */
+            public void onDrawerOpened(View drawerView) {
+                super.onDrawerOpened(drawerView);
+                invalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
+            }
+
+            /**
+             * Called when a drawer has settled in a completely closed state.
+             */
+            public void onDrawerClosed(View view) {
+                super.onDrawerClosed(view);
+                invalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
+            }
+        };
+
+        mDrawerToggle.setDrawerIndicatorEnabled(true);
         mDrawer.setDrawerListener(mDrawerToggle);
 
 
@@ -143,6 +209,8 @@ public class MainActivity extends ActionBarActivity {
                         return "Batería";
                     case 2:
                         return "Procesos";
+                    case 3:
+                        return "Memoria";
                 }
                 return "";
             }
@@ -242,6 +310,19 @@ public class MainActivity extends ActionBarActivity {
             return true;
         }
 
+        // Activate the navigation drawer toggle
+        if (mDrawerToggle.onOptionsItemSelected(item)) {
+            return true;
+        }
+
         return super.onOptionsItemSelected(item);
     }
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        mDrawerToggle.onConfigurationChanged(newConfig);
+    }
+
+
 }
