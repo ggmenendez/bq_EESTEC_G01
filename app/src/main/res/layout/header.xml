@@ -7,7 +7,7 @@
     <ImageView
         android:id="@+id/backgrd"
         android:layout_width="fill_parent"
-        android:layout_height="150dp"
+        android:layout_height="200dp"
         android:src="@drawable/back"
         android:scaleType="centerCrop" />
 </FrameLayout>

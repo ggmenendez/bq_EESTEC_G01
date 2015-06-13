@@ -30,8 +30,8 @@
         android:choiceMode="singleChoice"
         android:divider="#2E2E2E"
         android:dividerHeight="2dp"
-        android:background="#424242"
-        android:textColor="#424242" />
+        android:background="#E0E0E0"
+        android:textColor="#202020" />
 
 
 </android.support.v4.widget.DrawerLayout>

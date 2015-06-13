@@ -9,6 +9,7 @@ import android.content.IntentFilter;
 import android.os.BatteryManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.CardView;
@@ -18,7 +19,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.josedlpozo.optimiza.R;
 
@@ -35,7 +35,8 @@ public class BatteryFragment extends Fragment {
 
     private TextView texto;
     private ImageView img;
-
+    private TextView temperatura;
+    private TextView temp_dec;
     private CardView card;
 
     public static BatteryFragment newInstance() {
@@ -51,12 +52,13 @@ public class BatteryFragment extends Fragment {
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         card = (CardView) view.findViewById(R.id.bateria);
-
+        temperatura = (TextView) view.findViewById(R.id.temp);
+        temp_dec = (TextView) view.findViewById(R.id.temp_dec);
 
         //texto = (TextView) view.findViewById(R.id.plugged);
         img = (ImageView) view.findViewById(R.id.img_batt);
         IntentFilter ifilter = new IntentFilter(Intent.ACTION_BATTERY_CHANGED);
-        Intent batteryStatus = getActivity().getApplicationContext().registerReceiver(null, ifilter);
+        final Intent batteryStatus = getActivity().getApplicationContext().registerReceiver(null, ifilter);
         // Are we charging / charged?
         int status = batteryStatus.getIntExtra(BatteryManager.EXTRA_STATUS, -1);
         boolean isCharging = status == BatteryManager.BATTERY_STATUS_CHARGING ||
@@ -70,8 +72,7 @@ public class BatteryFragment extends Fragment {
         String icon = "";
         int level = batteryStatus.getIntExtra(BatteryManager.EXTRA_LEVEL, -1);
         int scale = batteryStatus.getIntExtra(BatteryManager.EXTRA_SCALE, -1);
-        float temp = ((float) batteryStatus.getIntExtra(BatteryManager.EXTRA_TEMPERATURE, 0)) / 10;
-        Toast.makeText(getActivity(), String.valueOf(temp) + "*C", Toast.LENGTH_LONG).show();
+
         icon = String.valueOf(batteryStatus.getIntExtra(BatteryManager.EXTRA_ICON_SMALL, -1));
         BatteryManager bm = new BatteryManager();
         int bat = 0;
@@ -103,6 +104,23 @@ public class BatteryFragment extends Fragment {
         Log.i(TAG, "CA " + bat);
         Log.i(TAG, "MA " + ma);
         Log.i(TAG, "AVG " + avg);
+
+        final Handler handler = new Handler();
+
+        final Runnable r = new Runnable() {
+            public void run() {
+
+                IntentFilter ifilter = new IntentFilter(Intent.ACTION_BATTERY_CHANGED);
+                Intent batteryStatus = getActivity().getApplicationContext().registerReceiver(null, ifilter);
+                float temp = ((float) batteryStatus.getIntExtra(BatteryManager.EXTRA_TEMPERATURE, 0)) / 10;
+                Log.d("hhh", "entra " + temp);
+                temperatura.setText("" + String.valueOf(temp).substring(0, 2));
+                temp_dec.setText("" + String.valueOf(temp).substring(2, String.valueOf(temp).length()));
+                handler.postDelayed(this, 5000);
+            }
+        };
+
+        handler.postDelayed(r, 1000);
     }
 
     private String getInfo() {

@@ -21,6 +21,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ListView;
 
 import com.github.florent37.materialviewpager.MaterialViewPager;
@@ -92,6 +93,29 @@ public class MainActivity extends ActionBarActivity {
         NavAdapter = new NavigationAdapter(this, NavItms);
         NavList.setAdapter(NavAdapter);
         //Siempre vamos a mostrar el mismo titulo
+
+        NavList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position,
+                                    long id) {
+
+                Item_objct item = (Item_objct) NavList.getItemAtPosition(position);
+
+                switch (item.getTitulo()) {
+                    case "Perfil":
+                        mViewPager.getViewPager().setCurrentItem(1);
+                        mDrawer.closeDrawers();
+                        break;
+                    case "Favoritos":
+                        mViewPager.getViewPager().setCurrentItem(2);
+                        mDrawer.closeDrawers();
+                        break;
+                    default:
+                        mViewPager.getViewPager().setCurrentItem(3);
+                }
+
+            }
+        });
 
         mActivityTitle = getTitle().toString();
 

@@ -20,6 +20,7 @@ public class NavigationAdapter extends BaseAdapter {
     private Activity activity;
     ArrayList<Item_objct> arrayitms;
 
+
     public NavigationAdapter(Activity activity, ArrayList<Item_objct> listarry) {
         super();
         this.activity = activity;
@@ -28,7 +29,7 @@ public class NavigationAdapter extends BaseAdapter {
 
     //Retorna objeto Item_objct del array list
     @Override
-    public Object getItem(int position) {
+    public Item_objct getItem(int position) {
         return arrayitms.get(position);
     }
 
@@ -71,4 +72,5 @@ public class NavigationAdapter extends BaseAdapter {
         }
         return convertView;
     }
+
 }
