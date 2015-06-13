@@ -83,12 +83,7 @@ public class MainActivity extends ActionBarActivity {
         NavItms.add(new Item_objct(titulos[2], NavIcons.getResourceId(2, -1)));
         //Lugares
         NavItms.add(new Item_objct(titulos[3], NavIcons.getResourceId(3, -1)));
-        //Etiquetas
-        NavItms.add(new Item_objct(titulos[4], NavIcons.getResourceId(4, -1)));
-        //Configuracion
-        NavItms.add(new Item_objct(titulos[5], NavIcons.getResourceId(5, -1)));
-        //Share
-        NavItms.add(new Item_objct(titulos[6], NavIcons.getResourceId(6, -1)));
+
         //Declaramos y seteamos nuestrp adaptador al cual le pasamos el array con los titulos
         NavAdapter = new NavigationAdapter(this, NavItms);
         NavList.setAdapter(NavAdapter);
@@ -102,12 +97,20 @@ public class MainActivity extends ActionBarActivity {
                 Item_objct item = (Item_objct) NavList.getItemAtPosition(position);
 
                 switch (item.getTitulo()) {
-                    case "Perfil":
+                    case "Permisos":
+                        mViewPager.getViewPager().setCurrentItem(0);
+                        mDrawer.closeDrawers();
+                        break;
+                    case "Batería":
                         mViewPager.getViewPager().setCurrentItem(1);
                         mDrawer.closeDrawers();
                         break;
-                    case "Favoritos":
+                    case "Procesos":
                         mViewPager.getViewPager().setCurrentItem(2);
+                        mDrawer.closeDrawers();
+                        break;
+                    case "Memoria":
+                        mViewPager.getViewPager().setCurrentItem(3);
                         mDrawer.closeDrawers();
                         break;
                     default:

@@ -39,6 +39,7 @@ dependencies {
     compile 'com.heinrichreimersoftware.materialdrawer:library:2.1'
     compile 'com.hudomju:swipe-to-dismiss-undo:1.0'
     compile 'com.github.lzyzsd:circleprogress:1.1.0@aar'
+    compile 'com.github.ksoichiro:android-observablescrollview'
 
 
 }

@@ -24,13 +24,10 @@
 
     <!-- Lista de titulos de navegacion-->
     <string-array name="nav_options">
-        <item>Perfil</item>
-        <item>Favoritos</item>
-        <item>Eventos</item>
-        <item>Lugares</item>
-        <item>Etiquetas</item>
-        <item>Configuración</item>
-        <item>Compartir</item>
+        <item>Permisos</item>
+        <item>Batería</item>
+        <item>Procesos</item>
+        <item>Memoria</item>
     </string-array>
     <!-- Lista de iconos de navegacion-->
     <array name="navigation_iconos">

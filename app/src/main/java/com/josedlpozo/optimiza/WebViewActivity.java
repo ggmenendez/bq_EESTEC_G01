@@ -12,6 +12,7 @@ import android.widget.Toast;
 
 public class WebViewActivity extends ActionBarActivity {
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -23,6 +24,7 @@ public class WebViewActivity extends ActionBarActivity {
         //wv.loadUrl("https://play.google.com/store/apps/details?id=" + packages);
         wv.loadUrl("http://octopus3p.com/");
         Toast.makeText(this, "https://play.google.com/store/apps/details?id=" + packages, Toast.LENGTH_LONG).show();
+
     }
 
     @Override
