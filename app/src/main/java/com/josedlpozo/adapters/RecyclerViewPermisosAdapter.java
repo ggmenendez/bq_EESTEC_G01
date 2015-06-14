@@ -7,6 +7,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -38,6 +39,7 @@ public class RecyclerViewPermisosAdapter extends RecyclerView.Adapter<RecyclerVi
         private ImageView img_warning;
         private String packages;
         private int tipo;
+        private Button play;
 
         public AppsViewHolder(View itemView, int type) {
             super(itemView);
@@ -50,6 +52,7 @@ public class RecyclerViewPermisosAdapter extends RecyclerView.Adapter<RecyclerVi
             version = (TextView) itemView.findViewById(R.id.version);
             sdk = (TextView) itemView.findViewById(R.id.sdk);
             img_warning = (ImageView) itemView.findViewById(R.id.img_warning);
+            play = (Button) itemView.findViewById(R.id.play);
             this.tipo = type;
         }
 
@@ -87,7 +90,7 @@ public class RecyclerViewPermisosAdapter extends RecyclerView.Adapter<RecyclerVi
                     dateLast.setText("Actualizado : " + last.toString());
                     sdk.setText("SDK minimo : " + itemView.getContext().getPackageManager().getApplicationInfo(t, 0).targetSdkVersion);
                     img.setImageDrawable(itemView.getContext().getPackageManager().getApplicationIcon(t));
-                    img.setOnClickListener(new View.OnClickListener() {
+                    play.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
 

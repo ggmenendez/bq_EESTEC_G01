@@ -29,7 +29,7 @@
             android:layout_below="@+id/ttram"
             android:layout_centerInParent="true"
             custom:arc_progress="55"
-            custom:arc_bottom_text="INTERNA"
+            custom:arc_bottom_text="EXTERNA"
             custom:arc_unfinished_color="#E0E0E0"
             custom:arc_finished_color="#FF6666"
             custom:arc_text_color="#FF6666"

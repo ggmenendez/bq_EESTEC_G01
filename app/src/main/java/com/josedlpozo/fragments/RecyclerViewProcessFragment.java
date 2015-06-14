@@ -75,9 +75,8 @@ public class RecyclerViewProcessFragment extends Fragment {
     public static final int MENU_CANCEL = 0;
     public static final int MENU_SWITCH = 1;
     public static final int MENU_KILL = 2;
-    public static final int MENU_DETAIL = 3;
-    public static final int MENU_UNINSTALL = 4;
-    public static final int MENU_KILL_ALL = 5;
+    public static final int MENU_UNINSTALL = 3;
+    public static final int MENU_KILL_ALL = 4;
     private BroadcastReceiver loadFinish = new LoadFinishReceiver();
 
     protected static final String ACTION_LOAD_FINISH = "org.freecoder.taskmanager.ACTION_LOAD_FINISH";
@@ -140,78 +139,6 @@ public class RecyclerViewProcessFragment extends Fragment {
         mRecyclerView.getItemAnimator().setRemoveDuration(1000);
         mRecyclerView.getItemAnimator().setMoveDuration(1000);
         mRecyclerView.getItemAnimator().setChangeDuration(1000);
-
-        adapter.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //Log.i("DemoRecView", "Pulsado el elemento " + listdp.get(mRecyclerView.getChildAdapterPosition(v) - 1).getNombre());
-                final DetailProcess dp = listdp.get(mRecyclerView.getChildAdapterPosition(v) - 1);
-                AlertDialog alert = new AlertDialog.Builder(getActivity()).setTitle(dp.getTitle()).setItems(
-                        R.array.menu_task_operation, new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int which) {
-                                switch (which) {
-                                    case MENU_KILL: {
-                                        am.restartPackage(dp.getPackageName());
-                                        if (dp.getPackageName().equals(getActivity().getPackageName()))
-                                            return;
-                                        refresh();
-                                        return;
-                                    }
-                                    case MENU_SWITCH: {
-                                        if (dp.getPackageName().equals(getActivity().getPackageName()))
-                                            return;
-                                        Intent i = dp.getIntent();
-                                        if (i == null) {
-                                            Toast.makeText(getActivity(), R.string.message_switch_fail, Toast.LENGTH_LONG)
-                                                    .show();
-                                            return;
-                                        }
-                                        try {
-                                            startActivity(i);
-                                        } catch (Exception ee) {
-                                            Toast.makeText(getActivity(), ee.getMessage(), Toast.LENGTH_LONG).show();
-                                        }
-                                        return;
-                                    }
-                                    case MENU_UNINSTALL: {
-                                        Uri uri = Uri.fromParts("package", dp.getPackageName(), null);
-                                        Intent it = new Intent(Intent.ACTION_DELETE, uri);
-                                        try {
-                                            startActivity(it);
-                                        } catch (Exception e) {
-                                            Toast.makeText(getActivity(), e.getMessage(), Toast.LENGTH_LONG).show();
-                                        }
-                                        return;
-                                    }
-                                    case MENU_DETAIL: {
-                                        Intent detailsIntent = new Intent();
-                                        detailsIntent.setClassName("com.android.settings", "com.android.settings.InstalledAppDetails");
-                                        detailsIntent.putExtra("com.android.settings.ApplicationPkgName", dp.getPackageName());
-                                        startActivity(detailsIntent);
-
-                                        //Uri uri = Uri.parse("market://search?q=pname:" + );
-                                        //Intent it = new Intent(Intent.ACTION_VIEW, uri);
-                                        // try {
-                                        // ctx.startActivity(detailsIntent);
-                                        // } catch (Exception e) {
-                                        // Toast.makeText(ctx, R.string.message_no_market,
-                                        // Toast.LENGTH_LONG).show();
-                                        // }
-                                        return;
-                                    }
-                                }
-
-                        /* User clicked so do some stuff */
-                                // String[] items =
-                                // ctx.getResources().getStringArray(R.array.menu_task_operation);
-                                // Toast.makeText(ctx, "You selected: " + which + " , " + items[which],
-                                // Toast.LENGTH_SHORT).show();
-                            }
-                        }).create();
-                alert.show();
-
-            }
-        });
 
     }
 
@@ -368,22 +295,6 @@ public class RecyclerViewProcessFragment extends Fragment {
                                             } catch (Exception e) {
                                                 Toast.makeText(getActivity(), e.getMessage(), Toast.LENGTH_LONG).show();
                                             }
-                                            return;
-                                        }
-                                        case MENU_DETAIL: {
-                                            Intent detailsIntent = new Intent();
-                                            detailsIntent.setClassName("com.android.settings", "com.android.settings.InstalledAppDetails");
-                                            detailsIntent.putExtra("com.android.settings.ApplicationPkgName", dp.getPackageName());
-                                            startActivity(detailsIntent);
-
-                                            //Uri uri = Uri.parse("market://search?q=pname:" + );
-                                            //Intent it = new Intent(Intent.ACTION_VIEW, uri);
-                                            // try {
-                                            // ctx.startActivity(detailsIntent);
-                                            // } catch (Exception e) {
-                                            // Toast.makeText(ctx, R.string.message_no_market,
-                                            // Toast.LENGTH_LONG).show();
-                                            // }
                                             return;
                                         }
                                         case MENU_KILL_ALL: {

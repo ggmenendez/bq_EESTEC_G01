@@ -128,6 +128,19 @@
         android:maxLines="20"
         android:textColor="@color/secondary"></TextView>
 
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/play"
+            android:layout_centerInParent="true"
+            android:text="Google Play"
+            android:textColor="@color/secondary" />
+
+    </RelativeLayout>
     <View
         android:layout_width="match_parent"
         android:layout_height="2dp"
