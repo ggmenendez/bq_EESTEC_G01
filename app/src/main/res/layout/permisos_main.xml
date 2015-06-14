@@ -11,10 +11,10 @@
 
     <ImageView
         android:id="@+id/img"
-        android:transitionName="appIcon"
         android:layout_margin="8dp"
         android:layout_width="56dp"
-        android:layout_height="56dp" />
+        android:layout_height="56dp"
+        android:transitionName="transition" />
 
     <LinearLayout
         android:orientation="vertical"

@@ -1,7 +1,9 @@
 package com.josedlpozo.optimiza;
 
+import android.annotation.TargetApi;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentStatePagerAdapter;
@@ -10,16 +12,17 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
+import android.transition.Explode;
+import android.transition.Fade;
 import android.util.Log;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 
 import com.github.florent37.materialviewpager.MaterialViewPager;
 import com.josedlpozo.fragments.RecyclerViewFragmentPermisos;
-
-import de.hdodenhof.circleimageview.CircleImageView;
 
 /**
  * Created by josedlpozo on 17/5/15.
@@ -32,13 +35,14 @@ public class AppActivity extends ActionBarActivity {
     private ActionBarDrawerToggle mDrawerToggle;
     private Toolbar toolbar;
 
-    private CircleImageView image;
+    private ImageView image;
 
 
     private String nombre;
 
     private GestureDetector gestureDetector;
 
+    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -54,7 +58,7 @@ public class AppActivity extends ActionBarActivity {
 
         nombre = bundle.getString("NOMBRE");
 
-        image = (CircleImageView) findViewById(R.id.app_img);
+        image = (ImageView) findViewById(R.id.app_img);
         try {
             image.setImageDrawable(getPackageManager().getApplicationIcon(bundle.getString("PAQUETE")));
         } catch (PackageManager.NameNotFoundException e) {
@@ -150,12 +154,25 @@ public class AppActivity extends ActionBarActivity {
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                finish();
+                onBackPressed();
             }
         });
 
-
+        setupWindowAnimations();
     }
+
+    private void setupWindowAnimations() {
+        if (Build.VERSION.SDK_INT > 21) {
+            Explode explode = new Explode();
+            explode.setDuration(1000);
+            getWindow().setEnterTransition(explode);
+
+            Fade fade = new Fade();
+            fade.setDuration(1000);
+            getWindow().setReturnTransition(fade);
+        }
+    }
+
 
     GestureDetector.SimpleOnGestureListener gestureListener = new GestureDetector.SimpleOnGestureListener() {
         public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
@@ -171,7 +188,7 @@ public class AppActivity extends ActionBarActivity {
                 } else if (e2.getX() - e1.getX() > SWIPE_MIN_DISTANCE
                         && Math.abs(velocityX) > SWIPE_THRESHOLD_VELOCITY) {
                     Log.i("Tag", "Left to Right");
-                    finish();
+                    onBackPressed();
                 }
             } catch (Exception e) {
                 // nothing

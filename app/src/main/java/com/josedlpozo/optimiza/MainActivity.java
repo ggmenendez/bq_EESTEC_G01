@@ -47,12 +47,10 @@ public class MainActivity extends ActionBarActivity {
     private ActionBarDrawerToggle mDrawerToggle;
     private Toolbar toolbar;
 
-    private String mActivityTitle;
-
-    private ListView NavList;
-    private ArrayList<Item_objct> NavItms;
-    private TypedArray NavIcons;
-    NavigationAdapter NavAdapter;
+    private ListView mNavList;
+    private ArrayList<Item_objct> mNavItms;
+    private TypedArray mNavIcons;
+    NavigationAdapter mNavAdapter;
 
     private String[] titulos;
 
@@ -63,38 +61,38 @@ public class MainActivity extends ActionBarActivity {
         setContentView(R.layout.activity_main);
 
         //Lista
-        NavList = (ListView) findViewById(R.id.lista);
+        mNavList = (ListView) findViewById(R.id.lista);
         //Declaramos el header el caul sera el layout de header.xml
         View header = getLayoutInflater().inflate(R.layout.header, null);
         //Establecemos header
-        NavList.addHeaderView(header);
+        mNavList.addHeaderView(header);
         //Tomamos listado  de imgs desde drawable
-        NavIcons = getResources().obtainTypedArray(R.array.navigation_iconos);
+        mNavIcons = getResources().obtainTypedArray(R.array.navigation_iconos);
         //Tomamos listado  de titulos desde el string-array de los recursos @string/nav_options
         titulos = getResources().getStringArray(R.array.nav_options);
         //Listado de titulos de barra de navegacion
-        NavItms = new ArrayList<Item_objct>();
+        mNavItms = new ArrayList<Item_objct>();
         //Agregamos objetos Item_objct al array
         //Perfil
-        NavItms.add(new Item_objct(titulos[0], NavIcons.getResourceId(0, -1)));
+        mNavItms.add(new Item_objct(titulos[0], mNavIcons.getResourceId(0, -1)));
         //Favoritos
-        NavItms.add(new Item_objct(titulos[1], NavIcons.getResourceId(1, -1)));
+        mNavItms.add(new Item_objct(titulos[1], mNavIcons.getResourceId(1, -1)));
         //Eventos
-        NavItms.add(new Item_objct(titulos[2], NavIcons.getResourceId(2, -1)));
+        mNavItms.add(new Item_objct(titulos[2], mNavIcons.getResourceId(2, -1)));
         //Lugares
-        NavItms.add(new Item_objct(titulos[3], NavIcons.getResourceId(3, -1)));
+        mNavItms.add(new Item_objct(titulos[3], mNavIcons.getResourceId(3, -1)));
 
         //Declaramos y seteamos nuestrp adaptador al cual le pasamos el array con los titulos
-        NavAdapter = new NavigationAdapter(this, NavItms);
-        NavList.setAdapter(NavAdapter);
+        mNavAdapter = new NavigationAdapter(this, mNavItms);
+        mNavList.setAdapter(mNavAdapter);
         //Siempre vamos a mostrar el mismo titulo
 
-        NavList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        mNavList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position,
                                     long id) {
 
-                Item_objct item = (Item_objct) NavList.getItemAtPosition(position);
+                Item_objct item = (Item_objct) mNavList.getItemAtPosition(position);
 
                 switch (item.getTitulo()) {
                     case "Permisos":
@@ -120,7 +118,6 @@ public class MainActivity extends ActionBarActivity {
             }
         });
 
-        mActivityTitle = getTitle().toString();
 
         setTitle("");
 
@@ -326,14 +323,6 @@ public class MainActivity extends ActionBarActivity {
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
-            AppsDbHelper dbHelper = new AppsDbHelper(getBaseContext());
-
-            SQLiteDatabase db = dbHelper.getWritableDatabase();
-
-            AppDbAdapter dbAdapter = new AppDbAdapter(getBaseContext());
-
-            db.execSQL("UPDATE Permisos_APP set ignorada=0");
-            db.close();
             return true;
         }
 

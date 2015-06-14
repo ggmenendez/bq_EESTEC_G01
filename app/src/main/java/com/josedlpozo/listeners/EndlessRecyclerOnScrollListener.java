@@ -7,7 +7,6 @@ package com.josedlpozo.listeners;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
-import android.widget.AbsListView;
 
 public abstract class EndlessRecyclerOnScrollListener extends
         RecyclerView.OnScrollListener {
@@ -21,6 +20,10 @@ public abstract class EndlessRecyclerOnScrollListener extends
 
     private int current_page = 1;
 
+    private static final int HIDE_THRESHOLD = 20;
+    private int scrolledDistance = 0;
+    private boolean controlsVisible = true;
+
 
     private LinearLayoutManager mLinearLayoutManager;
 
@@ -31,7 +34,6 @@ public abstract class EndlessRecyclerOnScrollListener extends
 
     @Override
     public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
-        if (newState == AbsListView.OnScrollListener.SCROLL_STATE_IDLE) showFAB(1);
     }
 
     @Override
@@ -44,13 +46,20 @@ public abstract class EndlessRecyclerOnScrollListener extends
         totalItemCount = mLinearLayoutManager.getItemCount();
         firstVisibleItem = mLinearLayoutManager.findFirstVisibleItemPosition();
 
-        if (dy < 0) {
-            showFAB(1);
-        } else if (dy > 0) {
-            showFAB(0);
-        } else if (dy == 0) {
-            showFAB(1);
+        if (scrolledDistance > HIDE_THRESHOLD && controlsVisible) {
+            onHide();
+            controlsVisible = false;
+            scrolledDistance = 0;
+        } else if (scrolledDistance < -HIDE_THRESHOLD && !controlsVisible) {
+            onShow();
+            controlsVisible = true;
+            scrolledDistance = 0;
         }
+
+        if ((controlsVisible && dy > 0) || (!controlsVisible && dy < 0)) {
+            scrolledDistance += dy;
+        }
+
 
         if (loading) {
             if (totalItemCount > previousTotal) {
@@ -78,7 +87,9 @@ public abstract class EndlessRecyclerOnScrollListener extends
 
     public abstract void onLoadMore(int current_page);
 
-    public abstract void showFAB(int mostrar);
+    public abstract void onHide();
+
+    public abstract void onShow();
 
 }
 

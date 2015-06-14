@@ -1,5 +1,6 @@
 package com.josedlpozo.fragments;
 
+import android.app.ActivityOptions;
 import android.content.ContentValues;
 import android.content.Intent;
 import android.content.pm.ApplicationInfo;
@@ -7,20 +8,28 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
+import android.transition.Explode;
+import android.transition.Fade;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
+import android.view.animation.AccelerateInterpolator;
+import android.view.animation.DecelerateInterpolator;
+import android.widget.Button;
+import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.github.clans.fab.FloatingActionButton;
+import com.github.clans.fab.FloatingActionMenu;
 import com.github.florent37.materialviewpager.MaterialViewPagerHelper;
 import com.github.florent37.materialviewpager.adapter.RecyclerViewMaterialAdapter;
 import com.josedlpozo.adapters.RecyclerViewAdapter;
@@ -30,7 +39,6 @@ import com.josedlpozo.listeners.EndlessRecyclerOnScrollListener;
 import com.josedlpozo.optimiza.AppActivity;
 import com.josedlpozo.optimiza.AppsPermisos;
 import com.josedlpozo.optimiza.R;
-import com.melnykov.fab.FloatingActionButton;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -49,11 +57,14 @@ public class RecyclerViewFragment extends Fragment {
     private RecyclerView.Adapter mAdapter;
     private ScaleInAnimationAdapter sAdapter;
 
-    private FloatingActionButton fab;
+    //private FloatingActionButton rightLowerButton;
+    private Button rightLowerButton;
 
     private ArrayList<AppsPermisos> mContentItems = new ArrayList<>();
 
     private int contador_apps = 0;
+
+    private ImageView fabIconNew;
 
     public static RecyclerViewFragment newInstance() {
         return new RecyclerViewFragment();
@@ -61,26 +72,69 @@ public class RecyclerViewFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_recyclerview, container, false);
+        View view = inflater.inflate(R.layout.fragment_recyclerview, container, false);
+
+
+        return view;
     }
 
     @Override
     public void onViewCreated(final View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         mRecyclerView = (RecyclerView) view.findViewById(R.id.recyclerView);
+        //fabIconNew = (ImageView) view.findViewById(R.id.fab);
         AppDbAdapter db = new AppDbAdapter(getActivity().getBaseContext());
         AppsDbHelper dbHelper = new AppsDbHelper(getActivity().getBaseContext());
 
         SQLiteDatabase dbSQ = dbHelper.getWritableDatabase();
 
-        fab = (FloatingActionButton) view.findViewById(R.id.fab);
-        final Animation animRotate = AnimationUtils.loadAnimation(getActivity(), R.anim.anim_rotate);
+        final FloatingActionMenu menu2 = (FloatingActionMenu) view.findViewById(R.id.menu2);
+        // Listen menu open and close events to animate the button content view
 
-        fab.setOnClickListener(new View.OnClickListener() {
+        FloatingActionButton actualiza = (FloatingActionButton) view.findViewById(R.id.fab12);
+        FloatingActionButton ayuda = (FloatingActionButton) view.findViewById(R.id.fab22);
+        FloatingActionButton reset = (FloatingActionButton) view.findViewById(R.id.fab32);
+
+        actualiza.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                fab.startAnimation(animRotate);
                 actualizaDB();
+                menu2.close(true);
+            }
+        });
+
+        ayuda.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                final MaterialDialog mMaterialDialog = new MaterialDialog(getActivity());
+                mMaterialDialog.setTitle("Ayuda")
+                        .setMessage("Pulse actualizar si ha instalado alguna aplicación desde su última visita.\nPulse reset para visualizar de nuevo todas las aplicaciones ignoradas.")
+                        .setPositiveButton(
+                                "OK", new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View v) {
+                                        mMaterialDialog.dismiss();
+
+                                    }
+                                }
+                        )
+                        .show();
+            }
+        });
+
+        reset.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                AppsDbHelper dbHelper = new AppsDbHelper(getActivity().getBaseContext());
+
+                SQLiteDatabase db = dbHelper.getWritableDatabase();
+
+                AppDbAdapter dbAdapter = new AppDbAdapter(getActivity().getBaseContext());
+
+                db.execSQL("UPDATE Permisos_APP set ignorada=0");
+                db.close();
+                actualizaDB();
+                menu2.close(true);
             }
         });
 
@@ -121,7 +175,7 @@ public class RecyclerViewFragment extends Fragment {
             public void onSwiped(final RecyclerView.ViewHolder viewHolder, int swipeDir) {
                 final MaterialDialog mMaterialDialog = new MaterialDialog(getActivity());
                 mMaterialDialog.setTitle(mContentItems.get(viewHolder.getAdapterPosition() - 1).getNombre())
-                        .setMessage("Está seguro de ignorar " + mContentItems.get(viewHolder.getAdapterPosition() - 1).getNombre() + "? \n Más tarde podrá volver a reestablecerlo en ajustes.")
+                        .setMessage("Está seguro de ignorar " + mContentItems.get(viewHolder.getAdapterPosition() - 1).getNombre() + "? \nMás tarde podrá volver a reestablecerlo en ajustes.")
                         .setPositiveButton(
                                 "OK", new View.OnClickListener() {
                                     @Override
@@ -140,7 +194,7 @@ public class RecyclerViewFragment extends Fragment {
                                 }
                         )
                         .setNegativeButton(
-                                R.id.fab, new View.OnClickListener() {
+                                "CANCEL", new View.OnClickListener() {
                                     @Override
                                     public void onClick(View v) {
 
@@ -181,7 +235,15 @@ public class RecyclerViewFragment extends Fragment {
 
                 Intent intent = new Intent(getActivity(), AppActivity.class);
                 intent.putExtras(bundle);
-                startActivity(intent);
+                setupWindowAnimations();
+                if (Build.VERSION.SDK_INT > 21) {
+                    ImageView sharedView = (ImageView) v.findViewById(R.id.img);
+                    String transitionName = getString(R.string.transition);
+                    ActivityOptions transitionActivityOptions = ActivityOptions.makeSceneTransitionAnimation(getActivity(), sharedView, transitionName);
+                    getActivity().startActivity(intent, transitionActivityOptions.toBundle());
+                } else {
+                    startActivity(intent);
+                }
             }
         });
 
@@ -193,18 +255,36 @@ public class RecyclerViewFragment extends Fragment {
                 sAdapter.notifyDataSetChanged();
                 loadMoreData(current_page);
             }
+            @Override
+            public void onHide() {
+                FrameLayout.LayoutParams lp = (FrameLayout.LayoutParams) menu2.getLayoutParams();
+                int fabBottomMargin = lp.bottomMargin;
+                menu2.animate().translationY(menu2.getHeight() + fabBottomMargin).setInterpolator(new AccelerateInterpolator(2)).start();
+            }
 
             @Override
-            public void showFAB(int mostrar) {
-                if (mostrar == 0) fab.setVisibility(View.INVISIBLE);
-                else fab.setVisibility(View.VISIBLE);
+            public void onShow() {
+                menu2.animate().translationY(0).setInterpolator(new DecelerateInterpolator(2)).start();
             }
         };
         mRecyclerView.setOnScrollListener(myRecyclerViewOnScrollListener);
 
+
         MaterialViewPagerHelper.registerRecyclerView(getActivity(), mRecyclerView, myRecyclerViewOnScrollListener);
 
 
+    }
+
+    private void setupWindowAnimations() {
+        if (Build.VERSION.SDK_INT > 20) {
+            Explode explode = new Explode();
+            explode.setDuration(1000);
+            getActivity().getWindow().setExitTransition(explode);
+
+            Fade fade = new Fade();
+            fade.setDuration(1000);
+            getActivity().getWindow().setReenterTransition(fade);
+        }
     }
 
 

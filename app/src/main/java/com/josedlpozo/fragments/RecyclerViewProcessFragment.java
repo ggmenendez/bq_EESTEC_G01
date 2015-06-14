@@ -230,7 +230,8 @@ public class RecyclerViewProcessFragment extends Fragment {
         getActivity().registerReceiver(loadFinish, filter);
         packageinfo = new PackagesInfo(getActivity());
         // Make sure the progress bar is visible
-
+        listdp.clear();
+        listdp = new ArrayList<DetailProcess>();
         refresh();
     }
 
@@ -238,6 +239,7 @@ public class RecyclerViewProcessFragment extends Fragment {
     public void onPause() {
         super.onPause();
         getActivity().unregisterReceiver(loadFinish);
+        listdp = new ArrayList<DetailProcess>();
     }
 
     @SuppressWarnings("unchecked")

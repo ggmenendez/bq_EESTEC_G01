@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<de.hdodenhof.circleimageview.CircleImageView xmlns:app="http://schemas.android.com/apk/res-auto"
+<ImageView xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/app_img"
     android:layout_width="90dp"
     android:layout_height="90dp"
     app:border_width="2dp"
-    app:border_color="#FF000000" />
+    app:border_color="#FF000000"
+    android:transitionName="transition" />

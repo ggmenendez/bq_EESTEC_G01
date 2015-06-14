@@ -149,6 +149,14 @@ public class BatteryFragment extends Fragment {
                 float voltage = ((float) batteryStatus.getIntExtra(BatteryManager.EXTRA_VOLTAGE, 0) / 1000);
                 int level = batteryStatus.getIntExtra(BatteryManager.EXTRA_LEVEL, -1);
                 int mHealth = batteryStatus.getIntExtra(BatteryManager.EXTRA_HEALTH, -1);
+                int status = batteryStatus.getIntExtra(BatteryManager.EXTRA_STATUS, -1);
+                boolean isCharging = status == BatteryManager.BATTERY_STATUS_CHARGING ||
+                        status == BatteryManager.BATTERY_STATUS_FULL;
+
+                // How are we charging?
+                int chargePlug = batteryStatus.getIntExtra(BatteryManager.EXTRA_PLUGGED, -1);
+                boolean usbCharge = chargePlug == BatteryManager.BATTERY_PLUGGED_USB;
+                boolean acCharge = chargePlug == BatteryManager.BATTERY_PLUGGED_AC;
                 switch (mHealth) {
                     case BatteryManager.BATTERY_HEALTH_GOOD:
                         health.setText("BUENA");
@@ -174,6 +182,22 @@ public class BatteryFragment extends Fragment {
                 int punto = 0;
                 for (int i = 0; i < String.valueOf(voltage).length(); i++) {
                     if (String.valueOf(voltage).charAt(i) == '.') punto = i;
+                }
+                usb_ac.setText("NO");
+
+
+                if (isCharging) {
+                    plugged.setText("SÍ");
+                } else {
+                    plugged.setText("NO");
+                }
+
+
+                if (usbCharge) {
+                    usb_ac.setText("USB!");
+                }
+                if (acCharge) {
+                    usb_ac.setText("AC!");
                 }
                 volt.setText(String.valueOf(voltage).substring(0, punto));
                 volt_dec.setText(String.valueOf(voltage).substring(punto, String.valueOf(voltage).length() - 1));

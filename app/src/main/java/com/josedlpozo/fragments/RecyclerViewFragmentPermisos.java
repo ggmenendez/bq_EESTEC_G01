@@ -4,11 +4,15 @@ import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.transition.Explode;
+import android.transition.Fade;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -53,6 +57,8 @@ public class RecyclerViewFragmentPermisos extends Fragment {
 
     private CircularProgressBar progress;
 
+    private static final long ANIM_DURATION = 2000;
+
 
     public static RecyclerViewFragmentPermisos newInstance() {
         return new RecyclerViewFragmentPermisos();
@@ -80,13 +86,22 @@ public class RecyclerViewFragmentPermisos extends Fragment {
         mRecyclerView.setLayoutManager(layoutManager);
         mRecyclerView.setHasFixedSize(true);
 
-
-        mRecyclerView.setHasFixedSize(true);
-
         RecyclerViewPermisosAdapter adapter = new RecyclerViewPermisosAdapter(mContentItems);
         mAdapter = new RecyclerViewMaterialAdapter(adapter);
         AlphaInAnimationAdapter alphaAdapter = new AlphaInAnimationAdapter(mAdapter);
-        mRecyclerView.setAdapter(new ScaleInAnimationAdapter(alphaAdapter));
+        final ScaleInAnimationAdapter sAdapter = new ScaleInAnimationAdapter(alphaAdapter);
+        mRecyclerView.setAdapter(sAdapter);
+
+        final Handler handler = new Handler();
+
+        final Runnable r = new Runnable() {
+            public void run() {
+                sAdapter.notifyDataSetChanged();
+                handler.postDelayed(this, 700);
+            }
+        };
+
+        handler.postDelayed(r, 700);
 
 
         adapter.setOnClickListener(new View.OnClickListener() {
@@ -124,8 +139,21 @@ public class RecyclerViewFragmentPermisos extends Fragment {
 
             }
         });
+        setupWindowAnimations();
 
         MaterialViewPagerHelper.registerRecyclerView(getActivity(), mRecyclerView, null);
+    }
+
+    private void setupWindowAnimations() {
+        if (Build.VERSION.SDK_INT > 21) {
+            Explode explode = new Explode();
+            explode.setDuration(1000);
+            getActivity().getWindow().setEnterTransition(explode);
+
+            Fade fade = new Fade();
+            fade.setDuration(1000);
+            getActivity().getWindow().setReturnTransition(fade);
+        }
     }
 
     public CircularProgressBar getCircularProgressBar() {

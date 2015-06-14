@@ -76,7 +76,7 @@
                         android:layout_gravity="center|bottom"
                         android:textSize="20sp"
                         android:layout_weight="1"
-                        android:text="ºC" />
+                        android:text="°C" />
                 </LinearLayout>
             </LinearLayout>
         </RelativeLayout>
@@ -300,17 +300,13 @@
                         android:gravity="center">
 
                         <TextView
-                            android:layout_width="wrap_content"
-                            android:gravity="center_vertical"
+                            android:layout_width="fill_parent"
                             android:layout_height="wrap_content"
-                            android:textSize="20sp"
-                            android:maxLines="1"
-                            android:text="Health" />
+                            android:textSize="27sp"
+                            android:gravity="center"
+                            android:layout_gravity="center_vertical"
+                            android:text="Salud" />
 
-                        <View
-                            android:layout_width="match_parent"
-                            android:layout_height="1dp"
-                            android:background="@color/dividers" />
 
                         <TextView
                             android:id="@+id/health_ans"

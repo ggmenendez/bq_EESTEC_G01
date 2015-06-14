@@ -40,6 +40,8 @@ dependencies {
     compile 'com.hudomju:swipe-to-dismiss-undo:1.0'
     compile 'com.github.lzyzsd:circleprogress:1.1.0@aar'
     compile 'com.github.ksoichiro:android-observablescrollview'
+    compile 'com.oguzdev:CircularFloatingActionMenu:1.0.2'
+    compile 'com.github.clans:fab:1.5.0'
 
 
 }
