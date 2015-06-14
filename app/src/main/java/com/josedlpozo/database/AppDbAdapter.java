@@ -1,14 +1,17 @@
 package com.josedlpozo.database;
 
-/**
- * Created by josedlpozo on 16/5/15.
- */
 
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
+
+/**
+ * Created by josedlpozo on 16/5/15.
+ * <p/>
+ * Clase de ayuda para la base de datos.
+ */
 
 public class AppDbAdapter {
 
@@ -23,8 +26,6 @@ public class AppDbAdapter {
     public static final String COLUMNA_ID = "_id";
     public static final String COLUMNA_NOMBRE = "nombre";
     public static final String COLUMNA_PAQUETES = "packages";
-    public static final String COLUMNA_PERMISOS = "permisos";
-    public static final String COLUMNA_NUM_PERMISOS = "num_permisos";
     public static final String COLUMNA_IGNORADA = "ignorada";
 
     private Context contexto;
@@ -34,7 +35,7 @@ public class AppDbAdapter {
     /**
      * Definimos lista de columnas de la tabla para utilizarla en las consultas a la base de datos
      */
-    private String[] columnas = new String[]{COLUMNA_ID, COLUMNA_NOMBRE, COLUMNA_PAQUETES, COLUMNA_PERMISOS, COLUMNA_NUM_PERMISOS};
+    private String[] columnas = new String[]{COLUMNA_ID, COLUMNA_NOMBRE, COLUMNA_PAQUETES, COLUMNA_IGNORADA};
 
     public AppDbAdapter(Context context) {
         this.contexto = context;

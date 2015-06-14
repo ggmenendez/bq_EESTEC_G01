@@ -1,12 +1,10 @@
 package com.josedlpozo.adapters;
 
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.josedlpozo.optimiza.AppsPermisos;
@@ -15,6 +13,15 @@ import com.josedlpozo.optimiza.R;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+
+/**
+ * Created by josedlpozo on 12/6/15.
+ * <p/>
+ * Adapter para recyclerview de aplicaciones instaladas con numero de permisos.
+ * <p/>
+ * Cada app tiene icono, nombre y numero de permisos. Implementa ClickListener para recoger eventos de toque y
+ * avanzar a vista detallada de la aplicación.
+ */
 
 public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapter.AppsViewHolder> implements View.OnClickListener {
 
@@ -38,7 +45,6 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         }
 
         public void bindTitular(AppsPermisos t) {
-            Log.i("HOLDER", t.getNombre());
             txtName.setText(t.getNombre());
             txtNum.setText("Número de permisos: " + t.getNumPermisos());
             img.setImageDrawable(t.getImagen());
@@ -49,8 +55,6 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
     static final int TYPE_HEADER = 0;
     static final int TYPE_CELL = 1;
-    private LinearLayout first;
-    private LinearLayout second;
 
     public RecyclerViewAdapter(ArrayList<AppsPermisos> datos) {
         this.datos = datos;
@@ -66,8 +70,6 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     @Override
     public int getItemViewType(int position) {
         switch (position) {
-            //case 0:
-            //  return TYPE_HEADER;
             default:
                 return TYPE_CELL;
         }
@@ -81,9 +83,6 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     @Override
     public AppsViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view;
-
-
-        Log.i("HOLDER", " " + viewType);
 
         switch (viewType) {
             case TYPE_HEADER: {
@@ -114,7 +113,6 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
                 break;
         }
 
-        Log.i("HOLDER", "" + position);
         AppsPermisos item = datos.get(position);
 
         holder.bindTitular(item);

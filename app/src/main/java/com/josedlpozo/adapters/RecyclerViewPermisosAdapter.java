@@ -3,7 +3,6 @@ package com.josedlpozo.adapters;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,6 +16,17 @@ import com.josedlpozo.optimiza.WebViewActivity;
 
 import java.util.Date;
 import java.util.List;
+
+/**
+ * Created by josedlpozo on 12/6/15.
+ * <p/>
+ * Adapter para recyclerview de aplicacion en vista detallada.
+ * <p/>
+ * Muestra datos de nombre de paquete, version de la aplicacion, version minima de SDK, fechas de instalación
+ * y de actualización, y por último una lista de los permisos que necesita.
+ * <p/>
+ * Implementa OnClickListener para hacer una petición a Internet y recoger la descripción de cada permiso.
+ */
 
 
 public class RecyclerViewPermisosAdapter extends RecyclerView.Adapter<RecyclerViewPermisosAdapter.AppsViewHolder> implements View.OnClickListener {
@@ -57,8 +67,8 @@ public class RecyclerViewPermisosAdapter extends RecyclerView.Adapter<RecyclerVi
         }
 
         public void bindTitular(String t) {
-            Log.i("PERMISOS", t);
             if (tipo == TYPE_CELL) {
+                //Busqueda de la primera mayuscula en el permiso, para eliminar "android.permission..." y mostrar solo nombre corto
                 int comienzo = 0;
                 for (int i = 0; i < t.length(); i++) {
                     if (Character.isUpperCase(t.charAt(i))) {
@@ -68,6 +78,8 @@ public class RecyclerViewPermisosAdapter extends RecyclerView.Adapter<RecyclerVi
                     if (comienzo != 0) break;
                 }
                 txtPermiso.setText(t.substring(comienzo, t.length()));
+
+                //A implementar, permisos peligrosos!!
                 if (t.equals("android.permission.BLUETOOTH") || t.equals("android.permission.BLUETOOTH_ADMIN")) {
                     img_warning.setVisibility(View.VISIBLE);
                     img_warning.setOnClickListener(new View.OnClickListener() {
@@ -81,6 +93,7 @@ public class RecyclerViewPermisosAdapter extends RecyclerView.Adapter<RecyclerVi
             } else {
                 packages = t;
                 try {
+                    //Creacion del header con los datos importantes de la aplicación.
                     txtNombre.setText(itemView.getContext().getPackageManager().getApplicationLabel(itemView.getContext().getPackageManager().getApplicationInfo(t, 0)));
                     txtNum.setText("Paquete : " + itemView.getContext().getPackageManager().getApplicationInfo(t, 0).packageName);
                     version.setText("Version : " + itemView.getContext().getPackageManager().getPackageInfo(t, 0).versionCode);
@@ -93,7 +106,6 @@ public class RecyclerViewPermisosAdapter extends RecyclerView.Adapter<RecyclerVi
                     play.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-
                             try {
                                 Intent intent = new Intent(v.getContext(), WebViewActivity.class);
                                 intent.putExtra("PACKAGE", itemView.getContext().getPackageManager().getApplicationInfo(packages, 0).packageName);
@@ -111,7 +123,6 @@ public class RecyclerViewPermisosAdapter extends RecyclerView.Adapter<RecyclerVi
             }
         }
 
-
     }
 
     static final int TYPE_HEADER = 0;
@@ -119,7 +130,6 @@ public class RecyclerViewPermisosAdapter extends RecyclerView.Adapter<RecyclerVi
 
     public RecyclerViewPermisosAdapter(List<String> datos) {
         this.datos = datos;
-        Log.i("PERMISOS", datos.get(0));
     }
 
     @Override
@@ -141,7 +151,6 @@ public class RecyclerViewPermisosAdapter extends RecyclerView.Adapter<RecyclerVi
     public AppsViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view;
 
-        Log.i("HOLDER", " " + viewType);
 
         switch (viewType) {
             case TYPE_HEADER: {

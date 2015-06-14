@@ -5,11 +5,11 @@ import android.content.Context;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.Handler;
 import android.os.StatFs;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.CardView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -36,10 +36,12 @@ public class MemoryFragment extends Fragment {
 
     private static final String TAG = "MEMORY";
 
+    // Arcos de progreso para memoria RAM, INTERNA, EXTERNA
     private ArcProgress arc;
     private ArcProgress arc2;
     private ArcProgress arc3;
 
+    // Textos de cada memoria
     private TextView ram1;
     private TextView ram2;
 
@@ -49,11 +51,16 @@ public class MemoryFragment extends Fragment {
     private TextView externa1;
     private TextView externa2;
 
+    // ScrollView
     private ObservableScrollView mScrollView;
 
+    // CardView para esconder si no tiene memoria externa el dispositivo
     private CardView externa_card;
 
     private boolean externa = false;
+
+    // Handler para ejecutar la thread r
+    Handler handler;
 
     public static MemoryFragment newInstance() {
         return new MemoryFragment();
@@ -86,48 +93,54 @@ public class MemoryFragment extends Fragment {
 
         if (!externa) externa_card.setVisibility(View.INVISIBLE);
 
-        //arc.setProgress(100);
-        //arc.setBottomText("JOSE");
-        Log.d(TAG, "INT Av" + getAvailableInternalMemorySize());
-        Log.d(TAG, "EXT Av" + getAvailableExternalMemorySize());
-        Log.d(TAG, "INT T" + getTotalInternalMemorySize());
-        Log.d(TAG, "EXT T" + getTotalExternalMemorySize());
+        // Inicialización y periodo de ejecución
+        handler = new Handler();
+        handler.postDelayed(r, 1000);
 
-        ActivityManager activityManager = (ActivityManager) getActivity().getSystemService(Context.ACTIVITY_SERVICE);
-        ActivityManager.MemoryInfo memoryInfo = new ActivityManager.MemoryInfo();
-        activityManager.getMemoryInfo(memoryInfo);
-        long availMem = memoryInfo.availMem / (1024 * 1024);
-        long totalMem = 0;
-        String total = null;
-        if (Build.VERSION.SDK_INT >= 17) {
-            totalMem = memoryInfo.totalMem / (1024 * 1024);
-        } else {
-            total = getTotalRAM();
-        }
-        DecimalFormat twoDecimalForm = new DecimalFormat("#.##");
-        if (total == null) {
-            arc.setProgress((int) ((((float) availMem / (float) totalMem)) * 100));
-            ram1.setText("" + twoDecimalForm.format(availMem));
-            ram2.setText("/" + twoDecimalForm.format(totalMem));
-        } else {
-            float totalMemf = Float.parseFloat(total.replace(',', '.'));
-            arc.setProgress((int) ((((float) availMem / (float) totalMemf)) * 100));
-            ram1.setText("" + twoDecimalForm.format(availMem));
-            ram2.setText("/" + twoDecimalForm.format(totalMemf));
-        }
-
-        interna1.setText(getAvailableInternalMemorySize().replace(",", ""));
-        interna2.setText("/" + getTotalInternalMemorySize().replace(",", ""));
-        arc2.setProgress((int) (Float.parseFloat(getAvailableInternalMemorySize().replace(',', '.')) / Float.parseFloat(getTotalInternalMemorySize().replace(',', '.')) * 100));
-        if (externa) {
-            externa1.setText(getAvailableExternalMemorySize().replace(",", ""));
-            externa2.setText("/" + getTotalExternalMemorySize().replace(",", ""));
-            arc3.setProgress((int) (Float.parseFloat(getAvailableExternalMemorySize().replace(',', '.')) / Float.parseFloat(getTotalExternalMemorySize().replace(',', '.')) * 100));
-        }
         mScrollView = (ObservableScrollView) view.findViewById(R.id.scrollView);
 
         MaterialViewPagerHelper.registerScrollView(getActivity(), mScrollView, null);
     }
+
+    Runnable r = new Runnable() {
+        public void run() {
+
+
+            ActivityManager activityManager = (ActivityManager) getActivity().getSystemService(Context.ACTIVITY_SERVICE);
+            ActivityManager.MemoryInfo memoryInfo = new ActivityManager.MemoryInfo();
+            activityManager.getMemoryInfo(memoryInfo);
+            long availMem = memoryInfo.availMem / (1024 * 1024);
+            long totalMem = 0;
+            String total = null;
+            if (Build.VERSION.SDK_INT >= 17) {
+                totalMem = memoryInfo.totalMem / (1024 * 1024);
+            } else {
+                total = getTotalRAM();
+            }
+            DecimalFormat twoDecimalForm = new DecimalFormat("#.##");
+            if (total == null) {
+                arc.setProgress((int) ((((float) availMem / (float) totalMem)) * 100));
+                ram1.setText("" + twoDecimalForm.format(availMem));
+                ram2.setText("/" + twoDecimalForm.format(totalMem));
+            } else {
+                float totalMemf = Float.parseFloat(total.replace(',', '.'));
+                arc.setProgress((int) ((((float) availMem / (float) totalMemf)) * 100));
+                ram1.setText("" + twoDecimalForm.format(availMem));
+                ram2.setText("/" + twoDecimalForm.format(totalMemf));
+            }
+
+            interna1.setText(getAvailableInternalMemorySize().replace(",", ""));
+            interna2.setText("/" + getTotalInternalMemorySize().replace(",", ""));
+            arc2.setProgress((int) (Float.parseFloat(getAvailableInternalMemorySize().replace(',', '.')) / Float.parseFloat(getTotalInternalMemorySize().replace(',', '.')) * 100));
+            if (externa) {
+                externa1.setText(getAvailableExternalMemorySize().replace(",", ""));
+                externa2.setText("/" + getTotalExternalMemorySize().replace(",", ""));
+                arc3.setProgress((int) (Float.parseFloat(getAvailableExternalMemorySize().replace(',', '.')) / Float.parseFloat(getTotalExternalMemorySize().replace(',', '.')) * 100));
+            }
+
+            handler.postDelayed(this, 5000);
+        }
+    };
 
     public static boolean externalMemoryAvailable() {
         return android.os.Environment.getExternalStorageState().equals(

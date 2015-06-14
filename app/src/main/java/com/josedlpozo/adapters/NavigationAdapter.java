@@ -15,11 +15,15 @@ import java.util.ArrayList;
 
 /**
  * Created by josedlpozo on 12/6/15.
+ *
+ * Adapter para listview de drawerlayout
  */
+
 public class NavigationAdapter extends BaseAdapter {
+
+
     private Activity activity;
     ArrayList<Item_objct> arrayitms;
-
 
     public NavigationAdapter(Activity activity, ArrayList<Item_objct> listarry) {
         super();
@@ -27,14 +31,12 @@ public class NavigationAdapter extends BaseAdapter {
         this.arrayitms = listarry;
     }
 
-    //Retorna objeto Item_objct del array list
     @Override
     public Item_objct getItem(int position) {
         return arrayitms.get(position);
     }
 
     public int getCount() {
-        // TODO Auto-generated method stub
         return arrayitms.size();
     }
 
@@ -50,21 +52,15 @@ public class NavigationAdapter extends BaseAdapter {
     }
 
     public View getView(int position, View convertView, ViewGroup parent) {
-        // TODO Auto-generated method stub
         Fila view;
         LayoutInflater inflator = activity.getLayoutInflater();
         if (convertView == null) {
             view = new Fila();
-            //Creo objeto item y lo obtengo del array
             Item_objct itm = arrayitms.get(position);
             convertView = inflator.inflate(R.layout.itm, null);
-            //Titulo
             view.titulo_itm = (TextView) convertView.findViewById(R.id.title_item);
-            //Seteo en el campo titulo el nombre correspondiente obtenido del objeto
             view.titulo_itm.setText(itm.getTitulo());
-            //Icono
             view.icono = (ImageView) convertView.findViewById(R.id.icon);
-            //Seteo el icono
             view.icono.setImageResource(itm.getIcono());
             convertView.setTag(view);
         } else {

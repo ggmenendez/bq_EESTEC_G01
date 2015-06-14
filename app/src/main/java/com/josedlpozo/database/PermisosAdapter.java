@@ -1,14 +1,18 @@
 package com.josedlpozo.database;
 
-/**
- * Created by josedlpozo on 16/5/15.
- */
 
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
+
+/**
+ * Created by josedlpozo on 16/5/15.
+ * <p/>
+ * Clase de ayuda para la base de datos
+ */
+
 
 public class PermisosAdapter {
 

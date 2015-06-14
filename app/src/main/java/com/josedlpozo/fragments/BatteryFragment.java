@@ -1,8 +1,5 @@
 package com.josedlpozo.fragments;
 
-/**
- * Created by josedlpozo on 30/5/15.
- */
 
 import android.content.Intent;
 import android.content.IntentFilter;
@@ -12,12 +9,9 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v7.widget.CardView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.github.florent37.materialviewpager.MaterialViewPagerHelper;
@@ -30,13 +24,22 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.RandomAccessFile;
 
+/**
+ * Created by josedlpozo on 30/5/15.
+ * <p/>
+ * Fragment encargado de datos de batería
+ * <p/>
+ * Muestra datos de temperatura de bateria, si esta cargandose o no y porque medios, nivel de carga,
+ * salud de la bateria y voltaje.
+ * <p/>
+ * Implementa un thread para actualizar los datos cada XX segundos
+ */
 
 public class BatteryFragment extends Fragment {
 
     private static final String TAG = "BATTERY";
 
-    private TextView texto;
-    private ImageView img;
+    // Elementos necesarios para representación de datos.
     private TextView temperatura;
     private TextView temp_dec;
     private TextView plugged;
@@ -45,9 +48,15 @@ public class BatteryFragment extends Fragment {
     private TextView health;
     private TextView volt;
     private TextView volt_dec;
-    private CardView card;
 
+    //ScrollView
     private ObservableScrollView mScrollView;
+
+    // Intent para recoger datos lanzados por la bateria.
+    Intent batteryStatus;
+
+    // Handler para ejecutar la thread r
+    Handler handler;
 
     public static BatteryFragment newInstance() {
         return new BatteryFragment();
@@ -61,8 +70,6 @@ public class BatteryFragment extends Fragment {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
-        card = (CardView) view.findViewById(R.id.bateria);
         temperatura = (TextView) view.findViewById(R.id.temp);
         temp_dec = (TextView) view.findViewById(R.id.temp_dec);
         plugged = (TextView) view.findViewById(R.id.plugged_ans);
@@ -71,149 +78,85 @@ public class BatteryFragment extends Fragment {
         health = (TextView) view.findViewById(R.id.health_ans);
         volt = (TextView) view.findViewById(R.id.volt);
         volt_dec = (TextView) view.findViewById(R.id.volt_dec);
-        //texto = (TextView) view.findViewById(R.id.plugged);
-        img = (ImageView) view.findViewById(R.id.img_batt);
         IntentFilter ifilter = new IntentFilter(Intent.ACTION_BATTERY_CHANGED);
-        final Intent batteryStatus = getActivity().getApplicationContext().registerReceiver(null, ifilter);
-        // Are we charging / charged?
-        int status = batteryStatus.getIntExtra(BatteryManager.EXTRA_STATUS, -1);
-        boolean isCharging = status == BatteryManager.BATTERY_STATUS_CHARGING ||
-                status == BatteryManager.BATTERY_STATUS_FULL;
+        batteryStatus = getActivity().getApplicationContext().registerReceiver(null, ifilter);
 
-        // How are we charging?
-        int chargePlug = batteryStatus.getIntExtra(BatteryManager.EXTRA_PLUGGED, -1);
-        boolean usbCharge = chargePlug == BatteryManager.BATTERY_PLUGGED_USB;
-        boolean acCharge = chargePlug == BatteryManager.BATTERY_PLUGGED_AC;
-        int temperature = 0;
-        String icon = "";
-        int level = batteryStatus.getIntExtra(BatteryManager.EXTRA_LEVEL, -1);
-        int scale = batteryStatus.getIntExtra(BatteryManager.EXTRA_SCALE, -1);
-
-
-        usb_ac.setText("NO");
-
-
-        if (isCharging) {
-            plugged.setText("SÍ");
-        } else {
-            plugged.setText("NO");
-        }
-
-
-        if (usbCharge) {
-            usb_ac.setText("USB!");
-        }
-        if (acCharge) {
-            usb_ac.setText("AC!");
-        }
-
-        icon = String.valueOf(batteryStatus.getIntExtra(BatteryManager.EXTRA_ICON_SMALL, -1));
-        BatteryManager bm = new BatteryManager();
-        int bat = 0;
-        int ma = 0;
-        int avg = 0;
-
-
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
-
-        }
-        else {
-            bat = bm.getIntProperty(BatteryManager.BATTERY_PROPERTY_CAPACITY);
-            ma = bm.getIntProperty(BatteryManager.BATTERY_PROPERTY_CHARGE_COUNTER);
-            avg = bm.getIntProperty(BatteryManager.BATTERY_PROPERTY_CURRENT_AVERAGE);
-
-
-        }
-        float batteryPct = level / (float) scale;
-        int id = getResources().getIdentifier("com.josedlpozo.optimiza:drawable/" + icon, null, null);
-        //img.setImageResource(id);
-        //texto.setText("Is charging? " + isCharging + " -- Usb charge? " + usbCharge + "\n -- AC charge? " + acCharge + " -- Level? " + level + "\n --  " +
-        //        "CA? " + bat + " -- MA? " + ma + " -- AVG? " + avg + " -- icon? " + icon + " -- temperature? " + temperature);
-        //texto.setText("\n \n" + texto.getText() + " " + getInfo() + " JAJA -- " + readUsage());
-
-        Log.i(TAG, "Is charging " + isCharging);
-        Log.i(TAG, "Usb charge " + usbCharge);
-        Log.i(TAG, "AC charge " + acCharge);
-        Log.i(TAG, "Level " + batteryPct);
-        Log.i(TAG, "CA " + bat);
-        Log.i(TAG, "MA " + ma);
-        Log.i(TAG, "AVG " + avg);
-
-        final Handler handler = new Handler();
-
-        final Runnable r = new Runnable() {
-            public void run() {
-                IntentFilter ifilter = new IntentFilter(Intent.ACTION_BATTERY_CHANGED);
-                Intent batteryStatus = getActivity().getApplicationContext().registerReceiver(null, ifilter);
-                float temp = ((float) batteryStatus.getIntExtra(BatteryManager.EXTRA_TEMPERATURE, 0)) / 10;
-                float voltage = ((float) batteryStatus.getIntExtra(BatteryManager.EXTRA_VOLTAGE, 0) / 1000);
-                int level = batteryStatus.getIntExtra(BatteryManager.EXTRA_LEVEL, -1);
-                int mHealth = batteryStatus.getIntExtra(BatteryManager.EXTRA_HEALTH, -1);
-                int status = batteryStatus.getIntExtra(BatteryManager.EXTRA_STATUS, -1);
-                boolean isCharging = status == BatteryManager.BATTERY_STATUS_CHARGING ||
-                        status == BatteryManager.BATTERY_STATUS_FULL;
-
-                // How are we charging?
-                int chargePlug = batteryStatus.getIntExtra(BatteryManager.EXTRA_PLUGGED, -1);
-                boolean usbCharge = chargePlug == BatteryManager.BATTERY_PLUGGED_USB;
-                boolean acCharge = chargePlug == BatteryManager.BATTERY_PLUGGED_AC;
-                switch (mHealth) {
-                    case BatteryManager.BATTERY_HEALTH_GOOD:
-                        health.setText("BUENA");
-                        break;
-                    case BatteryManager.BATTERY_HEALTH_COLD:
-                        health.setText("FRÍA");
-                        break;
-                    case BatteryManager.BATTERY_HEALTH_DEAD:
-                        health.setText("MUERTA");
-                        break;
-                    case BatteryManager.BATTERY_HEALTH_OVER_VOLTAGE:
-                        health.setText("SOBREVOLTAJE");
-                        break;
-                    case BatteryManager.BATTERY_HEALTH_UNKNOWN:
-                        health.setText("DESCONOCIDO");
-                        break;
-                    case BatteryManager.BATTERY_HEALTH_UNSPECIFIED_FAILURE:
-                        health.setText("FALLO DESCONOCIDO");
-                        break;
-                    default:
-                        health.setText("NO HAY BATERIA!!");
-                }
-                int punto = 0;
-                for (int i = 0; i < String.valueOf(voltage).length(); i++) {
-                    if (String.valueOf(voltage).charAt(i) == '.') punto = i;
-                }
-                usb_ac.setText("NO");
-
-
-                if (isCharging) {
-                    plugged.setText("SÍ");
-                } else {
-                    plugged.setText("NO");
-                }
-
-
-                if (usbCharge) {
-                    usb_ac.setText("USB!");
-                }
-                if (acCharge) {
-                    usb_ac.setText("AC!");
-                }
-                volt.setText(String.valueOf(voltage).substring(0, punto));
-                volt_dec.setText(String.valueOf(voltage).substring(punto, String.valueOf(voltage).length() - 1));
-                temperatura.setText("" + String.valueOf(temp).substring(0, 2));
-                temp_dec.setText("" + String.valueOf(temp).substring(2, String.valueOf(temp).length()));
-                carga.setText("" + level);
-                handler.postDelayed(this, 5000);
-            }
-        };
-
+        // Inicialización y periodo de ejecución
+        handler = new Handler();
         handler.postDelayed(r, 1000);
 
         mScrollView = (ObservableScrollView) view.findViewById(R.id.scrollView);
 
         MaterialViewPagerHelper.registerScrollView(getActivity(), mScrollView, null);
     }
+
+    Runnable r = new Runnable() {
+        public void run() {
+            float temp = ((float) batteryStatus.getIntExtra(BatteryManager.EXTRA_TEMPERATURE, 0)) / 10;
+            float voltage = ((float) batteryStatus.getIntExtra(BatteryManager.EXTRA_VOLTAGE, 0) / 1000);
+            int level = batteryStatus.getIntExtra(BatteryManager.EXTRA_LEVEL, -1);
+            int mHealth = batteryStatus.getIntExtra(BatteryManager.EXTRA_HEALTH, -1);
+            int status = batteryStatus.getIntExtra(BatteryManager.EXTRA_STATUS, -1);
+            boolean isCharging = status == BatteryManager.BATTERY_STATUS_CHARGING ||
+                    status == BatteryManager.BATTERY_STATUS_FULL;
+
+            int chargePlug = batteryStatus.getIntExtra(BatteryManager.EXTRA_PLUGGED, -1);
+            boolean usbCharge = chargePlug == BatteryManager.BATTERY_PLUGGED_USB;
+            boolean acCharge = chargePlug == BatteryManager.BATTERY_PLUGGED_AC;
+            switch (mHealth) {
+                case BatteryManager.BATTERY_HEALTH_GOOD:
+                    health.setText("BUENA");
+                    break;
+                case BatteryManager.BATTERY_HEALTH_COLD:
+                    health.setText("FRÍA");
+                    break;
+                case BatteryManager.BATTERY_HEALTH_DEAD:
+                    health.setText("MUERTA");
+                    break;
+                case BatteryManager.BATTERY_HEALTH_OVER_VOLTAGE:
+                    health.setText("SOBREVOLTAJE");
+                    break;
+                case BatteryManager.BATTERY_HEALTH_UNKNOWN:
+                    health.setText("DESCONOCIDO");
+                    break;
+                case BatteryManager.BATTERY_HEALTH_UNSPECIFIED_FAILURE:
+                    health.setText("FALLO DESCONOCIDO");
+                    break;
+                default:
+                    health.setText("NO HAY BATERIA!!");
+            }
+
+            //Buscamos el punto de la parte decimal para mejor visualización de datos
+            int punto = 0;
+            for (int i = 0; i < String.valueOf(voltage).length(); i++) {
+                if (String.valueOf(voltage).charAt(i) == '.') punto = i;
+            }
+            usb_ac.setText("NO");
+
+
+            if (isCharging) {
+                plugged.setText("SÍ");
+            } else {
+                plugged.setText("NO");
+            }
+
+
+            if (usbCharge) {
+                usb_ac.setText("USB!");
+            }
+            if (acCharge) {
+                usb_ac.setText("AC!");
+            }
+
+            volt.setText(String.valueOf(voltage).substring(0, punto));
+            volt_dec.setText(String.valueOf(voltage).substring(punto, String.valueOf(voltage).length() - 1));
+            temperatura.setText("" + String.valueOf(temp).substring(0, 2));
+            temp_dec.setText("" + String.valueOf(temp).substring(2, String.valueOf(temp).length()));
+            carga.setText("" + level);
+            handler.postDelayed(this, 5000);
+        }
+    };
+
 
     private String getInfo() {
         StringBuffer sb = new StringBuffer();

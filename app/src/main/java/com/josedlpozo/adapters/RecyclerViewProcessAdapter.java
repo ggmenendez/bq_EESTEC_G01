@@ -2,10 +2,16 @@ package com.josedlpozo.adapters;
 
 /**
  * Created by josedlpozo on 9/6/15.
+ *
+ * Adapter para recyclerview de procesos en marcha.
+ *
+ * Muestra datos de icono de aplicación, nombre de la aplicacion y espacio de memoria ocupado.
+ *
+ * Implementa OnClickListener para mostrar una lista de acciones que se pueden llevar a cabo.
+ *
  */
 
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -40,7 +46,6 @@ public class RecyclerViewProcessAdapter extends RecyclerView.Adapter<RecyclerVie
         }
 
         public void bindTitular(DetailProcess t) {
-            Log.i("HOLDER", "JOSE");
             img.setImageDrawable(t.getAppinfo().loadIcon(itemView.getContext().getPackageManager()));
             txtName.setText(t.getTitle());
             ProcessInfo.PsRow row = t.getPsrow();
@@ -66,8 +71,6 @@ public class RecyclerViewProcessAdapter extends RecyclerView.Adapter<RecyclerVie
     @Override
     public int getItemViewType(int position) {
         switch (position) {
-            //case 0:
-            //  return TYPE_HEADER;
             default:
                 return TYPE_CELL;
         }
@@ -82,8 +85,6 @@ public class RecyclerViewProcessAdapter extends RecyclerView.Adapter<RecyclerVie
     public AppsViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view;
 
-
-        Log.i("HOLDER", " " + viewType);
 
         switch (viewType) {
             case TYPE_HEADER: {
@@ -114,7 +115,6 @@ public class RecyclerViewProcessAdapter extends RecyclerView.Adapter<RecyclerVie
                 break;
         }
 
-        Log.i("HOLDER", "" + position);
         DetailProcess item = datos.get(position);
 
         holder.bindTitular(item);

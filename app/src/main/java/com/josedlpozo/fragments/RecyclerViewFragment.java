@@ -17,13 +17,11 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
 import android.transition.Explode;
 import android.transition.Fade;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AccelerateInterpolator;
 import android.view.animation.DecelerateInterpolator;
-import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.Toast;
@@ -55,16 +53,16 @@ public class RecyclerViewFragment extends Fragment {
 
     private RecyclerView mRecyclerView;
     private RecyclerView.Adapter mAdapter;
+
+    // Adapter para notificar cambios en los elementos
     private ScaleInAnimationAdapter sAdapter;
 
-    //private FloatingActionButton rightLowerButton;
-    private Button rightLowerButton;
-
+    // Lista de AppsPermisos para mostrar
     private ArrayList<AppsPermisos> mContentItems = new ArrayList<>();
 
+    // Numero de apps mostrandose ( numero de apps sacadas de la db mientras se hace scroll )
     private int contador_apps = 0;
 
-    private ImageView fabIconNew;
 
     public static RecyclerViewFragment newInstance() {
         return new RecyclerViewFragment();
@@ -72,24 +70,21 @@ public class RecyclerViewFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_recyclerview, container, false);
-
-
-        return view;
+        return inflater.inflate(R.layout.fragment_recyclerview, container, false);
     }
 
     @Override
     public void onViewCreated(final View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         mRecyclerView = (RecyclerView) view.findViewById(R.id.recyclerView);
-        //fabIconNew = (ImageView) view.findViewById(R.id.fab);
+
+        // Inicializacion de variables de DB
         AppDbAdapter db = new AppDbAdapter(getActivity().getBaseContext());
         AppsDbHelper dbHelper = new AppsDbHelper(getActivity().getBaseContext());
-
         SQLiteDatabase dbSQ = dbHelper.getWritableDatabase();
 
+        // Menu desplegable para actualizar, resetear y menu ayuda.
         final FloatingActionMenu menu2 = (FloatingActionMenu) view.findViewById(R.id.menu2);
-        // Listen menu open and close events to animate the button content view
 
         FloatingActionButton actualiza = (FloatingActionButton) view.findViewById(R.id.fab12);
         FloatingActionButton ayuda = (FloatingActionButton) view.findViewById(R.id.fab22);
@@ -98,8 +93,8 @@ public class RecyclerViewFragment extends Fragment {
         actualiza.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                actualizaDB();
                 menu2.close(true);
+                actualizaDB();
             }
         });
 
@@ -125,6 +120,9 @@ public class RecyclerViewFragment extends Fragment {
         reset.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                menu2.close(true);
+
+                // Reset de flag ignorada
                 AppsDbHelper dbHelper = new AppsDbHelper(getActivity().getBaseContext());
 
                 SQLiteDatabase db = dbHelper.getWritableDatabase();
@@ -134,17 +132,18 @@ public class RecyclerViewFragment extends Fragment {
                 db.execSQL("UPDATE Permisos_APP set ignorada=0");
                 db.close();
                 actualizaDB();
-                menu2.close(true);
+
             }
         });
 
 
+        // Inicializacion de layoutmanager para recyclerview
         LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
         mRecyclerView.setLayoutManager(layoutManager);
         mRecyclerView.setHasFixedSize(true);
 
 
-
+        // Cargamos 10 primeras apps para mostrar en el recyclerview
         Cursor cursor = dbSQ.rawQuery("SELECT * FROM " + "Permisos_App LIMIT " + contador_apps + ",10", null);
         if (cursor == null) {
             Toast.makeText(getActivity().getBaseContext(), "No hay aplicaciones para mostrar.", Toast.LENGTH_LONG).show();
@@ -165,6 +164,7 @@ public class RecyclerViewFragment extends Fragment {
             dbSQ.close();
         }
 
+        // Inicialización de swipe para ignorar aplicaciones de la lista.
         ItemTouchHelper.SimpleCallback simpleItemTouchCallback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.RIGHT) {
             @Override
             public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder viewHolder1) {
@@ -206,36 +206,34 @@ public class RecyclerViewFragment extends Fragment {
                         ).show();
             }
         };
-
         ItemTouchHelper itemTouchHelper = new ItemTouchHelper(simpleItemTouchCallback);
         itemTouchHelper.attachToRecyclerView(mRecyclerView);
 
+        // Inicialización de adapters con sus animaciones
         RecyclerViewAdapter adapter = new RecyclerViewAdapter(mContentItems);
         mAdapter = new RecyclerViewMaterialAdapter(adapter);
         AlphaInAnimationAdapter alphaAdapter = new AlphaInAnimationAdapter(mAdapter);
         sAdapter = new ScaleInAnimationAdapter(alphaAdapter);
         mRecyclerView.setAdapter(sAdapter);
-
         mRecyclerView.setItemAnimator(new SlideInLeftAnimator());
         mRecyclerView.getItemAnimator().setAddDuration(1000);
         mRecyclerView.getItemAnimator().setRemoveDuration(1000);
         mRecyclerView.getItemAnimator().setMoveDuration(1000);
         mRecyclerView.getItemAnimator().setChangeDuration(1000);
 
+        // Implementacion de OnClickListener explicado en RecyclerViewAdapter para vista detallada de aplicacion
         adapter.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.i("DemoRecView", "Pulsado el elemento " + mContentItems.get(mRecyclerView.getChildAdapterPosition(v) - 1).getNombre());
                 AppsPermisos app = mContentItems.get(mRecyclerView.getChildAdapterPosition(v) - 1);
                 Bundle bundle = new Bundle();
-                Log.d("xxx", "+" + app.getRequestedPermissions().toString());
                 bundle.putStringArray("PERMISOS", app.getRequestedPermissions());
                 bundle.putString("PAQUETE", app.getNombrePaquete());
                 bundle.putString("NOMBRE", app.getNombre());
 
                 Intent intent = new Intent(getActivity(), AppActivity.class);
                 intent.putExtras(bundle);
-                setupWindowAnimations();
+
                 if (Build.VERSION.SDK_INT > 21) {
                     ImageView sharedView = (ImageView) v.findViewById(R.id.img);
                     String transitionName = getString(R.string.transition);
@@ -247,10 +245,10 @@ public class RecyclerViewFragment extends Fragment {
             }
         });
 
+        // ScrollListener para cargar aplicaciones para mostrar gradualmente, y encargado de mostrar o esconder el fab button menu
         EndlessRecyclerOnScrollListener myRecyclerViewOnScrollListener = new EndlessRecyclerOnScrollListener(layoutManager) {
             @Override
             public void onLoadMore(int current_page) {
-                Log.d("xxx", "ONLOADMORE");
                 ordenaPorNumeroPermisos();
                 sAdapter.notifyDataSetChanged();
                 loadMoreData(current_page);
@@ -267,9 +265,9 @@ public class RecyclerViewFragment extends Fragment {
                 menu2.animate().translationY(0).setInterpolator(new DecelerateInterpolator(2)).start();
             }
         };
+        // Establecemos animaciones de entrada y salida de activity
+        setupWindowAnimations();
         mRecyclerView.setOnScrollListener(myRecyclerViewOnScrollListener);
-
-
         MaterialViewPagerHelper.registerRecyclerView(getActivity(), mRecyclerView, myRecyclerViewOnScrollListener);
 
 
@@ -288,7 +286,7 @@ public class RecyclerViewFragment extends Fragment {
     }
 
 
-    // adding 10 object creating dymically to arraylist and updating recyclerview when ever we reached last item
+    // Carga mas aplicaciones en la lista, de 5 en 5
     private void loadMoreData(int current_page) {
         AppDbAdapter db = new AppDbAdapter(getActivity().getBaseContext());
         AppsDbHelper dbHelper = new AppsDbHelper(getActivity().getBaseContext());
@@ -312,7 +310,6 @@ public class RecyclerViewFragment extends Fragment {
             }
             contador_apps += 10;
             dbSQ.close();
-            Log.i("XXX", "LLEGA" + contador_apps);
             ordenaPorNumeroPermisos();
             sAdapter.notifyDataSetChanged();
 
@@ -320,6 +317,7 @@ public class RecyclerViewFragment extends Fragment {
 
     }
 
+    // Ordena la lista de aplicaciones por numero de permisos
     private void ordenaPorNumeroPermisos() {
         Collections.sort(mContentItems, new Comparator<AppsPermisos>() {
             @Override
@@ -329,6 +327,7 @@ public class RecyclerViewFragment extends Fragment {
         });
     }
 
+    // Actualiza la lista y la base de datos, por si el usuario ha instalado alguna aplicación nueva
     private void actualizaDB() {
         AppsDbHelper dbHelper = new AppsDbHelper(getActivity().getBaseContext());
 
@@ -341,7 +340,6 @@ public class RecyclerViewFragment extends Fragment {
         ArrayList<AppsPermisos> apps = new ArrayList<>();
 
         for (ApplicationInfo applicationInfo : packages) {
-            Log.d("test", "App: " + pm.getApplicationLabel(applicationInfo) + " Package: " + applicationInfo.packageName);
 
             try {
                 PackageInfo packageInfo = pm.getPackageInfo(applicationInfo.packageName, PackageManager.GET_PERMISSIONS);
@@ -358,18 +356,10 @@ public class RecyclerViewFragment extends Fragment {
             }
         }
 
-        Collections.sort(apps, new Comparator<AppsPermisos>() {
-            @Override
-            public int compare(AppsPermisos lhs, AppsPermisos rhs) {
-                return rhs.getNumPermisos() - lhs.getNumPermisos();
-            }
-        });
-
         for (AppsPermisos app : apps) {
             Cursor mCursor = db.rawQuery("SELECT nombre, ignorada FROM Permisos_App where nombre='" + app.getNombre() + "'", null);
             int flag = 0;
             if (!mCursor.moveToFirst()) {
-                Log.i("ACT", app.getNombre());
                 ContentValues registro = new ContentValues();
                 registro.put(AppDbAdapter.COLUMNA_NOMBRE, app.getNombre());
                 registro.put(AppDbAdapter.COLUMNA_PAQUETES, app.getNombrePaquete());
