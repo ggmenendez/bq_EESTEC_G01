@@ -13,14 +13,14 @@
         <TextView
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:text="RAM"
+            android:text="MEMORIA INTERNA"
             android:textSize="27sp"
             android:gravity="center"
             android:id="@+id/ttram"
             android:layout_gravity="center_vertical" />
 
         <com.github.lzyzsd.circleprogress.ArcProgress
-            android:id="@+id/arc_progress"
+            android:id="@+id/arc_progress2"
             android:background="#f9f9f9"
             android:layout_width="200dp"
             android:layout_height="200dp"
@@ -29,26 +29,26 @@
             android:layout_below="@+id/ttram"
             android:layout_centerInParent="true"
             custom:arc_progress="55"
-            custom:arc_bottom_text="RAM"
+            custom:arc_bottom_text="INTERNA"
             custom:arc_unfinished_color="#E0E0E0"
             custom:arc_finished_color="#FF6666"
             custom:arc_text_color="#FF6666"
             custom:arc_text_size="50sp"
             custom:arc_suffix_text_size="25sp"
-            custom:arc_bottom_text_size="30sp" />
+            custom:arc_bottom_text_size="25sp" />
 
         <LinearLayout
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
             android:orientation="horizontal"
             android:gravity="center"
-            android:layout_below="@+id/arc_progress"
+            android:layout_below="@+id/arc_progress2"
             android:layout_marginTop="10dp">
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:id="@+id/ram1"
+                android:id="@+id/interna1"
                 android:gravity="center_vertical"
                 android:layout_gravity="center"
                 android:textSize="70sp" />
@@ -62,7 +62,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:id="@+id/ram2"
+                    android:id="@+id/interna2"
                     android:layout_gravity="center"
                     android:layout_marginTop="5dp"
                     android:textSize="36sp" />
@@ -78,4 +78,3 @@
         </LinearLayout>
     </RelativeLayout>
 </LinearLayout>
-

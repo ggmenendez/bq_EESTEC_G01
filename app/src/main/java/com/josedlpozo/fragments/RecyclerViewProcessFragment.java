@@ -336,7 +336,10 @@ public class RecyclerViewProcessFragment extends Fragment {
                                             ActivityManager.MemoryInfo memoryInfo = new ActivityManager.MemoryInfo();
                                             activityManager.getMemoryInfo(memoryInfo);
                                             availMem2 = memoryInfo.availMem;
-                                            Toast.makeText(getActivity(), "He liberado: " + (availMem2 - availMem1) / (1024.0 * 1024.0), Toast.LENGTH_SHORT).show();
+                                            DecimalFormat twoDecimalForm = new DecimalFormat("#.##");
+                                            double memory = Math.abs((availMem2 - availMem1)) / (1024.0 * 1024.0);
+                                            twoDecimalForm.format(memory);
+                                            Toast.makeText(getActivity(), "Han sido liberados: " + twoDecimalForm.format(memory) + " MB", Toast.LENGTH_SHORT).show();
                                             contador = 0;
                                             refresh();
                                             return;
@@ -394,7 +397,9 @@ public class RecyclerViewProcessFragment extends Fragment {
                                             ActivityManager.MemoryInfo memoryInfo = new ActivityManager.MemoryInfo();
                                             activityManager.getMemoryInfo(memoryInfo);
                                             availMem2 = memoryInfo.availMem;
-                                            Toast.makeText(getActivity(), "He liberado: " + (availMem2 - availMem1) / (1024.0 * 1024.0), Toast.LENGTH_SHORT).show();
+                                            DecimalFormat twoDecimalForm = new DecimalFormat("#.##");
+                                            double memory = Math.abs((availMem2 - availMem1)) / (1024.0 * 1024.0);
+                                            Toast.makeText(getActivity(), "Han sido liberados: " + twoDecimalForm.format(memory) + " MB", Toast.LENGTH_SHORT).show();
                                             contador = 0;
                                             refresh();
                                             return;
@@ -418,7 +423,6 @@ public class RecyclerViewProcessFragment extends Fragment {
                 availMem1 = memoryInfo.availMem;
             }
             contador++;
-            Toast.makeText(getActivity(), getTotalRAM(), Toast.LENGTH_SHORT).show();
             sAdapter.notifyDataSetChanged();
             MaterialViewPagerHelper.registerRecyclerView(getActivity(), mRecyclerView, null);
         }
