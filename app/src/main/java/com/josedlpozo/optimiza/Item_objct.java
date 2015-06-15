@@ -2,6 +2,9 @@ package com.josedlpozo.optimiza;
 
 /**
  * Created by josedlpozo on 12/6/15.
+ *
+ * Clase de apoyo para el menu drawer
+ *
  */
 public class Item_objct {
     private String titulo;

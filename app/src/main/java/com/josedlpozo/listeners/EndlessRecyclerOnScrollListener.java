@@ -1,12 +1,16 @@
 package com.josedlpozo.listeners;
 
-/**
- * Created by josedlpozo on 31/5/15.
- */
 
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
+
+/**
+ * Created by josedlpozo on 31/5/15.
+ * <p/>
+ * ScrollListener para carga gradual de aplicaciones en recycler view
+ * <p/>
+ * Ademas se encarga de esconder y mostrar el fabmenu
+ */
 
 public abstract class EndlessRecyclerOnScrollListener extends
         RecyclerView.OnScrollListener {
@@ -40,7 +44,6 @@ public abstract class EndlessRecyclerOnScrollListener extends
     public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
         super.onScrolled(recyclerView, dx, dy);
 
-        Log.d("xxx", "onScrolled");
 
         visibleItemCount = recyclerView.getChildCount();
         totalItemCount = mLinearLayoutManager.getItemCount();
@@ -65,17 +68,12 @@ public abstract class EndlessRecyclerOnScrollListener extends
             if (totalItemCount > previousTotal) {
                 loading = false;
                 previousTotal = totalItemCount;
-                Log.d("xxx", "X" + dx);
-                Log.d("xxx", "Y" + dy);
-
-                Log.d("xxx", "onScrolled");
             }
         }
         if (!loading
                 && (totalItemCount - visibleItemCount) <= (firstVisibleItem + visibleThreshold)) {
             // End has been reached
 
-            Log.d("xxx", "current_page " + current_page);
             // Do something
             current_page++;
 

@@ -48,37 +48,55 @@ import jp.wasabeef.recyclerview.animators.adapters.ScaleInAnimationAdapter;
 
 /**
  * Created by josedlpozo on 9/6/15.
+ *
+ * Fragment para recyclerview de procesos
+ *
+ * Muestra datos de nombre de proceso, icono y cantidad de memoria ocupada
+ * <p/>
+ * Implementa OnClickListener para que aparezca un alertdialog con opciones para el usuario
+ *
  */
+
 public class RecyclerViewProcessFragment extends Fragment {
 
     private static final String TAG = "Process";
 
+    // Clases de taskmanager free
     private ProcessInfo pinfo = null;
     public ActivityManager am = null;
     private PackagesInfo packageinfo = null;
-    // private List<RunningTaskInfo> tasklist = null;
     private PackageManager pm;
 
+    // Estados
     private static final int STAT_TASK = 0;
     private static final int STAT_SERVICE = 1;
     private static final int STAT_SYSTEM = 2;
 
+    // Estado actual
     private int currentStat = STAT_TASK;
+
+    // ArrayList con los procesos
     private ArrayList<DetailProcess> listdp;
 
+    // RecyclerView y adapter
     private RecyclerView mRecyclerView;
     private RecyclerView.Adapter mAdapter;
     private ScaleInAnimationAdapter sAdapter;
 
+    // Button que actualiza procesos
     private FloatingActionButton fab;
 
+    // Opciones del alertdialog
     public static final int MENU_CANCEL = 0;
     public static final int MENU_SWITCH = 1;
     public static final int MENU_KILL = 2;
     public static final int MENU_UNINSTALL = 3;
     public static final int MENU_KILL_ALL = 4;
+
+    // BroadcastReceiver para actualizacion
     private BroadcastReceiver loadFinish = new LoadFinishReceiver();
 
+    // Accion de finish
     protected static final String ACTION_LOAD_FINISH = "org.freecoder.taskmanager.ACTION_LOAD_FINISH";
 
     public RecyclerViewProcessAdapter adapter;
@@ -87,7 +105,6 @@ public class RecyclerViewProcessFragment extends Fragment {
     public long availMem2 = 0;
 
     public int contador = 0;
-
 
 
     public static RecyclerViewProcessFragment newInstance() {
@@ -104,13 +121,15 @@ public class RecyclerViewProcessFragment extends Fragment {
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         mRecyclerView = (RecyclerView) view.findViewById(R.id.recyclerView_process);
+
+        // LayoutManager para recyclerview
         LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
         mRecyclerView.setLayoutManager(layoutManager);
         mRecyclerView.setHasFixedSize(true);
 
+        // Inicializacion del boton y su animacion
         fab = (FloatingActionButton) view.findViewById(R.id.fab_process);
         final Animation animRotate = AnimationUtils.loadAnimation(getActivity(), R.anim.anim_rotate);
-
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -120,6 +139,7 @@ public class RecyclerViewProcessFragment extends Fragment {
             }
         });
 
+        // Inicializacion de variables necesarias
         am = (ActivityManager) getActivity().getSystemService(Context.ACTIVITY_SERVICE);
         pm = getActivity().getApplicationContext().getPackageManager();
         packageinfo = new PackagesInfo(getActivity());
@@ -127,7 +147,7 @@ public class RecyclerViewProcessFragment extends Fragment {
         refresh();
         getRunningProcess();
 
-
+        // Adapters y animaciones
         adapter = new RecyclerViewProcessAdapter(listdp);
         mAdapter = new RecyclerViewMaterialAdapter(adapter);
         AlphaInAnimationAdapter alphaAdapter = new AlphaInAnimationAdapter(mAdapter);
@@ -224,7 +244,7 @@ public class RecyclerViewProcessFragment extends Fragment {
         // tasklist = am.getRunningTasks(100);
     }
 
-
+    // BroadcastReceiver
     private class LoadFinishReceiver extends BroadcastReceiver {
         @Override
         public void onReceive(final Context ctx, Intent intent) {
@@ -241,8 +261,6 @@ public class RecyclerViewProcessFragment extends Fragment {
             if (Build.VERSION.SDK_INT > 16) {
                 long total = memoryInfo.totalMem;
                 float division = (float) avail / total;
-                Log.d("jj", "A:" + avail + "  -- T:" + total + " -- D:" + division);
-                Log.d("TOTAL", "" + division * 100.0);
             }
             adapter.setOnClickListener(new View.OnClickListener() {
                 @Override

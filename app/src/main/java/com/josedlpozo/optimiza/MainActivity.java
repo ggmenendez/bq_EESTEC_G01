@@ -16,7 +16,6 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -38,6 +37,14 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
+/**
+ * Created by josedlpozo on 16/5/15.
+ * <p/>
+ * MainActivity con las vistas de pestañas de permisos, bateria, procesos y memoria
+ * <p/>
+ * Se encarga de crear la base de datos de aplicaciones la primera vez que instalas
+ */
+
 public class MainActivity extends ActionBarActivity {
 
 
@@ -47,11 +54,11 @@ public class MainActivity extends ActionBarActivity {
     private ActionBarDrawerToggle mDrawerToggle;
     private Toolbar toolbar;
 
+    // Necesario para drawer
     private ListView mNavList;
     private ArrayList<Item_objct> mNavItms;
     private TypedArray mNavIcons;
     NavigationAdapter mNavAdapter;
-
     private String[] titulos;
 
 
@@ -82,10 +89,9 @@ public class MainActivity extends ActionBarActivity {
         //Lugares
         mNavItms.add(new Item_objct(titulos[3], mNavIcons.getResourceId(3, -1)));
 
-        //Declaramos y seteamos nuestrp adaptador al cual le pasamos el array con los titulos
+        //Declaramos y seteamos nuestro adaptador al cual le pasamos el array con los titulos
         mNavAdapter = new NavigationAdapter(this, mNavItms);
         mNavList.setAdapter(mNavAdapter);
-        //Siempre vamos a mostrar el mismo titulo
 
         mNavList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -244,6 +250,8 @@ public class MainActivity extends ActionBarActivity {
 
         /*
         * Declaramos el controlador de la BBDD y accedemos en modo escritura
+        *
+        * para cargar todas las aplicaciones la primera vez que se instala
         */
 
         AppsDbHelper dbHelper = new AppsDbHelper(getBaseContext());
@@ -261,7 +269,6 @@ public class MainActivity extends ActionBarActivity {
             ArrayList<AppsPermisos> apps = new ArrayList<>();
 
             for (ApplicationInfo applicationInfo : packages) {
-                Log.d("test", "App: " + pm.getApplicationLabel(applicationInfo) + " Package: " + applicationInfo.packageName);
 
                 try {
                     PackageInfo packageInfo = pm.getPackageInfo(applicationInfo.packageName, PackageManager.GET_PERMISSIONS);

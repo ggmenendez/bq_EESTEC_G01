@@ -8,6 +8,11 @@ import android.view.MenuItem;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 
+/**
+ * Created by josedlpozo on 12/6/15.
+ * <p/>
+ * Activity para ver la aplicacion deseada en GooglePlay
+ */
 
 public class WebViewActivity extends ActionBarActivity {
 
@@ -22,7 +27,6 @@ public class WebViewActivity extends ActionBarActivity {
         WebSettings webSettings = wv.getSettings();
         webSettings.setJavaScriptEnabled(true);
         wv.loadUrl("https://play.google.com/store/apps/details?id=" + packages);
-        //wv.loadUrl("http://octopus3p.com/");
 
     }
 

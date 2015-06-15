@@ -4,6 +4,11 @@ import android.graphics.drawable.Drawable;
 
 /**
  * Created by josedlpozo on 16/5/15.
+ *
+ * Clase de apoyo para las aplicaciones.
+ *
+ * Necesita los permisos requeridos, su numero, su icono, su nombre y el nombre del paquete
+ *
  */
 public class AppsPermisos {
 

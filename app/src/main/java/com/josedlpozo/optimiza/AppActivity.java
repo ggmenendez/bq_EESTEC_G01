@@ -26,6 +26,11 @@ import com.josedlpozo.fragments.RecyclerViewFragmentPermisos;
 
 /**
  * Created by josedlpozo on 17/5/15.
+ *
+ * Activity para vista detallada de aplicación.
+ *
+ * Utiliza el fragment permisos
+ *
  */
 public class AppActivity extends ActionBarActivity {
 
@@ -40,6 +45,7 @@ public class AppActivity extends ActionBarActivity {
 
     private String nombre;
 
+    // Detector para swipe
     private GestureDetector gestureDetector;
 
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
@@ -51,6 +57,8 @@ public class AppActivity extends ActionBarActivity {
 
         gestureDetector = new GestureDetector(this, gestureListener);
 
+
+        // Recogemos el intent para poner nombre a la pestaña y el icono del tema el icono de la aplicacion
         Intent intent = getIntent();
 
 
@@ -64,6 +72,7 @@ public class AppActivity extends ActionBarActivity {
         } catch (PackageManager.NameNotFoundException e) {
             e.printStackTrace();
         }
+
         setTitle("");
 
         mViewPager = (MaterialViewPager) findViewById(R.id.materialViewPager2);
@@ -95,14 +104,6 @@ public class AppActivity extends ActionBarActivity {
             @Override
             public Fragment getItem(int position) {
                 switch (position) {
-                    //case 0:
-                    //    return RecyclerViewFragment.newInstance();
-                    //case 1:
-                    //    return ScrollFragment.newInstance();
-                    //case 2:
-                    //    return ListViewFragment.newInstance();
-                    //case 3:
-                    //    return WebViewFragment.newInstance();
                     default:
                         RecyclerViewFragmentPermisos r = new RecyclerViewFragmentPermisos();
                         r.setArguments(bundle);
@@ -158,6 +159,7 @@ public class AppActivity extends ActionBarActivity {
             }
         });
 
+        // Animaciones de entrada y salida de activity
         setupWindowAnimations();
     }
 
@@ -173,7 +175,7 @@ public class AppActivity extends ActionBarActivity {
         }
     }
 
-
+    // Detector de swipe para hacer back
     GestureDetector.SimpleOnGestureListener gestureListener = new GestureDetector.SimpleOnGestureListener() {
         public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
             final int SWIPE_MIN_DISTANCE = 120;
