@@ -157,6 +157,12 @@ public class BatteryFragment extends Fragment {
         }
     };
 
+    @Override
+    public void onPause() {
+        super.onPause();
+        handler.removeCallbacks(r);
+    }
+
 
     private String getInfo() {
         StringBuffer sb = new StringBuffer();

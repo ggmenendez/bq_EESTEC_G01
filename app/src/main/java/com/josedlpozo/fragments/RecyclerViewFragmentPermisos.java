@@ -57,6 +57,7 @@ public class RecyclerViewFragmentPermisos extends Fragment {
 
     private RecyclerView mRecyclerView;
     private RecyclerView.Adapter mAdapter;
+    private ScaleInAnimationAdapter sAdapter;
 
     private List<String> mContentItems = new ArrayList<>();
     private MaterialDialog mMaterialDialog;
@@ -70,6 +71,8 @@ public class RecyclerViewFragmentPermisos extends Fragment {
 
     // Espera de descarga de descripcion.
     private CircularProgressBar progress;
+
+    Handler handler;
 
 
 
@@ -109,18 +112,13 @@ public class RecyclerViewFragmentPermisos extends Fragment {
         RecyclerViewPermisosAdapter adapter = new RecyclerViewPermisosAdapter(mContentItems);
         mAdapter = new RecyclerViewMaterialAdapter(adapter);
         AlphaInAnimationAdapter alphaAdapter = new AlphaInAnimationAdapter(mAdapter);
-        final ScaleInAnimationAdapter sAdapter = new ScaleInAnimationAdapter(alphaAdapter);
+        sAdapter = new ScaleInAnimationAdapter(alphaAdapter);
         mRecyclerView.setAdapter(sAdapter);
 
         // Handler para mejorar fallo en la animacion de entrada a nueva activity
-        final Handler handler = new Handler();
+        handler = new Handler();
 
-        final Runnable r = new Runnable() {
-            public void run() {
-                sAdapter.notifyDataSetChanged();
-                handler.postDelayed(this, 700);
-            }
-        };
+
 
         handler.postDelayed(r, 700);
 
@@ -167,6 +165,19 @@ public class RecyclerViewFragmentPermisos extends Fragment {
         setupWindowAnimations();
 
         MaterialViewPagerHelper.registerRecyclerView(getActivity(), mRecyclerView, null);
+    }
+
+    Runnable r = new Runnable() {
+        public void run() {
+            sAdapter.notifyDataSetChanged();
+            handler.postDelayed(this, 700);
+        }
+    };
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        handler.removeCallbacks(r);
     }
 
     private void setupWindowAnimations() {

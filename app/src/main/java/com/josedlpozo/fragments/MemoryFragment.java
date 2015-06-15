@@ -104,8 +104,6 @@ public class MemoryFragment extends Fragment {
 
     Runnable r = new Runnable() {
         public void run() {
-
-
             ActivityManager activityManager = (ActivityManager) getActivity().getSystemService(Context.ACTIVITY_SERVICE);
             ActivityManager.MemoryInfo memoryInfo = new ActivityManager.MemoryInfo();
             activityManager.getMemoryInfo(memoryInfo);
@@ -141,6 +139,12 @@ public class MemoryFragment extends Fragment {
             handler.postDelayed(this, 5000);
         }
     };
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        handler.removeCallbacks(r);
+    }
 
     public static boolean externalMemoryAvailable() {
         return android.os.Environment.getExternalStorageState().equals(
