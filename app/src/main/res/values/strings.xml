@@ -65,4 +65,5 @@
     <string name="message_switch_fail">Cant switch to this task, because it has no interface.</string>
     <string name="message_no_market">Cant start Market, please check your phone.</string>
     <string name="title_activity_web_view">WebViewActivity</string>
+    <string name="title_activity_intro">Intro</string>
 </resources>

@@ -1,6 +1,7 @@
 package com.josedlpozo.optimiza;
 
 import android.content.ContentValues;
+import android.content.Intent;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
@@ -66,6 +67,7 @@ public class MainActivity extends ActionBarActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
 
         //Lista
         mNavList = (ListView) findViewById(R.id.lista);
@@ -264,6 +266,7 @@ public class MainActivity extends ActionBarActivity {
         Cursor mCursor = db.rawQuery("SELECT * FROM " + "Permisos_App", null);
 
         if (!mCursor.moveToFirst()) {
+
             PackageManager pm = getPackageManager();
             List<ApplicationInfo> packages = pm.getInstalledApplications(PackageManager.GET_META_DATA);
             ArrayList<AppsPermisos> apps = new ArrayList<>();
@@ -284,6 +287,10 @@ public class MainActivity extends ActionBarActivity {
                     e.printStackTrace();
                 }
             }
+
+            // Salta la INTRO la primera vez que se ejecuta esta app
+            Intent intent = new Intent(this, Intro.class);
+            startActivity(intent);
 
             Collections.sort(apps, new Comparator<AppsPermisos>() {
                 @Override
