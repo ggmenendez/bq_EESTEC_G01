@@ -34,7 +34,7 @@
             android:id="@+id/fab12"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/ic_refresh_black_18dp"
+            android:src="@drawable/ic_refresh"
             fab:fab_label="Actualizar"
             style="@style/MenuButtonsStyle" />
 
@@ -42,7 +42,7 @@
             android:id="@+id/fab22"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/ic_help_outline_black_18dp"
+            android:src="@drawable/ic_help"
             fab:fab_label="Ayuda"
             style="@style/MenuButtonsStyle" />
 
@@ -50,7 +50,7 @@
             android:id="@+id/fab32"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/ic_autorenew_black_24dp"
+            android:src="@drawable/ic_reset"
             fab:fab_label="Reset"
             style="@style/MenuButtonsStyle" />
 

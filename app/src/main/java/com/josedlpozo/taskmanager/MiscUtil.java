@@ -10,7 +10,7 @@ import android.content.pm.PackageManager.NameNotFoundException;
 import android.net.Uri;
 import android.widget.Toast;
 
-import com.josedlpozo.fragments.RecyclerViewProcessFragment;
+import com.josedlpozo.fragments.ProcessesFragment;
 import com.josedlpozo.optimiza.R;
 
 public class MiscUtil {
@@ -31,7 +31,7 @@ public class MiscUtil {
         return ret;
     }
 
-    public static Dialog getTaskMenuDialog(final RecyclerViewProcessFragment ctx, final DetailProcess dp) {
+    public static Dialog getTaskMenuDialog(final ProcessesFragment ctx, final DetailProcess dp) {
 
         return new AlertDialog.Builder(ctx.getActivity()).setTitle(dp.getTitle()).setItems(
                 R.array.menu_task_operation, new DialogInterface.OnClickListener() {

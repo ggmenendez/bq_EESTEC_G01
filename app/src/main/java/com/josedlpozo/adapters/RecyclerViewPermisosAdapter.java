@@ -2,6 +2,7 @@ package com.josedlpozo.adapters;
 
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,7 +13,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.josedlpozo.optimiza.R;
-import com.josedlpozo.optimiza.WebViewActivity;
 
 import java.util.Date;
 import java.util.List;
@@ -107,8 +107,9 @@ public class RecyclerViewPermisosAdapter extends RecyclerView.Adapter<RecyclerVi
                         @Override
                         public void onClick(View v) {
                             try {
-                                Intent intent = new Intent(v.getContext(), WebViewActivity.class);
-                                intent.putExtra("PACKAGE", itemView.getContext().getPackageManager().getApplicationInfo(packages, 0).packageName);
+                                // Google Play
+                                String packageName = itemView.getContext().getPackageManager().getApplicationInfo(packages, 0).packageName;
+                                Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + packageName));
                                 v.getContext().startActivity(intent);
                             } catch (PackageManager.NameNotFoundException e) {
                                 e.printStackTrace();
@@ -195,10 +196,6 @@ public class RecyclerViewPermisosAdapter extends RecyclerView.Adapter<RecyclerVi
     public void onClick(View view) {
         if (listener != null)
             listener.onClick(view);
-    }
-
-    public boolean isHeader(int position) {
-        return position == TYPE_HEADER;
     }
 
 }

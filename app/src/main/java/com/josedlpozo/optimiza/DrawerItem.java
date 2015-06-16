@@ -2,15 +2,14 @@ package com.josedlpozo.optimiza;
 
 /**
  * Created by josedlpozo on 12/6/15.
- *
+ * <p/>
  * Clase de apoyo para el menu drawer
- *
  */
-public class Item_objct {
+public class DrawerItem {
     private String titulo;
     private int icono;
 
-    public Item_objct(String title, int icon) {
+    public DrawerItem(String title, int icon) {
         this.titulo = title;
         this.icono = icon;
     }

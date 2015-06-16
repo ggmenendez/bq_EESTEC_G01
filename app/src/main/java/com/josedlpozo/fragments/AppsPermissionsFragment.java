@@ -49,7 +49,7 @@ import jp.wasabeef.recyclerview.animators.adapters.ScaleInAnimationAdapter;
 import me.drakeet.materialdialog.MaterialDialog;
 
 
-public class RecyclerViewFragment extends Fragment {
+public class AppsPermissionsFragment extends Fragment {
 
     private RecyclerView mRecyclerView;
     private RecyclerView.Adapter mAdapter;
@@ -64,8 +64,8 @@ public class RecyclerViewFragment extends Fragment {
     private int contador_apps = 0;
 
 
-    public static RecyclerViewFragment newInstance() {
-        return new RecyclerViewFragment();
+    public static AppsPermissionsFragment newInstance() {
+        return new AppsPermissionsFragment();
     }
 
     @Override
@@ -253,6 +253,7 @@ public class RecyclerViewFragment extends Fragment {
                 sAdapter.notifyDataSetChanged();
                 loadMoreData(current_page);
             }
+
             @Override
             public void onHide() {
                 FrameLayout.LayoutParams lp = (FrameLayout.LayoutParams) menu2.getLayoutParams();

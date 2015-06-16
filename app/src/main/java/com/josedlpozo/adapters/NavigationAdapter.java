@@ -8,7 +8,7 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.josedlpozo.optimiza.Item_objct;
+import com.josedlpozo.optimiza.DrawerItem;
 import com.josedlpozo.optimiza.R;
 
 import java.util.ArrayList;
@@ -23,21 +23,21 @@ public class NavigationAdapter extends BaseAdapter {
 
 
     private Activity activity;
-    ArrayList<Item_objct> arrayitms;
+    ArrayList<DrawerItem> drawerItems;
 
-    public NavigationAdapter(Activity activity, ArrayList<Item_objct> listarry) {
+    public NavigationAdapter(Activity activity, ArrayList<DrawerItem> drawerItems) {
         super();
         this.activity = activity;
-        this.arrayitms = listarry;
+        this.drawerItems = drawerItems;
     }
 
     @Override
-    public Item_objct getItem(int position) {
-        return arrayitms.get(position);
+    public DrawerItem getItem(int position) {
+        return drawerItems.get(position);
     }
 
     public int getCount() {
-        return arrayitms.size();
+        return drawerItems.size();
     }
 
     @Override
@@ -45,18 +45,18 @@ public class NavigationAdapter extends BaseAdapter {
         return position;
     }
 
-    //Declaramos clase estatica la cual representa a la fila
-    public static class Fila {
+    //Declaramos clase estatica la cual representa un item del menú
+    public static class DrawerItemView {
         TextView titulo_itm;
         ImageView icono;
     }
 
     public View getView(int position, View convertView, ViewGroup parent) {
-        Fila view;
+        DrawerItemView view;
         LayoutInflater inflator = activity.getLayoutInflater();
         if (convertView == null) {
-            view = new Fila();
-            Item_objct itm = arrayitms.get(position);
+            view = new DrawerItemView();
+            DrawerItem itm = drawerItems.get(position);
             convertView = inflator.inflate(R.layout.itm, null);
             view.titulo_itm = (TextView) convertView.findViewById(R.id.title_item);
             view.titulo_itm.setText(itm.getTitulo());
@@ -64,7 +64,7 @@ public class NavigationAdapter extends BaseAdapter {
             view.icono.setImageResource(itm.getIcono());
             convertView.setTag(view);
         } else {
-            view = (Fila) convertView.getTag();
+            view = (DrawerItemView) convertView.getTag();
         }
         return convertView;
     }

@@ -20,23 +20,25 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
 
+import com.github.florent37.materialviewpager.HeaderDesign;
 import com.github.florent37.materialviewpager.MaterialViewPager;
 import com.josedlpozo.adapters.NavigationAdapter;
 import com.josedlpozo.database.AppDbAdapter;
 import com.josedlpozo.database.AppsDbHelper;
+import com.josedlpozo.fragments.AppsPermissionsFragment;
 import com.josedlpozo.fragments.BatteryFragment;
 import com.josedlpozo.fragments.MemoryFragment;
-import com.josedlpozo.fragments.RecyclerViewFragment;
-import com.josedlpozo.fragments.RecyclerViewProcessFragment;
+import com.josedlpozo.fragments.ProcessesFragment;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+
+import me.drakeet.materialdialog.MaterialDialog;
 
 /**
  * Created by josedlpozo on 16/5/15.
@@ -57,77 +59,21 @@ public class MainActivity extends ActionBarActivity {
 
     // Necesario para drawer
     private ListView mNavList;
-    private ArrayList<Item_objct> mNavItms;
+    private ArrayList<DrawerItem> mNavItms;
     private TypedArray mNavIcons;
     NavigationAdapter mNavAdapter;
     private String[] titulos;
 
+    MaterialDialog mMaterialDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        initDrawer();
 
-        //Lista
-        mNavList = (ListView) findViewById(R.id.lista);
-        //Declaramos el header el caul sera el layout de header.xml
-        View header = getLayoutInflater().inflate(R.layout.header, null);
-        //Establecemos header
-        mNavList.addHeaderView(header);
-        //Tomamos listado  de imgs desde drawable
-        mNavIcons = getResources().obtainTypedArray(R.array.navigation_iconos);
-        //Tomamos listado  de titulos desde el string-array de los recursos @string/nav_options
-        titulos = getResources().getStringArray(R.array.nav_options);
-        //Listado de titulos de barra de navegacion
-        mNavItms = new ArrayList<Item_objct>();
-        //Agregamos objetos Item_objct al array
-        //Perfil
-        mNavItms.add(new Item_objct(titulos[0], mNavIcons.getResourceId(0, -1)));
-        //Favoritos
-        mNavItms.add(new Item_objct(titulos[1], mNavIcons.getResourceId(1, -1)));
-        //Eventos
-        mNavItms.add(new Item_objct(titulos[2], mNavIcons.getResourceId(2, -1)));
-        //Lugares
-        mNavItms.add(new Item_objct(titulos[3], mNavIcons.getResourceId(3, -1)));
-
-        //Declaramos y seteamos nuestro adaptador al cual le pasamos el array con los titulos
-        mNavAdapter = new NavigationAdapter(this, mNavItms);
-        mNavList.setAdapter(mNavAdapter);
-
-        mNavList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position,
-                                    long id) {
-
-                Item_objct item = (Item_objct) mNavList.getItemAtPosition(position);
-
-                switch (item.getTitulo()) {
-                    case "Permisos":
-                        mViewPager.getViewPager().setCurrentItem(0);
-                        mDrawer.closeDrawers();
-                        break;
-                    case "Batería":
-                        mViewPager.getViewPager().setCurrentItem(1);
-                        mDrawer.closeDrawers();
-                        break;
-                    case "Procesos":
-                        mViewPager.getViewPager().setCurrentItem(2);
-                        mDrawer.closeDrawers();
-                        break;
-                    case "Memoria":
-                        mViewPager.getViewPager().setCurrentItem(3);
-                        mDrawer.closeDrawers();
-                        break;
-                    default:
-                        mViewPager.getViewPager().setCurrentItem(3);
-                }
-
-            }
-        });
-
-
-        setTitle("");
+        setTitle("OptimizApp");
 
         mViewPager = (MaterialViewPager) findViewById(R.id.materialViewPager);
 
@@ -179,19 +125,19 @@ public class MainActivity extends ActionBarActivity {
             public Fragment getItem(int position) {
                 switch (position) {
                     case 0:
-                        return RecyclerViewFragment.newInstance();
+                        return AppsPermissionsFragment.newInstance();
                     case 1:
-                        return BatteryFragment.newInstance();
+                        return ProcessesFragment.newInstance();
                     case 2:
-                        return RecyclerViewProcessFragment.newInstance();
-                    case 3:
                         return MemoryFragment.newInstance();
+                    case 3:
+                        return BatteryFragment.newInstance();
                     default:
-                        return RecyclerViewFragment.newInstance();
+                        return AppsPermissionsFragment.newInstance();
                 }
             }
 
-            @Override
+            /*@Override
             public void setPrimaryItem(ViewGroup container, int position, Object object) {
                 super.setPrimaryItem(container, position, object);
 
@@ -225,7 +171,7 @@ public class MainActivity extends ActionBarActivity {
                 mViewPager.setImageUrl(imageUrl, fadeDuration);
                 mViewPager.setColor(color, fadeDuration);
 
-            }
+            }*/
 
             @Override
             public int getCount() {
@@ -236,17 +182,39 @@ public class MainActivity extends ActionBarActivity {
             public CharSequence getPageTitle(int position) {
                 switch (position) {
                     case 0:
-                        return "Permisos";
+                        return "Apps";
                     case 1:
-                        return "Batería";
-                    case 2:
                         return "Procesos";
-                    case 3:
+                    case 2:
                         return "Memoria";
+                    case 3:
+                        return "Batería";
                 }
                 return "";
             }
         });
+
+        mViewPager.setMaterialViewPagerListener(new MaterialViewPager.MaterialViewPagerListener() {
+            @Override
+            public HeaderDesign getHeaderDesign(int page) {
+                switch (page) {
+                    case 0:
+                        return HeaderDesign.fromColorResAndUrl(R.color.blue, "http://cdn1.tnwcdn.com/wp-content/blogs.dir/1/files/2014/06/wallpaper_51.jpg");
+                    case 1:
+                        return HeaderDesign.fromColorResAndUrl(R.color.green, "https://fs01.androidpit.info/a/63/0e/android-l-wallpapers-630ea6-h900.jpg");
+                    case 2:
+                        return HeaderDesign.fromColorResAndUrl(R.color.cyan, "http://www.droid-life.com/wp-content/uploads/2014/10/lollipop-wallpapers10.jpg");
+                    case 3:
+                        return HeaderDesign.fromColorResAndUrl(R.color.red, "http://www.tothemobile.com/wp-content/uploads/2014/07/original.jpg");
+                }
+
+                //execute others actions if needed (ex : modify your header logo)
+
+                return null;
+            }
+        });
+
+
         mViewPager.getViewPager().setOffscreenPageLimit(mViewPager.getViewPager().getAdapter().getCount());
         mViewPager.getPagerTitleStrip().setViewPager(mViewPager.getViewPager());
 
@@ -280,9 +248,7 @@ public class MainActivity extends ActionBarActivity {
                     String[] requestedPermissions = packageInfo.requestedPermissions;
                     if (requestedPermissions == null) continue;
                     AppsPermisos app = new AppsPermisos(pm.getApplicationIcon(packageInfo.packageName), pm.getApplicationLabel(applicationInfo).toString(), requestedPermissions, applicationInfo.packageName);
-
                     apps.add(app);
-
                 } catch (PackageManager.NameNotFoundException e) {
                     e.printStackTrace();
                 }
@@ -310,6 +276,84 @@ public class MainActivity extends ActionBarActivity {
         }
         db.close();
 
+        mMaterialDialog = new MaterialDialog(this);
+    }
+
+    private void initDrawer() {//Lista
+        mNavList = (ListView) findViewById(R.id.lista);
+        //Declaramos el header el caul sera el layout de header.xml
+        View header = getLayoutInflater().inflate(R.layout.header, null);
+        //Establecemos header
+        mNavList.addHeaderView(header);
+        //Tomamos listado  de imgs desde drawable
+        mNavIcons = getResources().obtainTypedArray(R.array.navigation_iconos);
+        //Tomamos listado  de titulos desde el string-array de los recursos @string/nav_options
+        titulos = getResources().getStringArray(R.array.nav_options);
+        //Listado de titulos de barra de navegacion
+        mNavItms = new ArrayList<DrawerItem>();
+        for (int i = 0; i < titulos.length; i++) {
+            mNavItms.add(new DrawerItem(titulos[i], mNavIcons.getResourceId(i, -1)));
+        }
+
+        mNavAdapter = new NavigationAdapter(this, mNavItms);
+        mNavList.setAdapter(mNavAdapter);
+
+        mNavList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+
+                DrawerItem item = (DrawerItem) mNavList.getItemAtPosition(position);
+
+                switch (item.getTitulo()) {
+                    case "Apps":
+                        mViewPager.getViewPager().setCurrentItem(0);
+                        mDrawer.closeDrawers();
+                        break;
+                    case "Procesos":
+                        mViewPager.getViewPager().setCurrentItem(1);
+                        mDrawer.closeDrawers();
+                        break;
+                    case "Memoria":
+                        mViewPager.getViewPager().setCurrentItem(2);
+                        mDrawer.closeDrawers();
+                        break;
+                    case "Batería":
+                        mViewPager.getViewPager().setCurrentItem(3);
+                        mDrawer.closeDrawers();
+                        break;
+                    case "Invitar amigos":
+                        shareApp();
+                        mDrawer.closeDrawers();
+                        break;
+                    case "Acerca de":
+                        mMaterialDialog.setTitle("OptimizApp")
+                                .setMessage("Aplicación desarrollada para concurso aplicaciones Android Cátedra BQ.\n\nDesarrollado por josedlpozo.\n\nVersion: 1.0")
+                                .setPositiveButton(
+                                        "OK", new View.OnClickListener() {
+                                            @Override
+                                            public void onClick(View v) {
+                                                mMaterialDialog.dismiss();
+
+                                            }
+                                        }
+                                )
+                                .show();
+                        mDrawer.closeDrawers();
+                        break;
+                    default:
+                        mViewPager.getViewPager().setCurrentItem(3);
+                }
+
+            }
+        });
+    }
+
+    private void shareApp() {
+        Intent sharingIntent = new Intent(Intent.ACTION_SEND);
+        sharingIntent.setType("text/plain");
+        sharingIntent.putExtra(Intent.EXTRA_SUBJECT, "OptimizApp");
+        sharingIntent.putExtra(Intent.EXTRA_TEXT, "#OptimizApp Nueva app, compartelo! \n\n " + "https://play.google.com/store/apps/details?id=com.josedlpozo.optimiza");
+        startActivity(Intent.createChooser(sharingIntent, "Compartir vía:"));
     }
 
 

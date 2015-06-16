@@ -45,19 +45,19 @@ import java.util.regex.Pattern;
 import jp.wasabeef.recyclerview.animators.SlideInLeftAnimator;
 import jp.wasabeef.recyclerview.animators.adapters.AlphaInAnimationAdapter;
 import jp.wasabeef.recyclerview.animators.adapters.ScaleInAnimationAdapter;
+import me.drakeet.materialdialog.MaterialDialog;
 
 /**
  * Created by josedlpozo on 9/6/15.
- *
+ * <p/>
  * Fragment para recyclerview de procesos
- *
+ * <p/>
  * Muestra datos de nombre de proceso, icono y cantidad de memoria ocupada
  * <p/>
  * Implementa OnClickListener para que aparezca un alertdialog con opciones para el usuario
- *
  */
 
-public class RecyclerViewProcessFragment extends Fragment {
+public class ProcessesFragment extends Fragment {
 
     private static final String TAG = "Process";
 
@@ -106,9 +106,10 @@ public class RecyclerViewProcessFragment extends Fragment {
 
     public int contador = 0;
 
+    MaterialDialog mMaterialDialog;
 
-    public static RecyclerViewProcessFragment newInstance() {
-        return new RecyclerViewProcessFragment();
+    public static ProcessesFragment newInstance() {
+        return new ProcessesFragment();
     }
 
     @Override
@@ -159,6 +160,8 @@ public class RecyclerViewProcessFragment extends Fragment {
         mRecyclerView.getItemAnimator().setRemoveDuration(1000);
         mRecyclerView.getItemAnimator().setMoveDuration(1000);
         mRecyclerView.getItemAnimator().setChangeDuration(1000);
+
+        mMaterialDialog = new MaterialDialog(getActivity());
 
     }
 
@@ -284,7 +287,19 @@ public class RecyclerViewProcessFragment extends Fragment {
                                             DecimalFormat twoDecimalForm = new DecimalFormat("#.##");
                                             double memory = Math.abs((availMem2 - availMem1)) / (1024.0 * 1024.0);
                                             twoDecimalForm.format(memory);
-                                            Toast.makeText(getActivity(), "Han sido liberados: " + twoDecimalForm.format(memory) + " MB", Toast.LENGTH_SHORT).show();
+                                            mMaterialDialog.setTitle("OptimizApp")
+                                                    .setMessage("Han sido liberados: " + twoDecimalForm.format(memory) + " MB")
+                                                    .setPositiveButton(
+                                                            "OK", new View.OnClickListener() {
+                                                                @Override
+                                                                public void onClick(View v) {
+                                                                    mMaterialDialog.dismiss();
+
+                                                                }
+                                                            }
+                                                    )
+                                                    .show();
+                                            //Toast.makeText(getActivity(), "Han sido liberados: " + twoDecimalForm.format(memory) + " MB", Toast.LENGTH_SHORT).show();
                                             contador = 0;
                                             refresh();
                                             return;
@@ -328,7 +343,19 @@ public class RecyclerViewProcessFragment extends Fragment {
                                             availMem2 = memoryInfo.availMem;
                                             DecimalFormat twoDecimalForm = new DecimalFormat("#.##");
                                             double memory = Math.abs((availMem2 - availMem1)) / (1024.0 * 1024.0);
-                                            Toast.makeText(getActivity(), "Han sido liberados: " + twoDecimalForm.format(memory) + " MB", Toast.LENGTH_SHORT).show();
+                                            mMaterialDialog.setTitle("OptimizApp")
+                                                    .setMessage("Han sido liberados: " + twoDecimalForm.format(memory) + " MB")
+                                                    .setPositiveButton(
+                                                            "OK", new View.OnClickListener() {
+                                                                @Override
+                                                                public void onClick(View v) {
+                                                                    mMaterialDialog.dismiss();
+
+                                                                }
+                                                            }
+                                                    )
+                                                    .show();
+                                            //Toast.makeText(getActivity(), "Han sido liberados: " + twoDecimalForm.format(memory) + " MB", Toast.LENGTH_SHORT).show();
                                             contador = 0;
                                             refresh();
                                             return;

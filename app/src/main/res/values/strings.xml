@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Optimiza</string>
+    <string name="app_name">OptimizApp</string>
 
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
@@ -26,28 +26,30 @@
 
     <!-- Lista de titulos de navegacion-->
     <string-array name="nav_options">
-        <item>Permisos</item>
-        <item>Batería</item>
+        <item>Apps</item>
         <item>Procesos</item>
         <item>Memoria</item>
+        <item>Batería</item>
+        <item>Invitar amigos</item>
+        <item>Acerca de</item>
     </string-array>
+
     <!-- Lista de iconos de navegacion-->
     <array name="navigation_iconos">
-        <item>@drawable/ic_action_user</item>
-        <item>@drawable/ic_action_star</item>
-        <item>@drawable/ic_action_event</item>
-        <item>@drawable/ic_action_place</item>
-        <item>@drawable/ic_action_labels</item>
-        <item>@drawable/ic_action_settings</item>
-        <item>@drawable/ic_action_share</item>
+        <item>@drawable/ic_apps</item>
+        <item>@drawable/ic_processes</item>
+        <item>@drawable/ic_memory</item>
+        <item>@drawable/ic_battery</item>
+        <item>@drawable/ic_invite</item>
+        <item>@drawable/ic_about</item>
     </array>
 
     <string-array name="menu_task_operation">
-        <item>Cancel</item>
-        <item>Switch To</item>
-        <item>Kill it!</item>
-        <item>Uninstall</item>
-        <item>Kill ALL!</item>
+        <item>Cancelar</item>
+        <item>Abrir</item>
+        <item>Eliminar</item>
+        <item>Desinstalar</item>
+        <item>Eliminar todos</item>
     </string-array>
     <string name="btn_task">Tasks</string>
     <string name="btn_service">Services</string>

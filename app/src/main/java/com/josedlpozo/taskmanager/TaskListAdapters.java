@@ -10,7 +10,7 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.josedlpozo.fragments.RecyclerViewProcessFragment;
+import com.josedlpozo.fragments.ProcessesFragment;
 import com.josedlpozo.optimiza.R;
 
 import java.util.ArrayList;
@@ -21,10 +21,10 @@ public class TaskListAdapters {
     public final static class TasksListAdapter extends BaseAdapter {
         private LayoutInflater mInflater;
         private List<RunningTaskInfo> list;
-        private RecyclerViewProcessFragment ctx;
+        private ProcessesFragment ctx;
         private PackageManager pm;
 
-        public TasksListAdapter(RecyclerViewProcessFragment context, List<RunningTaskInfo> list) {
+        public TasksListAdapter(ProcessesFragment context, List<RunningTaskInfo> list) {
             // Cache the LayoutInflate to avoid asking for a new one each time.
             mInflater = LayoutInflater.from(context.getActivity());
 
@@ -79,10 +79,10 @@ public class TaskListAdapters {
     public final static class ProcessListAdapter extends BaseAdapter {
         private LayoutInflater mInflater;
         private ArrayList<DetailProcess> list;
-        private RecyclerViewProcessFragment ctx;
+        private ProcessesFragment ctx;
         private PackageManager pm;
 
-        public ProcessListAdapter(RecyclerViewProcessFragment context, ArrayList<DetailProcess> list) {
+        public ProcessListAdapter(ProcessesFragment context, ArrayList<DetailProcess> list) {
             // Cache the LayoutInflate to avoid asking for a new one each time.
             mInflater = LayoutInflater.from(context.getActivity());
 
