@@ -219,7 +219,11 @@ public class ProcessesFragment extends Fragment {
             Collections.sort(listdp, new Comparator<DetailProcess>() {
                 @Override
                 public int compare(DetailProcess lhs, DetailProcess rhs) {
-                    return rhs.getPsrow().mem - lhs.getPsrow().mem;
+                    if (lhs != null && rhs != null) {
+                        return rhs.getPsrow().mem - lhs.getPsrow().mem;
+                    } else {
+                        return 0;
+                    }
                 }
             });
         }

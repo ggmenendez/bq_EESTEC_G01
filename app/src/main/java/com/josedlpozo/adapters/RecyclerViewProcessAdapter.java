@@ -96,7 +96,7 @@ public class RecyclerViewProcessAdapter extends RecyclerView.Adapter<RecyclerVie
             }
             case TYPE_CELL: {
                 view = LayoutInflater.from(parent.getContext())
-                        .inflate(R.layout.list_item_card_small, parent, false);
+                        .inflate(R.layout.list_item_card_small_process, parent, false);
                 view.setOnClickListener(this);
                 return new AppsViewHolder(view) {
                 };

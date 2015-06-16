@@ -17,6 +17,7 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
 import android.transition.Explode;
 import android.transition.Fade;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -298,10 +299,11 @@ public class AppsPermissionsFragment extends Fragment {
             Toast.makeText(getActivity().getBaseContext(), "No hay aplicaciones para mostrar.", Toast.LENGTH_LONG).show();
         } else {
 
-            if (cursor.moveToFirst() && cursor.getInt(cursor.getColumnIndex(AppDbAdapter.COLUMNA_IGNORADA)) == 0) {
+            if (cursor.moveToFirst()) {
                 while (cursor.moveToNext()) {
                     AppsPermisos app = null;
                     try {
+                        if (cursor.getInt(cursor.getColumnIndex(AppDbAdapter.COLUMNA_IGNORADA)) == 0)
                         app = new AppsPermisos(getActivity().getPackageManager().getApplicationIcon(cursor.getString(cursor.getColumnIndex(db.COLUMNA_PAQUETES))), cursor.getString(cursor.getColumnIndex(db.COLUMNA_NOMBRE)), getActivity().getPackageManager().getPackageInfo(cursor.getString(cursor.getColumnIndex(db.COLUMNA_PAQUETES)), PackageManager.GET_PERMISSIONS).requestedPermissions, cursor.getString(cursor.getColumnIndex(db.COLUMNA_PAQUETES)));
                     } catch (PackageManager.NameNotFoundException e) {
                         e.printStackTrace();
@@ -369,6 +371,7 @@ public class AppsPermissionsFragment extends Fragment {
                 ordenaPorNumeroPermisos();
                 sAdapter.notifyDataSetChanged();
             } else if (mCursor.getInt(mCursor.getColumnIndex(AppDbAdapter.COLUMNA_IGNORADA)) == 0) {
+                Log.d("acc", mCursor.getString(mCursor.getColumnIndex(AppDbAdapter.COLUMNA_NOMBRE)) + " " + mCursor.getInt(mCursor.getColumnIndex(AppDbAdapter.COLUMNA_IGNORADA)));
                 for (AppsPermisos aplicacion : mContentItems) {
                     if (aplicacion.getNombre().equals(app.getNombre())) {
                         flag = 1;
@@ -376,11 +379,10 @@ public class AppsPermissionsFragment extends Fragment {
                 }
                 if (flag == 0) {
                     mContentItems.add(app);
-                    ordenaPorNumeroPermisos();
-                    sAdapter.notifyDataSetChanged();
                 }
 
             }
+            Log.d("acc", mCursor.getString(mCursor.getColumnIndex(AppDbAdapter.COLUMNA_NOMBRE)) + " " + mCursor.getInt(mCursor.getColumnIndex(AppDbAdapter.COLUMNA_IGNORADA)));
         }
         ordenaPorNumeroPermisos();
         sAdapter.notifyDataSetChanged();

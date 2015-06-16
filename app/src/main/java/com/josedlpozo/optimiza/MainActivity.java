@@ -304,44 +304,48 @@ public class MainActivity extends ActionBarActivity {
 
                 DrawerItem item = (DrawerItem) mNavList.getItemAtPosition(position);
 
-                switch (item.getTitulo()) {
-                    case "Apps":
-                        mViewPager.getViewPager().setCurrentItem(0);
-                        mDrawer.closeDrawers();
-                        break;
-                    case "Procesos":
-                        mViewPager.getViewPager().setCurrentItem(1);
-                        mDrawer.closeDrawers();
-                        break;
-                    case "Memoria":
-                        mViewPager.getViewPager().setCurrentItem(2);
-                        mDrawer.closeDrawers();
-                        break;
-                    case "Batería":
-                        mViewPager.getViewPager().setCurrentItem(3);
-                        mDrawer.closeDrawers();
-                        break;
-                    case "Invitar amigos":
-                        shareApp();
-                        mDrawer.closeDrawers();
-                        break;
-                    case "Acerca de":
-                        mMaterialDialog.setTitle("OptimizApp")
-                                .setMessage("Aplicación desarrollada para concurso aplicaciones Android Cátedra BQ.\n\nDesarrollado por josedlpozo.\n\nVersion: 1.0")
-                                .setPositiveButton(
-                                        "OK", new View.OnClickListener() {
-                                            @Override
-                                            public void onClick(View v) {
-                                                mMaterialDialog.dismiss();
+                if (position == 0) {
 
+                } else {
+                    switch (item.getTitulo()) {
+                        case "Apps":
+                            mViewPager.getViewPager().setCurrentItem(0);
+                            mDrawer.closeDrawers();
+                            break;
+                        case "Procesos":
+                            mViewPager.getViewPager().setCurrentItem(1);
+                            mDrawer.closeDrawers();
+                            break;
+                        case "Memoria":
+                            mViewPager.getViewPager().setCurrentItem(2);
+                            mDrawer.closeDrawers();
+                            break;
+                        case "Batería":
+                            mViewPager.getViewPager().setCurrentItem(3);
+                            mDrawer.closeDrawers();
+                            break;
+                        case "Invitar amigos":
+                            shareApp();
+                            mDrawer.closeDrawers();
+                            break;
+                        case "Acerca de":
+                            mMaterialDialog.setTitle("OptimizApp")
+                                    .setMessage("Aplicación desarrollada para concurso aplicaciones Android Cátedra BQ.\n\nDesarrollado por josedlpozo.\n\nVersion: 1.0")
+                                    .setPositiveButton(
+                                            "OK", new View.OnClickListener() {
+                                                @Override
+                                                public void onClick(View v) {
+                                                    mMaterialDialog.dismiss();
+
+                                                }
                                             }
-                                        }
-                                )
-                                .show();
-                        mDrawer.closeDrawers();
-                        break;
-                    default:
-                        mViewPager.getViewPager().setCurrentItem(3);
+                                    )
+                                    .show();
+                            mDrawer.closeDrawers();
+                            break;
+                        default:
+                            mViewPager.getViewPager().setCurrentItem(3);
+                    }
                 }
 
             }
