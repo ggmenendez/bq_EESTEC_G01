@@ -8,6 +8,7 @@ La primera vez que ejecuta el usuario la aplicación tendrá una intro formada p
 
 
 Cuando comienza la ejecución de la aplicación necesitamos tener información sobre todas las apps instaladas en el dispositivo con la informacion de sus permisos, conseguido de la siguiente forma:
+
 ```
 PackageManager pm = getPackageManager();
             List<ApplicationInfo> packages = pm.getInstalledApplications(PackageManager.GET_META_DATA);
@@ -28,7 +29,9 @@ PackageManager pm = getPackageManager();
                 }
             }
 ```
+
 La base de datos de las aplicaciones instaladas almacena: el nombre de la aplicación, el nombre del paquete y un flag llamado ignorada, que sirve para mostrar o no la aplicación en la lista.
+
 ```
     /**
      * Definimos constantes nombres de tablas
@@ -48,11 +51,12 @@ La base de datos de las aplicaciones instaladas almacena: el nombre de la aplica
      */
     private static final String CREATE_TABLE_APP_PERMISOS = "CREATE TABLE " + TABLE_NAME + "(" + COLUMNA_ID + " " + TYPE_INTEGER + " PRIMARY KEY," + COLUMNA_NOMBRE + " " + TYPE_TEXT + " NOT NULL, " +
             COLUMNA_PAQUETES + " " + TYPE_TEXT + " NOT NULL," + COLUMNA_IGNORADA + " " + TYPE_INTEGER + ")";
-            ```
+```
+            
 Además se crea una base de datos dinámica, que descarga los datos de un archivo de texto con formato JSON guardado en Dropbox. Esta base de datos dinámica guarda el nombre del permiso y una breve descripción.
 
-```
 
+```
     /**
      * Definimos constantes nombres de tablas
      */
@@ -170,4 +174,3 @@ GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
-
