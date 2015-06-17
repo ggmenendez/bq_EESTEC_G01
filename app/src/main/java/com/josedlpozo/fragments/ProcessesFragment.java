@@ -19,13 +19,17 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AccelerateInterpolator;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.view.animation.DecelerateInterpolator;
+import android.widget.FrameLayout;
 import android.widget.Toast;
 
 import com.github.florent37.materialviewpager.MaterialViewPagerHelper;
 import com.github.florent37.materialviewpager.adapter.RecyclerViewMaterialAdapter;
 import com.josedlpozo.adapters.RecyclerViewProcessAdapter;
+import com.josedlpozo.listeners.EndlessRecyclerOnScrollListener;
 import com.josedlpozo.optimiza.R;
 import com.josedlpozo.taskmanager.DetailProcess;
 import com.josedlpozo.taskmanager.PackagesInfo;
@@ -163,6 +167,29 @@ public class ProcessesFragment extends Fragment {
 
         mMaterialDialog = new MaterialDialog(getActivity());
 
+        // ScrollListener para animacion de fab
+        EndlessRecyclerOnScrollListener myRecyclerViewOnScrollListener = new EndlessRecyclerOnScrollListener(layoutManager) {
+            @Override
+            public void onLoadMore(int current_page) {
+
+            }
+
+            @Override
+            public void onHide() {
+                FrameLayout.LayoutParams lp = (FrameLayout.LayoutParams) fab.getLayoutParams();
+                int fabBottomMargin = lp.bottomMargin;
+                fab.animate().translationY(fab.getHeight() + fabBottomMargin).setInterpolator(new AccelerateInterpolator(2)).start();
+            }
+
+            @Override
+            public void onShow() {
+                fab.animate().translationY(0).setInterpolator(new DecelerateInterpolator(2)).start();
+            }
+        };
+
+        mRecyclerView.setOnScrollListener(myRecyclerViewOnScrollListener);
+        MaterialViewPagerHelper.registerRecyclerView(getActivity(), mRecyclerView, myRecyclerViewOnScrollListener);
+
     }
 
     public ProcessInfo getProcessInfo() {
@@ -189,7 +216,7 @@ public class ProcessesFragment extends Fragment {
     public void onPause() {
         super.onPause();
         getActivity().unregisterReceiver(loadFinish);
-        listdp = new ArrayList<DetailProcess>();
+        listdp.clear();
     }
 
     @SuppressWarnings("unchecked")
@@ -215,15 +242,11 @@ public class ProcessesFragment extends Fragment {
             }
         }
         //Collections.sort(listdp);
-        if (!listdp.isEmpty()) {
+        if (listdp != null && !listdp.isEmpty()) {
             Collections.sort(listdp, new Comparator<DetailProcess>() {
                 @Override
                 public int compare(DetailProcess lhs, DetailProcess rhs) {
-                    if (lhs != null && rhs != null) {
                         return rhs.getPsrow().mem - lhs.getPsrow().mem;
-                    } else {
-                        return 0;
-                    }
                 }
             });
         }

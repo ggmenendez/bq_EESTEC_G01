@@ -267,6 +267,7 @@ public class AppsPermissionsFragment extends Fragment {
                 menu2.animate().translationY(0).setInterpolator(new DecelerateInterpolator(2)).start();
             }
         };
+
         // Establecemos animaciones de entrada y salida de activity
         setupWindowAnimations();
         mRecyclerView.setOnScrollListener(myRecyclerViewOnScrollListener);
@@ -276,7 +277,7 @@ public class AppsPermissionsFragment extends Fragment {
     }
 
     private void setupWindowAnimations() {
-        if (Build.VERSION.SDK_INT > 20) {
+        if (Build.VERSION.SDK_INT >= 20) {
             Explode explode = new Explode();
             explode.setDuration(1000);
             getActivity().getWindow().setExitTransition(explode);

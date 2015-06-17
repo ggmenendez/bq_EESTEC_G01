@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,6 +15,9 @@ import android.widget.Toast;
 
 import com.josedlpozo.optimiza.R;
 
+import java.io.IOException;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.Date;
 import java.util.List;
 
@@ -35,6 +39,7 @@ public class RecyclerViewPermisosAdapter extends RecyclerView.Adapter<RecyclerVi
 
     private View.OnClickListener listener;
 
+
     public static class AppsViewHolder
             extends RecyclerView.ViewHolder {
 
@@ -50,6 +55,10 @@ public class RecyclerViewPermisosAdapter extends RecyclerView.Adapter<RecyclerVi
         private String packages;
         private int tipo;
         private Button play;
+
+        private boolean checked = false;
+
+        int v = 0;
 
         public AppsViewHolder(View itemView, int type) {
             super(itemView);
@@ -88,11 +97,12 @@ public class RecyclerViewPermisosAdapter extends RecyclerView.Adapter<RecyclerVi
                             Toast.makeText(v.getContext(), "MALO", Toast.LENGTH_LONG).show();
                         }
                     });
-                    img_warning.setImageDrawable(itemView.getResources().getDrawable(R.drawable.ic_warning_black_36dp));
+                    //img_warning.setImageDrawable(itemView.getResources().getDrawable(R.drawable.ic_warning_black_36dp));
                 }
             } else {
                 packages = t;
                 try {
+                    final String paquete = itemView.getContext().getPackageManager().getApplicationInfo(t, 0).packageName;
                     //Creacion del header con los datos importantes de la aplicación.
                     txtNombre.setText(itemView.getContext().getPackageManager().getApplicationLabel(itemView.getContext().getPackageManager().getApplicationInfo(t, 0)));
                     txtNum.setText("Paquete : " + itemView.getContext().getPackageManager().getApplicationInfo(t, 0).packageName);
@@ -103,6 +113,22 @@ public class RecyclerViewPermisosAdapter extends RecyclerView.Adapter<RecyclerVi
                     dateLast.setText("Actualizado : " + last.toString());
                     sdk.setText("SDK minimo : " + itemView.getContext().getPackageManager().getApplicationInfo(t, 0).targetSdkVersion);
                     img.setImageDrawable(itemView.getContext().getPackageManager().getApplicationIcon(t));
+                    if (!checked) {
+                        new Thread(new Runnable() {
+                            public void run() {
+                                Log.d("yyy", "RUN" + "https://play.google.com/store/apps/details?id=" + paquete);
+                                if (ping("https://play.google.com/store/apps/details?id=" + paquete, 200000)) {
+                                    checked = true;
+                                    v = 0;
+                                } else {
+                                    checked = true;
+                                    v = 1;
+                                }
+                                Thread.interrupted();
+                            }
+                        }).start();
+                    }
+                    setVisibility(v);
                     play.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
@@ -121,6 +147,40 @@ public class RecyclerViewPermisosAdapter extends RecyclerView.Adapter<RecyclerVi
                 } catch (PackageManager.NameNotFoundException e) {
                     e.printStackTrace();
                 }
+            }
+        }
+
+        public void setVisibility(int v) {
+            if (v == 0)
+                play.setVisibility(View.VISIBLE);
+            else play.setVisibility(View.GONE);
+        }
+
+        public static boolean ping(String url, int timeout) {
+            // Otherwise an exception may be thrown on invalid SSL certificates:
+            //url = url.replaceFirst("^https", "http");
+
+            try {
+                /*HttpURLConnection connection = (HttpURLConnection) new URL(url).openConnection();
+                connection.setConnectTimeout(timeout);
+                connection.setReadTimeout(timeout);
+                connection.setRequestMethod("HEAD");
+                int responseCode = connection.getResponseCode();
+                Log.d("xxx",""+responseCode);
+                return (200 == responseCode );*/
+                URL urlA = new URL(url);
+                HttpURLConnection connection = (HttpURLConnection) urlA.openConnection();
+                connection.setRequestMethod("GET");
+                connection.connect();
+
+                int code = connection.getResponseCode();
+                Log.d("xx", "" + code);
+                if (code == 200) {
+                    return true;
+                }
+                return false;
+            } catch (IOException exception) {
+                return false;
             }
         }
 

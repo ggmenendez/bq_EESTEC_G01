@@ -199,16 +199,17 @@ public class MainActivity extends ActionBarActivity {
             public HeaderDesign getHeaderDesign(int page) {
                 switch (page) {
                     case 0:
-                        return HeaderDesign.fromColorResAndUrl(R.color.blue, "http://cdn1.tnwcdn.com/wp-content/blogs.dir/1/files/2014/06/wallpaper_51.jpg");
+                        return HeaderDesign.fromColorResAndUrl(R.color.blue, "https://dl.dropbox.com/s/1p3vdntb2orog9d/apps.jpg?dl=0");
                     case 1:
                         return HeaderDesign.fromColorResAndUrl(R.color.green, "https://fs01.androidpit.info/a/63/0e/android-l-wallpapers-630ea6-h900.jpg");
                     case 2:
-                        return HeaderDesign.fromColorResAndUrl(R.color.cyan, "http://www.droid-life.com/wp-content/uploads/2014/10/lollipop-wallpapers10.jpg");
+                        return HeaderDesign.fromColorResAndUrl(R.color.yellow, "https://dl.dropbox.com/s/9tz50qecw8udr5d/memory.jpg?dl=0");
                     case 3:
-                        return HeaderDesign.fromColorResAndUrl(R.color.red, "http://www.tothemobile.com/wp-content/uploads/2014/07/original.jpg");
+                        return HeaderDesign.fromColorResAndUrl(R.color.green, "https://dl.dropbox.com/s/lcphfvky4nm0zg5/batt.jpg?dl=0");
                 }
 
                 //execute others actions if needed (ex : modify your header logo)
+
 
                 return null;
             }

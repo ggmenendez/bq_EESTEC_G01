@@ -14,8 +14,9 @@
             android:visibility="gone"
             android:transitionName="appIcon"
             android:layout_margin="8dp"
-            android:layout_width="56dp"
-            android:layout_height="56dp" />
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_warning_amber_800_18dp" />
 
         <LinearLayout
             android:orientation="vertical"

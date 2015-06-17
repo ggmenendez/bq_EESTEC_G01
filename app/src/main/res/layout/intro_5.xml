@@ -3,7 +3,7 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#5C6BC0"
+    android:background="@color/green"
     android:layout_weight="10"
     android:id="@+id/main">
 
@@ -18,7 +18,7 @@
         android:textColor="#ffffff"
         android:paddingRight="32dp"
         android:textSize="28sp"
-        android:text="Permisos" />
+        android:text="Batería" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -30,7 +30,7 @@
         android:paddingLeft="64dp"
         android:paddingRight="64dp"
         android:textSize="16sp"
-        android:text="Visualización de apps instaladas con vista detallada de permisos" />
+        android:text="Nivel de carga, temperatura, voltaje y estado de carga." />
 
     <LinearLayout
         android:layout_width="fill_parent"
@@ -45,7 +45,7 @@
             android:layout_gravity="center"
             android:paddingLeft="10dp"
             android:paddingRight="10dp"
-            android:src="@drawable/slide1" />
+            android:src="@drawable/slide5" />
     </LinearLayout>
 
     <TextView

@@ -78,12 +78,12 @@ public class MemoryFragment extends Fragment {
         arc2 = (ArcProgress) view.findViewById(R.id.arc_progress2);
         arc3 = (ArcProgress) view.findViewById(R.id.arc_progress3);
 
-        externa_card = (CardView) view.findViewById(R.id.externa);
+        //externa_card = (CardView) view.findViewById(R.id.externa);
 
         ram1 = (TextView) view.findViewById(R.id.ram1);
         ram2 = (TextView) view.findViewById(R.id.ram2);
 
-        interna1 = (TextView) view.findViewById(R.id.interna1);
+        /*interna1 = (TextView) view.findViewById(R.id.interna1);
         interna2 = (TextView) view.findViewById(R.id.interna2);
 
         externa1 = (TextView) view.findViewById(R.id.externa1);
@@ -91,7 +91,7 @@ public class MemoryFragment extends Fragment {
 
         externa = externalMemoryAvailable();
 
-        if (!externa) externa_card.setVisibility(View.INVISIBLE);
+        if (!externa) externa_card.setVisibility(View.INVISIBLE);*/
 
         // Inicialización y periodo de ejecución
         handler = new Handler();
@@ -117,28 +117,56 @@ public class MemoryFragment extends Fragment {
             }
             DecimalFormat twoDecimalForm = new DecimalFormat("#.##");
             if (total == null) {
-                arc.setProgress((int) ((((float) availMem / (float) totalMem)) * 100));
+                int progress = (int) ((((float) availMem / (float) totalMem)) * 100);
+                if (progress <= 70) {
+                    arc.setFinishedStrokeColor(getResources().getColor(R.color.green));
+                    arc.setTextColor(getResources().getColor(R.color.green));
+                } else if (progress > 70 && progress < 80) {
+                    arc.setFinishedStrokeColor(getResources().getColor(R.color.warning));
+                    arc.setTextColor(getResources().getColor(R.color.warning));
+                } else {
+                    arc.setFinishedStrokeColor(getResources().getColor(R.color.red));
+                    arc.setTextColor(getResources().getColor(R.color.red));
+                }
+                arc.setProgress(progress);
                 ram1.setText("" + twoDecimalForm.format(availMem));
                 ram2.setText("/" + twoDecimalForm.format(totalMem));
             } else {
                 float totalMemf = Float.parseFloat(total.replace(',', '.'));
-                arc.setProgress((int) ((((float) availMem / (float) totalMemf)) * 100));
+                int progress = (int) ((((float) availMem / (float) totalMemf)) * 100);
+                if (progress <= 70) {
+                    arc.setFinishedStrokeColor(getResources().getColor(R.color.green));
+                    arc.setTextColor(getResources().getColor(R.color.green));
+                } else if (progress > 70 && progress < 80) {
+                    arc.setFinishedStrokeColor(getResources().getColor(R.color.warning));
+                    arc.setTextColor(getResources().getColor(R.color.warning));
+                } else {
+                    arc.setFinishedStrokeColor(getResources().getColor(R.color.red));
+                    arc.setTextColor(getResources().getColor(R.color.red));
+                }
+                arc.setProgress(progress);
                 ram1.setText("" + twoDecimalForm.format(availMem));
                 ram2.setText("/" + twoDecimalForm.format(totalMemf));
             }
 
-            interna1.setText(getAvailableInternalMemorySize().replace(",", ""));
+            /*interna1.setText(getAvailableInternalMemorySize().replace(",", ""));
             interna2.setText("/" + getTotalInternalMemorySize().replace(",", ""));
             arc2.setProgress((int) (Float.parseFloat(getAvailableInternalMemorySize().replace(',', '.')) / Float.parseFloat(getTotalInternalMemorySize().replace(',', '.')) * 100));
             if (externa) {
                 externa1.setText(getAvailableExternalMemorySize().replace(",", ""));
                 externa2.setText("/" + getTotalExternalMemorySize().replace(",", ""));
                 arc3.setProgress((int) (Float.parseFloat(getAvailableExternalMemorySize().replace(',', '.')) / Float.parseFloat(getTotalExternalMemorySize().replace(',', '.')) * 100));
-            }
+            }*/
 
             handler.postDelayed(this, 5000);
         }
     };
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        handler.postDelayed(r, 5000);
+    }
 
     @Override
     public void onPause() {

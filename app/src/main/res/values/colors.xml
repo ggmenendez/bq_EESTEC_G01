@@ -6,6 +6,9 @@
     <color name="secondary">#727272</color>
     <color name="hint">#B8B8B8</color>
     <color name="dividers">#DADADA</color>
+    <color name="yellow">#FFFF33</color>
+
+    <color name="warning">#FF8000</color>
 
     <!-- general colors for drawer -->
     <color name="list_background">#F2F2F2</color>

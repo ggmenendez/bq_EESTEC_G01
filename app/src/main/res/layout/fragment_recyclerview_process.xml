@@ -17,8 +17,8 @@
         android:layout_gravity="bottom|right"
         android:layout_margin="16dp"
         android:src="@drawable/ic_autorenew_black_24dp"
-        fab:fab_colorNormal="@color/colorPrimary"
-        fab:fab_colorPressed="@color/colorPrimaryDark"
+        fab:fab_colorNormal="@color/green"
+        fab:fab_colorPressed="@color/green"
         fab:fab_colorRipple="@color/card_background" />
 
 

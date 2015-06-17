@@ -45,7 +45,6 @@ public class BatteryFragment extends Fragment {
     private TextView plugged;
     private TextView usb_ac;
     private TextView carga;
-    private TextView health;
     private TextView volt;
     private TextView volt_dec;
 
@@ -75,11 +74,9 @@ public class BatteryFragment extends Fragment {
         plugged = (TextView) view.findViewById(R.id.plugged_ans);
         usb_ac = (TextView) view.findViewById(R.id.usb_ac);
         carga = (TextView) view.findViewById(R.id.carga);
-        health = (TextView) view.findViewById(R.id.health_ans);
         volt = (TextView) view.findViewById(R.id.volt);
         volt_dec = (TextView) view.findViewById(R.id.volt_dec);
-        IntentFilter ifilter = new IntentFilter(Intent.ACTION_BATTERY_CHANGED);
-        batteryStatus = getActivity().getApplicationContext().registerReceiver(null, ifilter);
+
 
         // Inicialización y periodo de ejecución
         handler = new Handler();
@@ -92,6 +89,8 @@ public class BatteryFragment extends Fragment {
 
     Runnable r = new Runnable() {
         public void run() {
+            IntentFilter ifilter = new IntentFilter(Intent.ACTION_BATTERY_CHANGED);
+            batteryStatus = getActivity().getApplicationContext().registerReceiver(null, ifilter);
             float temp = ((float) batteryStatus.getIntExtra(BatteryManager.EXTRA_TEMPERATURE, 0)) / 10;
             float voltage = ((float) batteryStatus.getIntExtra(BatteryManager.EXTRA_VOLTAGE, 0) / 1000);
             int level = batteryStatus.getIntExtra(BatteryManager.EXTRA_LEVEL, -1);
@@ -103,28 +102,6 @@ public class BatteryFragment extends Fragment {
             int chargePlug = batteryStatus.getIntExtra(BatteryManager.EXTRA_PLUGGED, -1);
             boolean usbCharge = chargePlug == BatteryManager.BATTERY_PLUGGED_USB;
             boolean acCharge = chargePlug == BatteryManager.BATTERY_PLUGGED_AC;
-            switch (mHealth) {
-                case BatteryManager.BATTERY_HEALTH_GOOD:
-                    health.setText("BUENA");
-                    break;
-                case BatteryManager.BATTERY_HEALTH_COLD:
-                    health.setText("FRÍA");
-                    break;
-                case BatteryManager.BATTERY_HEALTH_DEAD:
-                    health.setText("MUERTA");
-                    break;
-                case BatteryManager.BATTERY_HEALTH_OVER_VOLTAGE:
-                    health.setText("SOBREVOLTAJE");
-                    break;
-                case BatteryManager.BATTERY_HEALTH_UNKNOWN:
-                    health.setText("DESCONOCIDO");
-                    break;
-                case BatteryManager.BATTERY_HEALTH_UNSPECIFIED_FAILURE:
-                    health.setText("FALLO DESCONOCIDO");
-                    break;
-                default:
-                    health.setText("NO HAY BATERIA!!");
-            }
 
             //Buscamos el punto de la parte decimal para mejor visualización de datos
             int punto = 0;
@@ -142,10 +119,10 @@ public class BatteryFragment extends Fragment {
 
 
             if (usbCharge) {
-                usb_ac.setText("USB!");
+                usb_ac.setText("USB");
             }
             if (acCharge) {
-                usb_ac.setText("AC!");
+                usb_ac.setText("AC");
             }
 
             volt.setText(String.valueOf(voltage).substring(0, punto));
@@ -156,6 +133,12 @@ public class BatteryFragment extends Fragment {
             handler.postDelayed(this, 5000);
         }
     };
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        handler.postDelayed(r, 5000);
+    }
 
     @Override
     public void onPause() {

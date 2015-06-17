@@ -124,12 +124,13 @@ public class AppActivity extends ActionBarActivity {
                 String imageUrl = "";
                 switch (position) {
                     case 0:
-                        imageUrl = "http://cdn1.tnwcdn.com/wp-content/blogs.dir/1/files/2014/06/wallpaper_51.jpg";
+                        imageUrl = "https://dl.dropbox.com/s/8zr48toey4ijeku/apps_permisos.jpg?dl=0";
                         color = getResources().getColor(R.color.blue);
                         break;
                 }
 
                 final int fadeDuration = 400;
+                //mViewPager.setImageDrawable(getResources().getDrawable(R.drawable.appssimpleapp), fadeDuration);
                 mViewPager.setImageUrl(imageUrl, fadeDuration);
                 mViewPager.setColor(color, fadeDuration);
 
@@ -164,7 +165,7 @@ public class AppActivity extends ActionBarActivity {
     }
 
     private void setupWindowAnimations() {
-        if (Build.VERSION.SDK_INT > 21) {
+        if (Build.VERSION.SDK_INT >= 21) {
             Explode explode = new Explode();
             explode.setDuration(1000);
             getWindow().setEnterTransition(explode);

@@ -7,27 +7,24 @@
 
     <RelativeLayout
         android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        android:layout_gravity="center_horizontal">
+        android:layout_height="fill_parent">
 
-        <TextView
+        <!--<TextView
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:text="RAM"
             android:textSize="27sp"
             android:gravity="center"
             android:id="@+id/ttram"
-            android:layout_gravity="center_vertical" />
+            android:layout_gravity="center_vertical" />!-->
 
         <com.github.lzyzsd.circleprogress.ArcProgress
             android:id="@+id/arc_progress"
             android:background="#f9f9f9"
             android:layout_width="200dp"
             android:layout_height="200dp"
-            android:layout_gravity="center"
-            android:layout_marginTop="20dp"
-            android:layout_below="@+id/ttram"
-            android:layout_centerInParent="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="4dp"
             custom:arc_progress="55"
             custom:arc_bottom_text="RAM"
             custom:arc_unfinished_color="#E0E0E0"
@@ -43,20 +40,44 @@
             android:orientation="horizontal"
             android:gravity="center"
             android:layout_below="@+id/arc_progress"
-            android:layout_marginTop="10dp">
+            android:layout_marginTop="5dp">
 
-            <TextView
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Used"
+                    android:layout_marginBottom="-15dp"
+                    android:gravity="center_vertical"
+                    android:layout_gravity="center"
+                    android:textSize="50sp" />
+
+                <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:id="@+id/ram1"
                 android:gravity="center_vertical"
                 android:layout_gravity="center"
                 android:textSize="70sp" />
-
+            </LinearLayout>
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Total"
+                    android:gravity="center_vertical"
+                    android:layout_gravity="center"
+                    android:textSize="30sp"
+                    android:layout_marginBottom="-15dp" />
+
 
                 <TextView
                     android:layout_width="wrap_content"

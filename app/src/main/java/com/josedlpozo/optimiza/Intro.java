@@ -7,6 +7,7 @@ import com.github.paolorotolo.appintro.AppIntro;
 import com.josedlpozo.sliders.Slide1;
 import com.josedlpozo.sliders.Slide2;
 import com.josedlpozo.sliders.Slide3;
+import com.josedlpozo.sliders.Slide5;
 
 
 public class Intro extends AppIntro {
@@ -20,6 +21,7 @@ public class Intro extends AppIntro {
         addSlide(new Slide1(), getApplicationContext());
         addSlide(new Slide2(), getApplicationContext());
         addSlide(new Slide3(), getApplicationContext());
+        addSlide(new Slide5(), getApplicationContext());
 
 
         // Turn vibration on and set intensity
