@@ -10,6 +10,7 @@ import android.os.StatFs;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.CardView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -83,7 +84,7 @@ public class MemoryFragment extends Fragment {
         ram1 = (TextView) view.findViewById(R.id.ram1);
         ram2 = (TextView) view.findViewById(R.id.ram2);
 
-        /*interna1 = (TextView) view.findViewById(R.id.interna1);
+        interna1 = (TextView) view.findViewById(R.id.interna1);
         interna2 = (TextView) view.findViewById(R.id.interna2);
 
         externa1 = (TextView) view.findViewById(R.id.externa1);
@@ -91,7 +92,7 @@ public class MemoryFragment extends Fragment {
 
         externa = externalMemoryAvailable();
 
-        if (!externa) externa_card.setVisibility(View.INVISIBLE);*/
+        if (!externa) externa_card.setVisibility(View.INVISIBLE);
 
         // Inicialización y periodo de ejecución
         handler = new Handler();
@@ -148,15 +149,75 @@ public class MemoryFragment extends Fragment {
                 ram1.setText("" + twoDecimalForm.format(availMem));
                 ram2.setText("/" + twoDecimalForm.format(totalMemf));
             }
+            if (Build.VERSION.SDK_INT > 18) {
+                interna1.setText(getAvailableInternalMemorySize18().replace(",", ""));
+                interna2.setText("/" + getTotalInternalMemorySize18().replace(",", ""));
+                int progress = (int) (Float.parseFloat(getAvailableInternalMemorySize18().replace(",", "")) / Float.parseFloat(getTotalInternalMemorySize18().replace(",", "")) * 100);
+                Log.d("xxx", "1" + progress);
+                if (progress <= 70) {
+                    arc2.setFinishedStrokeColor(getResources().getColor(R.color.green));
+                    arc2.setTextColor(getResources().getColor(R.color.green));
+                } else if (progress > 70 && progress < 80) {
+                    arc2.setFinishedStrokeColor(getResources().getColor(R.color.warning));
+                    arc2.setTextColor(getResources().getColor(R.color.warning));
+                } else {
+                    arc2.setFinishedStrokeColor(getResources().getColor(R.color.red));
+                    arc2.setTextColor(getResources().getColor(R.color.red));
+                }
+                arc2.setProgress(progress);
+            } else {
+                interna1.setText(getAvailableInternalMemorySize().replace(",", ""));
+                interna2.setText("/" + getTotalInternalMemorySize().replace(",", ""));
+                int progress = (int) (Float.parseFloat(getAvailableInternalMemorySize().replace(",", "")) / Float.parseFloat(getTotalInternalMemorySize().replace(",", "")) * 100);
+                Log.d("xxx", "2" + progress);
+                if (progress <= 70) {
+                    arc2.setFinishedStrokeColor(getResources().getColor(R.color.green));
+                    arc2.setTextColor(getResources().getColor(R.color.green));
+                } else if (progress > 70 && progress < 80) {
+                    arc2.setFinishedStrokeColor(getResources().getColor(R.color.warning));
+                    arc2.setTextColor(getResources().getColor(R.color.warning));
+                } else {
+                    arc2.setFinishedStrokeColor(getResources().getColor(R.color.red));
+                    arc2.setTextColor(getResources().getColor(R.color.red));
+                }
+                arc2.setProgress(progress);
+            }
 
-            /*interna1.setText(getAvailableInternalMemorySize().replace(",", ""));
-            interna2.setText("/" + getTotalInternalMemorySize().replace(",", ""));
-            arc2.setProgress((int) (Float.parseFloat(getAvailableInternalMemorySize().replace(',', '.')) / Float.parseFloat(getTotalInternalMemorySize().replace(',', '.')) * 100));
             if (externa) {
-                externa1.setText(getAvailableExternalMemorySize().replace(",", ""));
-                externa2.setText("/" + getTotalExternalMemorySize().replace(",", ""));
-                arc3.setProgress((int) (Float.parseFloat(getAvailableExternalMemorySize().replace(',', '.')) / Float.parseFloat(getTotalExternalMemorySize().replace(',', '.')) * 100));
-            }*/
+                if (Build.VERSION.SDK_INT > 18) {
+                    externa1.setText(getAvailableExternalMemorySize18().replace(",", ""));
+                    externa2.setText("/" + getTotalExternalMemorySize18().replace(",", ""));
+                    int progress = (int) (Float.parseFloat(getAvailableExternalMemorySize18().replace(",", "")) / Float.parseFloat(getTotalExternalMemorySize18().replace(",", "")) * 100);
+                    Log.d("xxx", "3" + progress);
+                    if (progress <= 70) {
+                        arc3.setFinishedStrokeColor(getResources().getColor(R.color.green));
+                        arc3.setTextColor(getResources().getColor(R.color.green));
+                    } else if (progress > 70 && progress < 80) {
+                        arc3.setFinishedStrokeColor(getResources().getColor(R.color.warning));
+                        arc3.setTextColor(getResources().getColor(R.color.warning));
+                    } else {
+                        arc3.setFinishedStrokeColor(getResources().getColor(R.color.red));
+                        arc3.setTextColor(getResources().getColor(R.color.red));
+                    }
+                    arc3.setProgress(progress);
+                } else {
+                    externa1.setText(getAvailableExternalMemorySize().replace(",", ""));
+                    externa2.setText("/" + getTotalExternalMemorySize().replace(",", ""));
+                    int progress = (int) (Float.parseFloat(getAvailableExternalMemorySize().replace(",", "")) / Float.parseFloat(getTotalExternalMemorySize().replace(",", "")) * 100);
+                    Log.d("xxx", "4" + progress);
+                    if (progress <= 70) {
+                        arc3.setFinishedStrokeColor(getResources().getColor(R.color.green));
+                        arc3.setTextColor(getResources().getColor(R.color.green));
+                    } else if (progress > 70 && progress < 80) {
+                        arc3.setFinishedStrokeColor(getResources().getColor(R.color.warning));
+                        arc3.setTextColor(getResources().getColor(R.color.warning));
+                    } else {
+                        arc3.setFinishedStrokeColor(getResources().getColor(R.color.red));
+                        arc3.setTextColor(getResources().getColor(R.color.red));
+                    }
+                    arc3.setProgress(progress);
+                }
+            }
 
             handler.postDelayed(this, 5000);
         }
@@ -179,6 +240,27 @@ public class MemoryFragment extends Fragment {
                 android.os.Environment.MEDIA_MOUNTED);
     }
 
+    public static String getAvailableInternalMemorySize18() {
+        if (Build.VERSION.SDK_INT > 18) {
+            File path = Environment.getDataDirectory();
+            StatFs stat = new StatFs(path.getPath());
+            long blockSize = stat.getBlockSizeLong();
+            long availableBlocks = stat.getAvailableBlocksLong();
+            return formatSize(availableBlocks * blockSize);
+        }
+        return "ERROR";
+    }
+
+    public static String getTotalInternalMemorySize18() {
+        if (Build.VERSION.SDK_INT > 18) {
+            File path = Environment.getDataDirectory();
+            StatFs stat = new StatFs(path.getPath());
+            long totalBlocks = stat.getTotalBytes();
+            return formatSize(totalBlocks);
+        }
+        return "ERROR";
+    }
+
     public static String getAvailableInternalMemorySize() {
         File path = Environment.getDataDirectory();
         StatFs stat = new StatFs(path.getPath());
@@ -193,6 +275,34 @@ public class MemoryFragment extends Fragment {
         long blockSize = stat.getBlockSize();
         long totalBlocks = stat.getBlockCount();
         return formatSize(totalBlocks * blockSize);
+    }
+
+    public static String getAvailableExternalMemorySize18() {
+        if (externalMemoryAvailable()) {
+            if (Build.VERSION.SDK_INT > 18) {
+                File path = Environment.getExternalStorageDirectory();
+                StatFs stat = new StatFs(path.getPath());
+                long availableBlocks = stat.getAvailableBytes();
+                return formatSize(availableBlocks);
+            } else {
+                return "ERROR";
+            }
+        }
+        return "ERROR";
+    }
+
+    public static String getTotalExternalMemorySize18() {
+        if (externalMemoryAvailable()) {
+            if (Build.VERSION.SDK_INT > 18) {
+                File path = Environment.getExternalStorageDirectory();
+                StatFs stat = new StatFs(path.getPath());
+                long totalBlocks = stat.getTotalBytes();
+                return formatSize(totalBlocks);
+            }
+        } else {
+            return "ERROR";
+        }
+        return "ERROR";
     }
 
     public static String getAvailableExternalMemorySize() {

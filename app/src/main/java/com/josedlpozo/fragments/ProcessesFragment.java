@@ -357,36 +357,6 @@ public class ProcessesFragment extends Fragment {
                                             }
                                             return;
                                         }
-                                        case MENU_KILL_ALL: {
-                                            for (DetailProcess dp : listdp) {
-                                                if (dp.getPackageName().equals(getActivity().getPackageName()))
-                                                    continue;
-                                                Log.d("yyy", dp.getPackageName());
-                                                am.restartPackage(dp.getPackageName());
-                                            }
-                                            ActivityManager activityManager = (ActivityManager) getActivity().getSystemService(Context.ACTIVITY_SERVICE);
-                                            ActivityManager.MemoryInfo memoryInfo = new ActivityManager.MemoryInfo();
-                                            activityManager.getMemoryInfo(memoryInfo);
-                                            availMem2 = memoryInfo.availMem;
-                                            DecimalFormat twoDecimalForm = new DecimalFormat("#.##");
-                                            double memory = Math.abs((availMem2 - availMem1)) / (1024.0 * 1024.0);
-                                            mMaterialDialog.setTitle("OptimizApp")
-                                                    .setMessage("Han sido liberados: " + twoDecimalForm.format(memory) + " MB")
-                                                    .setPositiveButton(
-                                                            "OK", new View.OnClickListener() {
-                                                                @Override
-                                                                public void onClick(View v) {
-                                                                    mMaterialDialog.dismiss();
-
-                                                                }
-                                                            }
-                                                    )
-                                                    .show();
-                                            //Toast.makeText(getActivity(), "Han sido liberados: " + twoDecimalForm.format(memory) + " MB", Toast.LENGTH_SHORT).show();
-                                            contador = 0;
-                                            refresh();
-                                            return;
-                                        }
                                     }
 
                         /* User clicked so do some stuff */

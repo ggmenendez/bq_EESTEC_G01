@@ -28,9 +28,7 @@
         android:layout_height="fill_parent"
         android:layout_gravity="start"
         android:choiceMode="singleChoice"
-        android:divider="#2E2E2E"
-        android:dividerHeight="2dp"
-        android:background="#E0E0E0"
+        android:background="#FFFFFF"
         android:textColor="#202020" />
 
 

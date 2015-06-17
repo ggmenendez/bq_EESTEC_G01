@@ -73,7 +73,7 @@ public class MainActivity extends ActionBarActivity {
 
         initDrawer();
 
-        setTitle("OptimizApp");
+        setTitle("Booster");
 
         mViewPager = (MaterialViewPager) findViewById(R.id.materialViewPager);
 

@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">OptimizApp</string>
+    <string name="app_name">Booster</string>
 
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
@@ -49,7 +49,6 @@
         <item>Abrir</item>
         <item>Eliminar</item>
         <item>Desinstalar</item>
-        <item>Eliminar todos</item>
     </string-array>
     <string name="btn_task">Tasks</string>
     <string name="btn_service">Services</string>
