@@ -277,7 +277,7 @@ public class AppsPermissionsFragment extends Fragment {
     }
 
     private void setupWindowAnimations() {
-        if (Build.VERSION.SDK_INT >= 20) {
+        if (Build.VERSION.SDK_INT >= 21) {
             Explode explode = new Explode();
             explode.setDuration(1000);
             getActivity().getWindow().setExitTransition(explode);
@@ -383,7 +383,6 @@ public class AppsPermissionsFragment extends Fragment {
                 }
 
             }
-            Log.d("acc", mCursor.getString(mCursor.getColumnIndex(AppDbAdapter.COLUMNA_NOMBRE)) + " " + mCursor.getInt(mCursor.getColumnIndex(AppDbAdapter.COLUMNA_IGNORADA)));
         }
         ordenaPorNumeroPermisos();
         sAdapter.notifyDataSetChanged();
