@@ -3,14 +3,15 @@ package com.josedlpozo.optimiza;
 import android.os.Bundle;
 import android.view.View;
 
-import com.github.paolorotolo.appintro.AppIntro;
+import com.github.paolorotolo.appintro.AppIntro2;
 import com.josedlpozo.sliders.Slide1;
 import com.josedlpozo.sliders.Slide2;
 import com.josedlpozo.sliders.Slide3;
+import com.josedlpozo.sliders.Slide4;
 import com.josedlpozo.sliders.Slide5;
 
 
-public class Intro extends AppIntro {
+public class Intro extends AppIntro2 {
 
     // Please DO NOT override onCreate. Use init
     @Override
@@ -21,6 +22,7 @@ public class Intro extends AppIntro {
         addSlide(new Slide1(), getApplicationContext());
         addSlide(new Slide2(), getApplicationContext());
         addSlide(new Slide3(), getApplicationContext());
+        addSlide(new Slide4(), getApplicationContext());
         addSlide(new Slide5(), getApplicationContext());
 
 
@@ -30,10 +32,10 @@ public class Intro extends AppIntro {
         //setVibrateIntensity(30);
     }
 
-    @Override
+    /*@Override
     public void onSkipPressed() {
         finish();
-    }
+    }*/
 
     private void loadMainActivity() {
         finish();

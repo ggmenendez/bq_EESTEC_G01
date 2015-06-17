@@ -201,7 +201,7 @@ public class MainActivity extends ActionBarActivity {
                     case 0:
                         return HeaderDesign.fromColorResAndUrl(R.color.blue, "https://dl.dropbox.com/s/1p3vdntb2orog9d/apps.jpg?dl=0");
                     case 1:
-                        return HeaderDesign.fromColorResAndUrl(R.color.green, "https://fs01.androidpit.info/a/63/0e/android-l-wallpapers-630ea6-h900.jpg");
+                        return HeaderDesign.fromColorResAndUrl(R.color.red, "https://dl.dropbox.com/s/5hg69147404tt7i/processes.jpg?dl=0");
                     case 2:
                         return HeaderDesign.fromColorResAndUrl(R.color.yellow, "https://dl.dropbox.com/s/9tz50qecw8udr5d/memory.jpg?dl=0");
                     case 3:

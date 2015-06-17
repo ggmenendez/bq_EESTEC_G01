@@ -8,7 +8,7 @@
         android:id="@+id/backgrd"
         android:layout_width="fill_parent"
         android:layout_height="200dp"
-        android:src="@drawable/back"
+        android:src="@drawable/drawer"
         android:scaleType="centerCrop" />
 
     <ImageView
@@ -17,7 +17,7 @@
         android:layout_height="100dp"
         android:layout_marginTop="15dp"
         android:layout_marginLeft="15dp"
-        android:src="@drawable/web_logo"
+        android:src="@drawable/ic_launcher_drawer"
         android:scaleType="centerCrop" />
 
 </FrameLayout>

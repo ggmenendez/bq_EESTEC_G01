@@ -9,12 +9,12 @@ import android.view.ViewGroup;
 import com.josedlpozo.optimiza.R;
 
 /**
- * Created by josedlpozo on 15/6/15.
+ * Created by josedlpozo on 17/6/15.
  */
-public class Slide3 extends Fragment {
+public class Slide4 extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View v = inflater.inflate(R.layout.intro_23, container, false);
+        View v = inflater.inflate(R.layout.intro_24, container, false);
         return v;
     }
 }

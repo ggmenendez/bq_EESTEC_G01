@@ -1,8 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#00BCD4"
+    android:background="@color/red"
     android:layout_weight="10"
     android:id="@+id/main">
 
@@ -17,7 +18,7 @@
         android:textColor="#ffffff"
         android:paddingRight="32dp"
         android:textSize="28sp"
-        android:text="Slide 2 title" />
+        android:text="Procesos" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -29,7 +30,7 @@
         android:paddingLeft="64dp"
         android:paddingRight="64dp"
         android:textSize="16sp"
-        android:text="Loooooooooooooooo[...]ooooooooong descreption here" />
+        android:text="Vista de los procesos corriendo en el dispositivo, con menú para eliminarlos." />
 
     <LinearLayout
         android:layout_width="fill_parent"
@@ -39,12 +40,12 @@
         android:layout_weight="5">
 
         <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
             android:layout_gravity="center"
-            android:paddingLeft="16dp"
-            android:paddingRight="16dp"
-            android:src="@drawable/ic_slide2" />
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
+            android:src="@drawable/slide3" />
     </LinearLayout>
 
     <TextView

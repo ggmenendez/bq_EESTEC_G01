@@ -241,16 +241,6 @@ public class ProcessesFragment extends Fragment {
                 // System.out.println(Arrays.toString(dp.getPkginfo().activities));
             }
         }
-        //Collections.sort(listdp);
-        if (listdp != null && !listdp.isEmpty()) {
-            Collections.sort(listdp, new Comparator<DetailProcess>() {
-                @Override
-                public int compare(DetailProcess lhs, DetailProcess rhs) {
-                        return rhs.getPsrow().mem - lhs.getPsrow().mem;
-                }
-            });
-        }
-        //sAdapter.notifyDataSetChanged();
         adapter = new RecyclerViewProcessAdapter(listdp);
     }
 
@@ -287,6 +277,16 @@ public class ProcessesFragment extends Fragment {
             ActivityManager.MemoryInfo memoryInfo = new ActivityManager.MemoryInfo();
             activityManager.getMemoryInfo(memoryInfo);
             long avail = memoryInfo.availMem;
+
+            //Collections.sort(listdp);
+            if (listdp != null && !listdp.isEmpty()) {
+                Collections.sort(listdp, new Comparator<DetailProcess>() {
+                    @Override
+                    public int compare(DetailProcess lhs, DetailProcess rhs) {
+                        return rhs.getPsrow().mem - lhs.getPsrow().mem;
+                    }
+                });
+            }
 
             if (Build.VERSION.SDK_INT > 16) {
                 long total = memoryInfo.totalMem;
