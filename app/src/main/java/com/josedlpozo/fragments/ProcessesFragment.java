@@ -91,11 +91,9 @@ public class ProcessesFragment extends Fragment {
     private FloatingActionButton fab;
 
     // Opciones del alertdialog
-    public static final int MENU_CANCEL = 0;
-    public static final int MENU_SWITCH = 1;
-    public static final int MENU_KILL = 2;
-    public static final int MENU_UNINSTALL = 3;
-    public static final int MENU_KILL_ALL = 4;
+    public static final int MENU_SWITCH = 0;
+    public static final int MENU_KILL = 1;
+    public static final int MENU_UNINSTALL = 2;
 
     // BroadcastReceiver para actualizacion
     private BroadcastReceiver loadFinish = new LoadFinishReceiver();
@@ -227,7 +225,7 @@ public class ProcessesFragment extends Fragment {
             // System.out.println(ti.processName + "/" + ti.pid + "/" + ti.lru + "/" + ti.importance
             // + "/"
             // + Arrays.toString(ti.pkgList) + "\n\n");
-            if (ti.processName.contains("system") || ti.processName.equals("com.android.phone") || ti.processName.contains("acore") || ti.processName.contains("settings") || ti.processName.contains("Sistema")) {
+            if (ti.processName.contains("optimiza") || ti.processName.contains("system") || ti.processName.equals("com.android.phone") || ti.processName.contains("acore") || ti.processName.contains("settings") || ti.processName.contains("Sistema")) {
                 continue;
             }
             Log.d("XXX", ti.processName);

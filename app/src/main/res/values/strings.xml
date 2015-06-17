@@ -45,9 +45,8 @@
     </array>
 
     <string-array name="menu_task_operation">
-        <item>Cancelar</item>
         <item>Abrir</item>
-        <item>Eliminar</item>
+        <item>Terminar</item>
         <item>Desinstalar</item>
     </string-array>
     <string name="btn_task">Tasks</string>

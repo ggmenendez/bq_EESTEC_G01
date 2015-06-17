@@ -15,7 +15,7 @@
         android:id="@+id/logo"
         android:layout_width="80dp"
         android:layout_height="80dp"
-        android:layout_marginTop="15dp"
+        android:layout_marginTop="25dp"
         android:layout_marginLeft="15dp"
         android:src="@drawable/ic_launcher_drawer"
         android:scaleType="centerCrop" />

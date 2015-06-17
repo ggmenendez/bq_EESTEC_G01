@@ -23,6 +23,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
 
+import com.crashlytics.android.Crashlytics;
 import com.github.florent37.materialviewpager.HeaderDesign;
 import com.github.florent37.materialviewpager.MaterialViewPager;
 import com.josedlpozo.adapters.NavigationAdapter;
@@ -38,6 +39,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
+import io.fabric.sdk.android.Fabric;
 import me.drakeet.materialdialog.MaterialDialog;
 
 /**
@@ -109,9 +111,11 @@ public class MainActivity extends ActionBarActivity {
              */
             public void onDrawerClosed(View view) {
                 super.onDrawerClosed(view);
+                Fabric.with(new Fabric.Builder(MainActivity.this).kits(new Crashlytics()).debuggable(true).build());
                 invalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
             }
         };
+
 
         mDrawerToggle.setDrawerIndicatorEnabled(true);
         mDrawer.setDrawerListener(mDrawerToggle);

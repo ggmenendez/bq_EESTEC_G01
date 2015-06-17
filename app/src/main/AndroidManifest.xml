@@ -28,6 +28,10 @@
         <activity
             android:name=".Intro"
             android:label="@string/title_activity_intro"></activity>
+
+        <meta-data
+            android:name="io.fabric.ApiKey"
+            android:value="c75e0a87edce5d9a3e27bba1896b6c87b1c295e0" />
     </application>
 
 </manifest>
