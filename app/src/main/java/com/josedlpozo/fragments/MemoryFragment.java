@@ -118,7 +118,7 @@ public class MemoryFragment extends Fragment {
             }
             DecimalFormat twoDecimalForm = new DecimalFormat("#.##");
             if (total == null) {
-                int progress = (int) ((((float) availMem / (float) totalMem)) * 100);
+                int progress = (int) ((((totalMem - (float) availMem) / (float) totalMem)) * 100);
                 if (progress <= 70) {
                     arc.setFinishedStrokeColor(getResources().getColor(R.color.green));
                     arc.setTextColor(getResources().getColor(R.color.green));
@@ -130,11 +130,11 @@ public class MemoryFragment extends Fragment {
                     arc.setTextColor(getResources().getColor(R.color.red));
                 }
                 arc.setProgress(progress);
-                ram1.setText("" + twoDecimalForm.format(availMem));
+                ram1.setText("" + twoDecimalForm.format(totalMem - availMem));
                 ram2.setText("/" + twoDecimalForm.format(totalMem));
             } else {
                 float totalMemf = Float.parseFloat(total.replace(',', '.'));
-                int progress = (int) ((((float) availMem / (float) totalMemf)) * 100);
+                int progress = (int) ((((((float) totalMemf) - (float) availMem) / (float) totalMemf)) * 100);
                 if (progress <= 70) {
                     arc.setFinishedStrokeColor(getResources().getColor(R.color.green));
                     arc.setTextColor(getResources().getColor(R.color.green));
@@ -146,13 +146,13 @@ public class MemoryFragment extends Fragment {
                     arc.setTextColor(getResources().getColor(R.color.red));
                 }
                 arc.setProgress(progress);
-                ram1.setText("" + twoDecimalForm.format(availMem));
+                ram1.setText("" + twoDecimalForm.format(totalMemf - availMem));
                 ram2.setText("/" + twoDecimalForm.format(totalMemf));
             }
             if (Build.VERSION.SDK_INT > 18) {
-                interna1.setText(getAvailableInternalMemorySize18().replace(",", ""));
+                interna1.setText(String.valueOf(Float.parseFloat(getTotalInternalMemorySize18().replace(",", "")) - Float.parseFloat(getAvailableInternalMemorySize18().replace(",", ""))));
                 interna2.setText("/" + getTotalInternalMemorySize18().replace(",", ""));
-                int progress = (int) (Float.parseFloat(getAvailableInternalMemorySize18().replace(",", "")) / Float.parseFloat(getTotalInternalMemorySize18().replace(",", "")) * 100);
+                int progress = (int) ((Float.parseFloat(getTotalInternalMemorySize18().replace(",", "")) - Float.parseFloat(getAvailableInternalMemorySize18().replace(",", ""))) / Float.parseFloat(getTotalInternalMemorySize18().replace(",", "")) * 100);
                 Log.d("xxx", "1" + progress);
                 if (progress <= 70) {
                     arc2.setFinishedStrokeColor(getResources().getColor(R.color.green));
@@ -166,9 +166,9 @@ public class MemoryFragment extends Fragment {
                 }
                 arc2.setProgress(progress);
             } else {
-                interna1.setText(getAvailableInternalMemorySize().replace(",", ""));
+                interna1.setText(String.valueOf(Float.parseFloat(getTotalInternalMemorySize().replace(",", "")) - Float.parseFloat(getAvailableInternalMemorySize().replace(",", ""))));
                 interna2.setText("/" + getTotalInternalMemorySize().replace(",", ""));
-                int progress = (int) (Float.parseFloat(getAvailableInternalMemorySize().replace(",", "")) / Float.parseFloat(getTotalInternalMemorySize().replace(",", "")) * 100);
+                int progress = (int) ((Float.parseFloat(getTotalInternalMemorySize().replace(",", "")) - Float.parseFloat(getAvailableInternalMemorySize().replace(",", ""))) / Float.parseFloat(getTotalInternalMemorySize().replace(",", "")) * 100);
                 Log.d("xxx", "2" + progress);
                 if (progress <= 70) {
                     arc2.setFinishedStrokeColor(getResources().getColor(R.color.green));
@@ -185,9 +185,9 @@ public class MemoryFragment extends Fragment {
 
             if (externa) {
                 if (Build.VERSION.SDK_INT > 18) {
-                    externa1.setText(getAvailableExternalMemorySize18().replace(",", ""));
+                    externa1.setText(String.valueOf(Float.parseFloat(getTotalExternalMemorySize18().replace(",", "")) - Float.parseFloat(getAvailableExternalMemorySize18().replace(",", ""))));
                     externa2.setText("/" + getTotalExternalMemorySize18().replace(",", ""));
-                    int progress = (int) (Float.parseFloat(getAvailableExternalMemorySize18().replace(",", "")) / Float.parseFloat(getTotalExternalMemorySize18().replace(",", "")) * 100);
+                    int progress = (int) ((Float.parseFloat(getTotalExternalMemorySize18().replace(",", "")) - Float.parseFloat(getAvailableExternalMemorySize18().replace(",", ""))) / Float.parseFloat(getTotalExternalMemorySize18().replace(",", "")) * 100);
                     Log.d("xxx", "3" + progress);
                     if (progress <= 70) {
                         arc3.setFinishedStrokeColor(getResources().getColor(R.color.green));
@@ -201,9 +201,9 @@ public class MemoryFragment extends Fragment {
                     }
                     arc3.setProgress(progress);
                 } else {
-                    externa1.setText(getAvailableExternalMemorySize().replace(",", ""));
+                    externa1.setText(String.valueOf(Float.parseFloat(getTotalExternalMemorySize().replace(",", "")) - Float.parseFloat(getAvailableExternalMemorySize().replace(",", ""))));
                     externa2.setText("/" + getTotalExternalMemorySize().replace(",", ""));
-                    int progress = (int) (Float.parseFloat(getAvailableExternalMemorySize().replace(",", "")) / Float.parseFloat(getTotalExternalMemorySize().replace(",", "")) * 100);
+                    int progress = (int) ((Float.parseFloat(getTotalExternalMemorySize().replace(",", "")) - Float.parseFloat(getAvailableExternalMemorySize().replace(",", ""))) / Float.parseFloat(getTotalExternalMemorySize().replace(",", "")) * 100);
                     Log.d("xxx", "4" + progress);
                     if (progress <= 70) {
                         arc3.setFinishedStrokeColor(getResources().getColor(R.color.green));

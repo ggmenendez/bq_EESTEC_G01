@@ -93,7 +93,8 @@ public class ProcessesFragment extends Fragment {
     // Opciones del alertdialog
     public static final int MENU_SWITCH = 0;
     public static final int MENU_KILL = 1;
-    public static final int MENU_UNINSTALL = 2;
+    public static final int MENU_KILL_ALL = 2;
+    public static final int MENU_UNINSTALL = 3;
 
     // BroadcastReceiver para actualizacion
     private BroadcastReceiver loadFinish = new LoadFinishReceiver();
@@ -353,6 +354,35 @@ public class ProcessesFragment extends Fragment {
                                             } catch (Exception e) {
                                                 Toast.makeText(getActivity(), e.getMessage(), Toast.LENGTH_LONG).show();
                                             }
+                                            return;
+                                        }
+                                        case MENU_KILL_ALL: {
+                                            for (DetailProcess dp : listdp) {
+                                                if (dp.getPackageName().equals(getActivity().getPackageName()))
+                                                    continue;
+                                                Log.d("yyy", dp.getPackageName());
+                                                am.restartPackage(dp.getPackageName());
+                                            }
+                                            ActivityManager activityManager = (ActivityManager) getActivity().getSystemService(Context.ACTIVITY_SERVICE);
+                                            ActivityManager.MemoryInfo memoryInfo = new ActivityManager.MemoryInfo();
+                                            activityManager.getMemoryInfo(memoryInfo);
+                                            DecimalFormat twoDecimalForm = new DecimalFormat("#.##");
+                                            double memory = Math.abs((availMem2 - availMem1)) / (1024.0 * 1024.0);
+                                            twoDecimalForm.format(memory);
+                                            mMaterialDialog.setTitle("OptimizApp")
+                                                    .setMessage("Han sido liberados: " + twoDecimalForm.format(memory) + " MB")
+                                                    .setPositiveButton(
+                                                            "OK", new View.OnClickListener() {
+                                                                @Override
+                                                                public void onClick(View v) {
+                                                                    mMaterialDialog.dismiss();
+
+                                                                }
+                                                            }
+                                                    )
+                                                    .show();
+                                            contador = 0;
+                                            refresh();
                                             return;
                                         }
                                     }
