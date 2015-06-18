@@ -364,7 +364,7 @@ public class ProcessesFragment extends Fragment {
                                                 return;
                                             Intent i = dp.getIntent();
                                             if (i == null) {
-                                                Toast.makeText(getActivity(), R.string.message_switch_fail, Toast.LENGTH_LONG)
+                                                Toast.makeText(getActivity(), "Ese proceso no tiene interfaz.", Toast.LENGTH_LONG)
                                                         .show();
                                                 return;
                                             }
