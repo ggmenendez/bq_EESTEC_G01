@@ -111,7 +111,7 @@ public class MemoryFragment extends Fragment {
             long availMem = memoryInfo.availMem / (1024 * 1024);
             long totalMem = 0;
             String total = null;
-            if (Build.VERSION.SDK_INT >= 17) {
+            if (Build.VERSION.SDK_INT >= 16) {
                 totalMem = memoryInfo.totalMem / (1024 * 1024);
             } else {
                 total = getTotalRAM();
@@ -133,7 +133,9 @@ public class MemoryFragment extends Fragment {
                 ram1.setText("" + twoDecimalForm.format(totalMem - availMem));
                 ram2.setText("/" + twoDecimalForm.format(totalMem));
             } else {
-                float totalMemf = Float.parseFloat(total.replace(",", "")) / (1024 * 1024);
+
+                float totalMemf = Float.parseFloat(total.replace(",", ""));
+                Log.d("uuu", "entra" + totalMemf);
                 int progress = (int) ((((((float) totalMemf) - (float) availMem) / (float) totalMemf)) * 100);
                 if (progress <= 70) {
                     arc.setFinishedStrokeColor(getResources().getColor(R.color.green));

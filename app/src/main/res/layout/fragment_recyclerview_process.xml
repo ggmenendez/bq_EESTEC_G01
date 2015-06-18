@@ -10,6 +10,8 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 
+    <include layout="@layout/circular_progress" />
+
     <com.github.clans.fab.FloatingActionMenu
         android:id="@+id/menu3"
         android:layout_width="wrap_content"

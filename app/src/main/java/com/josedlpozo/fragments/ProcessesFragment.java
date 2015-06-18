@@ -9,6 +9,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -46,6 +47,8 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import fr.castorflex.android.circularprogressbar.CircularProgressBar;
+import fr.castorflex.android.circularprogressbar.CircularProgressDrawable;
 import jp.wasabeef.recyclerview.animators.SlideInLeftAnimator;
 import jp.wasabeef.recyclerview.animators.adapters.AlphaInAnimationAdapter;
 import jp.wasabeef.recyclerview.animators.adapters.ScaleInAnimationAdapter;
@@ -108,6 +111,9 @@ public class ProcessesFragment extends Fragment {
 
     public int contador = 0;
 
+    // Espera de descarga de descripcion.
+    private CircularProgressBar progress;
+
 
     public static ProcessesFragment newInstance() {
         return new ProcessesFragment();
@@ -123,6 +129,7 @@ public class ProcessesFragment extends Fragment {
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         mRecyclerView = (RecyclerView) view.findViewById(R.id.recyclerView_process);
+        progress = (CircularProgressBar) view.findViewById(R.id.circularProgress);
 
         // LayoutManager para recyclerview
         LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
@@ -138,8 +145,10 @@ public class ProcessesFragment extends Fragment {
         actualiza.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                refresh();
                 menu2.close(true);
+                RecoverListTask task = new RecoverListTask();
+                task.execute(null, null, null);
+
             }
         });
 
@@ -151,30 +160,9 @@ public class ProcessesFragment extends Fragment {
         reset.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-                for (DetailProcess dp : listdp) {
-                    if (dp.getPackageName().equals(getActivity().getPackageName()))
-                        continue;
-                    Log.d("yyy", dp.getPackageName());
-                    am.restartPackage(dp.getPackageName());
-                }
-                ActivityManager activityManager = (ActivityManager) getActivity().getSystemService(Context.ACTIVITY_SERVICE);
-                ActivityManager.MemoryInfo memoryInfo = new ActivityManager.MemoryInfo();
-                activityManager.getMemoryInfo(memoryInfo);
-                DecimalFormat twoDecimalForm = new DecimalFormat("#.##");
-                availMem2 = memoryInfo.availMem;
-                double memory = Math.abs((availMem2 - availMem1)) / (1024.0 * 1024.0);
-                twoDecimalForm.format(memory);
-                new MaterialDialog.Builder(getActivity())
-                        .title(R.string.app_name)
-                        .content("Han sido liberados: " + twoDecimalForm.format(memory) + " MB")
-                        .positiveText("OK")
-                        .positiveColorRes(R.color.red)
-                        .icon(getResources().getDrawable(R.mipmap.ic_launcher))
-                        .show();
-                contador = 0;
-                refresh();
                 menu2.close(true);
+                Optimiza opt = new Optimiza();
+                opt.execute(null, null, null);
             }
         });
 
@@ -223,6 +211,94 @@ public class ProcessesFragment extends Fragment {
         mRecyclerView.setOnScrollListener(myRecyclerViewOnScrollListener);
         MaterialViewPagerHelper.registerRecyclerView(getActivity(), mRecyclerView, myRecyclerViewOnScrollListener);
 
+    }
+
+    public class RecoverListTask extends AsyncTask<Void, Void, Void> {
+        public RecoverListTask() {
+        }
+
+        @Override
+        protected void onPreExecute() {
+            showLoadingProgress();
+        }
+
+        @Override
+        protected void onPostExecute(Void v) {
+            hideLoadingProgress();
+        }
+
+        @Override
+        protected Void doInBackground(Void... params) {
+            Log.d("ccc", "j");
+            /*getActivity().runOnUiThread(new Runnable() {
+                @Override
+                public void run() {*/
+            refresh();
+               /* }
+            });*/
+
+
+            return null;
+        }
+    }
+
+    public class Optimiza extends AsyncTask<Void, Void, Void> {
+        public Optimiza() {
+        }
+
+        @Override
+        protected void onPreExecute() {
+            showLoadingProgress();
+        }
+
+        @Override
+        protected void onPostExecute(Void v) {
+            hideLoadingProgress();
+            ActivityManager activityManager = (ActivityManager) getActivity().getSystemService(Context.ACTIVITY_SERVICE);
+            ActivityManager.MemoryInfo memoryInfo = new ActivityManager.MemoryInfo();
+            activityManager.getMemoryInfo(memoryInfo);
+            DecimalFormat twoDecimalForm = new DecimalFormat("#.##");
+            availMem2 = memoryInfo.availMem;
+            double memory = Math.abs((availMem2 - availMem1)) / (1024.0 * 1024.0);
+            twoDecimalForm.format(memory);
+            new MaterialDialog.Builder(getActivity())
+                    .title(R.string.app_name)
+                    .content("Han sido liberados: " + twoDecimalForm.format(memory) + " MB")
+                    .positiveText("OK")
+                    .positiveColorRes(R.color.red)
+                    .icon(getResources().getDrawable(R.mipmap.ic_launcher))
+                    .show();
+        }
+
+        @Override
+        protected Void doInBackground(Void... params) {
+            for (DetailProcess dp : listdp) {
+                if (dp.getPackageName().equals(getActivity().getPackageName()))
+                    continue;
+                Log.d("yyy", dp.getPackageName());
+                am.restartPackage(dp.getPackageName());
+            }
+            contador = 0;
+            refresh();
+
+
+            return null;
+        }
+    }
+
+    public CircularProgressBar getCircularProgressBar() {
+        return progress;
+    }
+
+    private void hideLoadingProgress() {
+        ((CircularProgressDrawable) getCircularProgressBar().getIndeterminateDrawable()).progressiveStop();
+        getCircularProgressBar().setVisibility(View.INVISIBLE);
+
+    }
+
+    private void showLoadingProgress() {
+        getCircularProgressBar().setVisibility(View.VISIBLE);
+        ((CircularProgressDrawable) getCircularProgressBar().getIndeterminateDrawable()).start();
     }
 
     public ProcessInfo getProcessInfo() {
@@ -275,12 +351,13 @@ public class ProcessesFragment extends Fragment {
             }
         }
         adapter = new RecyclerViewProcessAdapter(listdp);
+
     }
 
     public void refresh() {
         if (currentStat == STAT_TASK) {
 
-            Thread t = new Thread(new Runnable() {
+            getActivity().runOnUiThread(new Runnable() {
 
                 @Override
                 public void run() {
@@ -289,10 +366,11 @@ public class ProcessesFragment extends Fragment {
                     getRunningProcess();
                     Intent in = new Intent(ACTION_LOAD_FINISH);
                     getActivity().sendBroadcast(in);
+                    hideLoadingProgress();
+
                 }
 
             });
-            t.start();
         }
         // tasklist = am.getRunningTasks(100);
     }

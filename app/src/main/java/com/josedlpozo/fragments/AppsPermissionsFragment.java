@@ -8,6 +8,7 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -45,6 +46,8 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
+import fr.castorflex.android.circularprogressbar.CircularProgressBar;
+import fr.castorflex.android.circularprogressbar.CircularProgressDrawable;
 import jp.wasabeef.recyclerview.animators.SlideInLeftAnimator;
 import jp.wasabeef.recyclerview.animators.adapters.AlphaInAnimationAdapter;
 import jp.wasabeef.recyclerview.animators.adapters.ScaleInAnimationAdapter;
@@ -61,7 +64,9 @@ public class AppsPermissionsFragment extends Fragment {
 
     // Lista de AppsPermisos para mostrar
     private ArrayList<AppsPermisos> mContentItems = new ArrayList<>();
-    private ArrayList<AppsPermisos> mTotalItems = new ArrayList<>();
+
+    // Espera de descarga de descripcion.
+    private CircularProgressBar progress;
 
     // Numero de apps mostrandose ( numero de apps sacadas de la db mientras se hace scroll )
     private int contador_apps = 0;
@@ -80,6 +85,7 @@ public class AppsPermissionsFragment extends Fragment {
     public void onViewCreated(final View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         mRecyclerView = (RecyclerView) view.findViewById(R.id.recyclerView);
+        progress = (CircularProgressBar) view.findViewById(R.id.circularProgress);
 
         setHasOptionsMenu(true);
 
@@ -91,7 +97,7 @@ public class AppsPermissionsFragment extends Fragment {
         // Menu desplegable para actualizar, resetear y menu ayuda.
         final FloatingActionMenu menu2 = (FloatingActionMenu) view.findViewById(R.id.menu2);
 
-        FloatingActionButton actualiza = (FloatingActionButton) view.findViewById(R.id.fab12);
+        final FloatingActionButton actualiza = (FloatingActionButton) view.findViewById(R.id.fab12);
         FloatingActionButton ayuda = (FloatingActionButton) view.findViewById(R.id.fab22);
         FloatingActionButton reset = (FloatingActionButton) view.findViewById(R.id.fab32);
 
@@ -99,7 +105,10 @@ public class AppsPermissionsFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 menu2.close(true);
-                actualizaDB();
+                RecoverListTask task = new RecoverListTask();
+                task.execute(null, null, null);
+                sAdapter.notifyDataSetChanged();
+
             }
         });
 
@@ -129,8 +138,10 @@ public class AppsPermissionsFragment extends Fragment {
 
                 db.execSQL("UPDATE Permisos_APP set ignorada=0");
                 db.close();
-                actualizaDB();
-
+                menu2.close(true);
+                RecoverListTask task = new RecoverListTask();
+                task.execute(null, null, null);
+                sAdapter.notifyDataSetChanged();
             }
         });
 
@@ -268,6 +279,50 @@ public class AppsPermissionsFragment extends Fragment {
 
     }
 
+    public class RecoverListTask extends AsyncTask<Void, Void, Void> {
+        public RecoverListTask() {
+        }
+
+        @Override
+        protected void onPreExecute() {
+            showLoadingProgress();
+        }
+
+        @Override
+        protected void onPostExecute(Void v) {
+            hideLoadingProgress();
+        }
+
+        @Override
+        protected Void doInBackground(Void... params) {
+            Log.d("ccc", "j");
+            /*getActivity().runOnUiThread(new Runnable() {
+                @Override
+                public void run() {*/
+            actualizaDB();
+               /* }
+            });*/
+
+
+            return null;
+        }
+    }
+
+    public CircularProgressBar getCircularProgressBar() {
+        return progress;
+    }
+
+    private void hideLoadingProgress() {
+        ((CircularProgressDrawable) getCircularProgressBar().getIndeterminateDrawable()).progressiveStop();
+        getCircularProgressBar().setVisibility(View.INVISIBLE);
+
+    }
+
+    private void showLoadingProgress() {
+        getCircularProgressBar().setVisibility(View.VISIBLE);
+        ((CircularProgressDrawable) getCircularProgressBar().getIndeterminateDrawable()).start();
+    }
+
     private void setupWindowAnimations() {
         if (Build.VERSION.SDK_INT >= 21) {
             Explode explode = new Explode();
@@ -307,7 +362,7 @@ public class AppsPermissionsFragment extends Fragment {
             contador_apps += 10;
             dbSQ.close();
             ordenaPorNumeroPermisos();
-            sAdapter.notifyDataSetChanged();
+            //sAdapter.notifyDataSetChanged();
 
         }
 
@@ -362,7 +417,7 @@ public class AppsPermissionsFragment extends Fragment {
                 dbAdapter.insert(registro);
                 mContentItems.add(app);
                 ordenaPorNumeroPermisos();
-                sAdapter.notifyDataSetChanged();
+                //sAdapter.notifyDataSetChanged();
             } else if (mCursor.getInt(mCursor.getColumnIndex(AppDbAdapter.COLUMNA_IGNORADA)) == 0) {
                 Log.d("acc", mCursor.getString(mCursor.getColumnIndex(AppDbAdapter.COLUMNA_NOMBRE)) + " " + mCursor.getInt(mCursor.getColumnIndex(AppDbAdapter.COLUMNA_IGNORADA)));
                 for (AppsPermisos aplicacion : mContentItems) {
@@ -377,7 +432,8 @@ public class AppsPermissionsFragment extends Fragment {
             }
         }
         ordenaPorNumeroPermisos();
-        sAdapter.notifyDataSetChanged();
+        //sAdapter.notifyDataSetChanged();
+        //hideLoadingProgress();
         db.close();
     }
 
