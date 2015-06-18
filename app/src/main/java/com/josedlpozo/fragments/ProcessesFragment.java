@@ -20,13 +20,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AccelerateInterpolator;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
 import android.view.animation.DecelerateInterpolator;
 import android.widget.FrameLayout;
 import android.widget.Toast;
 
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.github.clans.fab.FloatingActionMenu;
 import com.github.florent37.materialviewpager.MaterialViewPagerHelper;
 import com.github.florent37.materialviewpager.adapter.RecyclerViewMaterialAdapter;
 import com.josedlpozo.adapters.RecyclerViewProcessAdapter;
@@ -130,15 +129,52 @@ public class ProcessesFragment extends Fragment {
         mRecyclerView.setLayoutManager(layoutManager);
         mRecyclerView.setHasFixedSize(true);
 
-        // Inicializacion del boton y su animacion
-        fab = (FloatingActionButton) view.findViewById(R.id.fab_process);
-        final Animation animRotate = AnimationUtils.loadAnimation(getActivity(), R.anim.anim_rotate);
-        fab.setOnClickListener(new View.OnClickListener() {
+        // Menu desplegable para actualizar, resetear y menu ayuda.
+        final FloatingActionMenu menu2 = (FloatingActionMenu) view.findViewById(R.id.menu3);
+
+        com.github.clans.fab.FloatingActionButton actualiza = (com.github.clans.fab.FloatingActionButton) view.findViewById(R.id.fab1);
+        com.github.clans.fab.FloatingActionButton reset = (com.github.clans.fab.FloatingActionButton) view.findViewById(R.id.fab2);
+
+        actualiza.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                fab.startAnimation(animRotate);
                 refresh();
-                sAdapter.notifyDataSetChanged();
+                menu2.close(true);
+            }
+        });
+
+        ActivityManager activityManager = (ActivityManager) getActivity().getSystemService(Context.ACTIVITY_SERVICE);
+        ActivityManager.MemoryInfo memoryInfo = new ActivityManager.MemoryInfo();
+        activityManager.getMemoryInfo(memoryInfo);
+        availMem1 = memoryInfo.availMem;
+
+        reset.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                for (DetailProcess dp : listdp) {
+                    if (dp.getPackageName().equals(getActivity().getPackageName()))
+                        continue;
+                    Log.d("yyy", dp.getPackageName());
+                    am.restartPackage(dp.getPackageName());
+                }
+                ActivityManager activityManager = (ActivityManager) getActivity().getSystemService(Context.ACTIVITY_SERVICE);
+                ActivityManager.MemoryInfo memoryInfo = new ActivityManager.MemoryInfo();
+                activityManager.getMemoryInfo(memoryInfo);
+                DecimalFormat twoDecimalForm = new DecimalFormat("#.##");
+                availMem2 = memoryInfo.availMem;
+                double memory = Math.abs((availMem2 - availMem1)) / (1024.0 * 1024.0);
+                twoDecimalForm.format(memory);
+                new MaterialDialog.Builder(getActivity())
+                        .title(R.string.app_name)
+                        .content("Han sido liberados: " + twoDecimalForm.format(memory) + " MB")
+                        .positiveText("OK")
+                        .positiveColorRes(R.color.red)
+                        .icon(getResources().getDrawable(R.mipmap.ic_launcher))
+                        .show();
+                contador = 0;
+                refresh();
+                menu2.close(true);
             }
         });
 
@@ -173,14 +209,14 @@ public class ProcessesFragment extends Fragment {
 
             @Override
             public void onHide() {
-                FrameLayout.LayoutParams lp = (FrameLayout.LayoutParams) fab.getLayoutParams();
+                FrameLayout.LayoutParams lp = (FrameLayout.LayoutParams) menu2.getLayoutParams();
                 int fabBottomMargin = lp.bottomMargin;
-                fab.animate().translationY(fab.getHeight() + fabBottomMargin).setInterpolator(new AccelerateInterpolator(2)).start();
+                menu2.animate().translationY(menu2.getHeight() + fabBottomMargin).setInterpolator(new AccelerateInterpolator(2)).start();
             }
 
             @Override
             public void onShow() {
-                fab.animate().translationY(0).setInterpolator(new DecelerateInterpolator(2)).start();
+                menu2.animate().translationY(0).setInterpolator(new DecelerateInterpolator(2)).start();
             }
         };
 

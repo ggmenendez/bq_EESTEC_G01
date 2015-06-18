@@ -13,6 +13,7 @@
     <color name="warning">#FF8000</color>
 
     <color name="red_fab">#FF6666</color>
+    <color name="red_fab_2">#FF9999</color>
 
     <!-- general colors for drawer -->
     <color name="list_background">#F2F2F2</color>

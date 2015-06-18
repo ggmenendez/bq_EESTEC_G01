@@ -10,16 +10,50 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 
-    <com.melnykov.fab.FloatingActionButton
-        android:id="@+id/fab_process"
+    <com.github.clans.fab.FloatingActionMenu
+        android:id="@+id/menu3"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|right"
-        android:layout_margin="16dp"
-        android:src="@drawable/ic_autorenew_black_24dp"
-        fab:fab_colorNormal="@color/red_fab"
-        fab:fab_colorPressed="@color/red_fab"
-        fab:fab_colorRipple="@color/red_fab" />
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="10dp"
+        android:layout_marginBottom="10dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="10dp"
+        fab:menu_labels_style="@style/MenuLabelsStyle"
+        fab:menu_labels_showAnimation="@anim/jump_from_down"
+        fab:menu_labels_hideAnimation="@anim/jump_to_down"
+        fab:menu_animationDelayPerItem="0"
+        fab:menu_shadowColor="#444"
+        fab:menu_colorNormal="@color/red"
+        fab:menu_colorPressed="@color/red"
+        fab:menu_colorRipple="@color/red">
+
+        <com.github.clans.fab.FloatingActionButton
+            android:id="@+id/fab1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_refresh_white_18dp"
+            fab:fab_label="Actualizar"
+            style="@style/MenuButtonsStyle5"
+            fab:menu_colorNormal="@color/cyan"
+            fab:menu_colorPressed="@color/blue"
+            fab:menu_colorRipple="@color/blue" />
+
+        <com.github.clans.fab.FloatingActionButton
+            android:id="@+id/fab2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_action_rocket"
+            fab:fab_label="OPTIMIZA"
+            style="@style/MenuButtonsStyle4"
+            fab:menu_colorNormal="@color/blue"
+            fab:menu_colorPressed="@color/blue"
+            fab:menu_colorRipple="@color/blue" />
+
+
+    </com.github.clans.fab.FloatingActionMenu>
 
 
 </FrameLayout>

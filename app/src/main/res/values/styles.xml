@@ -68,4 +68,24 @@
         <item name="fab_colorRipple">#B3A2F9</item>
     </style>
 
+    <style name="MenuButtonsStyle4">
+        <item name="fab_size">mini</item>
+        <item name="fab_showAnimation">@anim/jump_from_down</item>
+        <item name="fab_hideAnimation">@anim/jump_to_down</item>
+        <item name="fab_shadowColor">#444</item>
+        <item name="fab_colorNormal">@color/red_fab</item>
+        <item name="fab_colorPressed">@color/red_fab</item>
+        <item name="fab_colorRipple">@color/red_fab</item>
+    </style>
+
+    <style name="MenuButtonsStyle5">
+        <item name="fab_size">mini</item>
+        <item name="fab_showAnimation">@anim/jump_from_down</item>
+        <item name="fab_hideAnimation">@anim/jump_to_down</item>
+        <item name="fab_shadowColor">#444</item>
+        <item name="fab_colorNormal">@color/red_fab_2</item>
+        <item name="fab_colorPressed">@color/red_fab_2</item>
+        <item name="fab_colorRipple">@color/red_fab_2</item>
+    </style>
+
 </resources>

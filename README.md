@@ -89,11 +89,15 @@ Haciendo click en alguna de ellas, se presenta información detallada sobre dich
 
 En la segunda pestaña podemos ver los procesos que estan activos en nuestro telefono con la memoria que requiere cada uno de ellos. La pestaña procesos, permite abrir la aplicación seleccionada, desinstalarla del dispositivo e incluso terminar con ella para liberar memoria ram.
 
-![process](https://cloud.githubusercontent.com/assets/6495659/8229539/476e5f7c-15b8-11e5-93d4-2ad3492080b2.png)
+![process](https://cloud.githubusercontent.com/assets/6495659/8230569/ce6a9f8c-15c1-11e5-917d-54b705d57950.png)
 
-![process_menu](https://cloud.githubusercontent.com/assets/6495659/8229540/4771dc9c-15b8-11e5-8b14-fcdaf73030ad.png)
+![process_button](https://cloud.githubusercontent.com/assets/6495659/8230571/ce8db0da-15c1-11e5-8865-f0a623d0bde5.png)
 
-![process_memoria](https://cloud.githubusercontent.com/assets/6495659/8229541/4772b0f4-15b8-11e5-92c2-042083a3c228.png)
+![process_menu](https://cloud.githubusercontent.com/assets/6495659/8230573/ce906ca8-15c1-11e5-90de-b8bb390ba4b6.png)
+
+![process_dialog](https://cloud.githubusercontent.com/assets/6495659/8230572/ce902e78-15c1-11e5-86a1-ceb56e37d05f.png)
+
+
 
 
 ### Memoria
@@ -158,7 +162,8 @@ Slider para intro por primera vez en la aplicación
 ##### Crashlytics
 Sistema para saber donde la aplicación falla mientras un usuario se encuentra utilizandola. Presenta el sitio exacto del código donde salto una excepción no deseada. 
 
-![crashlytics](https://cloud.githubusercontent.com/assets/6495659/8229689/69cdf220-15b9-11e5-8298-1238c5de39de.png)
+![crashlytics](https://cloud.githubusercontent.com/assets/6495659/8230570/ce6ac142-15c1-11e5-956f-d2994ec04c53.png)
+
 ### En desarrollo
 
 - Mejora del calculo de memoria

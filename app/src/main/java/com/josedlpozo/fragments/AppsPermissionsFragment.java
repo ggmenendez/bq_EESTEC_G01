@@ -110,7 +110,7 @@ public class AppsPermissionsFragment extends Fragment {
                         .title("Ayuda")
                         .content("Pulse actualizar si ha instalado alguna aplicación desde su última visita.\nPulse reset para visualizar de nuevo todas las aplicaciones ignoradas.")
                         .positiveText("OK")
-                        .icon(getResources().getDrawable(R.drawable.ic_launcher_drawer))
+                        .icon(getResources().getDrawable(R.mipmap.ic_launcher))
                         .show();
             }
         });

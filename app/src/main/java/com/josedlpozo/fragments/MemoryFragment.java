@@ -133,7 +133,7 @@ public class MemoryFragment extends Fragment {
                 ram1.setText("" + twoDecimalForm.format(totalMem - availMem));
                 ram2.setText("/" + twoDecimalForm.format(totalMem));
             } else {
-                float totalMemf = Float.parseFloat(total.replace(',', '.'));
+                float totalMemf = Float.parseFloat(total.replace(",", "")) / (1024 * 1024);
                 int progress = (int) ((((((float) totalMemf) - (float) availMem) / (float) totalMemf)) * 100);
                 if (progress <= 70) {
                     arc.setFinishedStrokeColor(getResources().getColor(R.color.green));
