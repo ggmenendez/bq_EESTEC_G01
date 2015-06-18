@@ -27,6 +27,7 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.github.clans.fab.FloatingActionButton;
 import com.github.clans.fab.FloatingActionMenu;
 import com.github.florent37.materialviewpager.MaterialViewPagerHelper;
@@ -47,19 +48,20 @@ import java.util.List;
 import jp.wasabeef.recyclerview.animators.SlideInLeftAnimator;
 import jp.wasabeef.recyclerview.animators.adapters.AlphaInAnimationAdapter;
 import jp.wasabeef.recyclerview.animators.adapters.ScaleInAnimationAdapter;
-import me.drakeet.materialdialog.MaterialDialog;
 
 
 public class AppsPermissionsFragment extends Fragment {
 
     private RecyclerView mRecyclerView;
     private RecyclerView.Adapter mAdapter;
+    private RecyclerViewAdapter adapter;
 
     // Adapter para notificar cambios en los elementos
     private ScaleInAnimationAdapter sAdapter;
 
     // Lista de AppsPermisos para mostrar
     private ArrayList<AppsPermisos> mContentItems = new ArrayList<>();
+    private ArrayList<AppsPermisos> mTotalItems = new ArrayList<>();
 
     // Numero de apps mostrandose ( numero de apps sacadas de la db mientras se hace scroll )
     private int contador_apps = 0;
@@ -78,6 +80,8 @@ public class AppsPermissionsFragment extends Fragment {
     public void onViewCreated(final View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         mRecyclerView = (RecyclerView) view.findViewById(R.id.recyclerView);
+
+        setHasOptionsMenu(true);
 
         // Inicializacion de variables de DB
         AppDbAdapter db = new AppDbAdapter(getActivity().getBaseContext());
@@ -102,18 +106,11 @@ public class AppsPermissionsFragment extends Fragment {
         ayuda.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                final MaterialDialog mMaterialDialog = new MaterialDialog(getActivity());
-                mMaterialDialog.setTitle("Ayuda")
-                        .setMessage("Pulse actualizar si ha instalado alguna aplicación desde su última visita.\nPulse reset para visualizar de nuevo todas las aplicaciones ignoradas.")
-                        .setPositiveButton(
-                                "OK", new View.OnClickListener() {
-                                    @Override
-                                    public void onClick(View v) {
-                                        mMaterialDialog.dismiss();
-
-                                    }
-                                }
-                        )
+                new MaterialDialog.Builder(getActivity())
+                        .title("Ayuda")
+                        .content("Pulse actualizar si ha instalado alguna aplicación desde su última visita.\nPulse reset para visualizar de nuevo todas las aplicaciones ignoradas.")
+                        .positiveText("OK")
+                        .icon(getResources().getDrawable(R.drawable.ic_launcher_drawer))
                         .show();
             }
         });
@@ -174,44 +171,39 @@ public class AppsPermissionsFragment extends Fragment {
 
             @Override
             public void onSwiped(final RecyclerView.ViewHolder viewHolder, int swipeDir) {
-                final MaterialDialog mMaterialDialog = new MaterialDialog(getActivity());
-                mMaterialDialog.setTitle(mContentItems.get(viewHolder.getAdapterPosition() - 1).getNombre())
-                        .setMessage("Está seguro de ignorar " + mContentItems.get(viewHolder.getAdapterPosition() - 1).getNombre() + "? \nMás tarde podrá volver a reestablecerlo en ajustes.")
-                        .setPositiveButton(
-                                "OK", new View.OnClickListener() {
-                                    @Override
-                                    public void onClick(View v) {
-                                        mMaterialDialog.dismiss();
-                                        AppDbAdapter db = new AppDbAdapter(getActivity().getBaseContext());
-                                        AppsDbHelper dbHelper = new AppsDbHelper(getActivity().getBaseContext());
+                new MaterialDialog.Builder(getActivity())
+                        .title(R.string.app_name)
+                        .content("Está seguro de ignorar " + mContentItems.get(viewHolder.getAdapterPosition() - 1).getNombre() + "? \nMás tarde podrá volver a reestablecerlo en ajustes.")
+                        .positiveText("OK")
+                        .positiveColorRes(R.color.blue)
+                        .negativeText("Cancel")
+                        .negativeColorRes(R.color.blanco)
+                        .icon(getResources().getDrawable(R.mipmap.ic_launcher))
+                        .callback(new MaterialDialog.ButtonCallback() {
+                            @Override
+                            public void onPositive(MaterialDialog dialog) {
+                                AppDbAdapter db = new AppDbAdapter(getActivity().getBaseContext());
+                                AppsDbHelper dbHelper = new AppsDbHelper(getActivity().getBaseContext());
+                                SQLiteDatabase dbSQ = dbHelper.getWritableDatabase();
+                                dbSQ.execSQL("UPDATE Permisos_APP set " + AppDbAdapter.COLUMNA_IGNORADA + "=1 where " + AppDbAdapter.COLUMNA_NOMBRE + "='" + mContentItems.get(viewHolder.getAdapterPosition() - 1).getNombre() + "'");
+                                mContentItems.remove(viewHolder.getAdapterPosition() - 1);
+                                sAdapter.notifyDataSetChanged();
+                                dbSQ.close();
+                            }
 
-                                        SQLiteDatabase dbSQ = dbHelper.getWritableDatabase();
-                                        dbSQ.execSQL("UPDATE Permisos_APP set " + AppDbAdapter.COLUMNA_IGNORADA + "=1 where " + AppDbAdapter.COLUMNA_NOMBRE + "='" + mContentItems.get(viewHolder.getAdapterPosition() - 1).getNombre() + "'");
-                                        mContentItems.remove(viewHolder.getAdapterPosition() - 1);
-                                        sAdapter.notifyDataSetChanged();
-                                        dbSQ.close();
-
-                                    }
-                                }
-                        )
-                        .setNegativeButton(
-                                "CANCEL", new View.OnClickListener() {
-                                    @Override
-                                    public void onClick(View v) {
-
-                                        mMaterialDialog.dismiss();
-                                        sAdapter.notifyDataSetChanged();
-
-                                    }
-                                }
-                        ).show();
+                            @Override
+                            public void onNegative(MaterialDialog dialog) {
+                                sAdapter.notifyDataSetChanged();
+                            }
+                        })
+                        .show();
             }
         };
         ItemTouchHelper itemTouchHelper = new ItemTouchHelper(simpleItemTouchCallback);
         itemTouchHelper.attachToRecyclerView(mRecyclerView);
 
         // Inicialización de adapters con sus animaciones
-        RecyclerViewAdapter adapter = new RecyclerViewAdapter(mContentItems);
+        adapter = new RecyclerViewAdapter(mContentItems);
         mAdapter = new RecyclerViewMaterialAdapter(adapter);
         AlphaInAnimationAdapter alphaAdapter = new AlphaInAnimationAdapter(mAdapter);
         sAdapter = new ScaleInAnimationAdapter(alphaAdapter);
@@ -388,6 +380,5 @@ public class AppsPermissionsFragment extends Fragment {
         sAdapter.notifyDataSetChanged();
         db.close();
     }
-
 
 }

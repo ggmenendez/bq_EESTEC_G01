@@ -23,6 +23,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
 
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.crashlytics.android.Crashlytics;
 import com.github.florent37.materialviewpager.HeaderDesign;
 import com.github.florent37.materialviewpager.MaterialViewPager;
@@ -40,7 +41,6 @@ import java.util.Comparator;
 import java.util.List;
 
 import io.fabric.sdk.android.Fabric;
-import me.drakeet.materialdialog.MaterialDialog;
 
 /**
  * Created by josedlpozo on 16/5/15.
@@ -66,7 +66,6 @@ public class MainActivity extends ActionBarActivity {
     NavigationAdapter mNavAdapter;
     private String[] titulos;
 
-    MaterialDialog mMaterialDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -75,7 +74,7 @@ public class MainActivity extends ActionBarActivity {
 
         initDrawer();
 
-        setTitle("Booster");
+        setTitle("OptimizApp");
 
         mViewPager = (MaterialViewPager) findViewById(R.id.materialViewPager);
 
@@ -281,7 +280,6 @@ public class MainActivity extends ActionBarActivity {
         }
         db.close();
 
-        mMaterialDialog = new MaterialDialog(this);
     }
 
     private void initDrawer() {//Lista
@@ -334,17 +332,12 @@ public class MainActivity extends ActionBarActivity {
                             mDrawer.closeDrawers();
                             break;
                         case "Acerca de":
-                            mMaterialDialog.setTitle("OptimizApp")
-                                    .setMessage("Aplicación desarrollada para concurso aplicaciones Android Cátedra BQ.\n\nDesarrollado por josedlpozo.\n\nVersion: 1.0")
-                                    .setPositiveButton(
-                                            "OK", new View.OnClickListener() {
-                                                @Override
-                                                public void onClick(View v) {
-                                                    mMaterialDialog.dismiss();
-
-                                                }
-                                            }
-                                    )
+                            new MaterialDialog.Builder(MainActivity.this)
+                                    .title(R.string.app_name)
+                                    .content("Aplicación desarrollada para concurso aplicaciones Android Cátedra BQ.\n\nDesarrollado por josedlpozo.\n\nVersion: 1.0")
+                                    .positiveText("OK")
+                                    .positiveColorRes(R.color.red)
+                                    .icon(getResources().getDrawable(R.mipmap.ic_launcher))
                                     .show();
                             mDrawer.closeDrawers();
                             break;

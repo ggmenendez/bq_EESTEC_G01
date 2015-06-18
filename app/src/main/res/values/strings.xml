@@ -1,8 +1,10 @@
 <resources>
-    <string name="app_name">Booster</string>
+    <string name="app_name">OptimizApp</string>
 
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
+
+    <string name="action_search">Search</string>
 
     <string name="cargando">Cargando :</string>
     <string name="salud">Salud :</string>
@@ -19,9 +21,10 @@
     <string name="transition">transition</string>
 
     <integer-array name="fragment_colors">
-        <item>@color/colorPrimary</item>
-        <item>@color/cyan</item>
-        <item>@color/card_background</item>
+        <item>@color/blue</item>
+        <item>@color/red</item>
+        <item>@color/yellow</item>
+        <item>@color/green</item>
     </integer-array>
 
     <!-- Lista de titulos de navegacion-->

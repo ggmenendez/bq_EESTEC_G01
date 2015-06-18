@@ -26,6 +26,7 @@ import android.view.animation.DecelerateInterpolator;
 import android.widget.FrameLayout;
 import android.widget.Toast;
 
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.github.florent37.materialviewpager.MaterialViewPagerHelper;
 import com.github.florent37.materialviewpager.adapter.RecyclerViewMaterialAdapter;
 import com.josedlpozo.adapters.RecyclerViewProcessAdapter;
@@ -49,7 +50,6 @@ import java.util.regex.Pattern;
 import jp.wasabeef.recyclerview.animators.SlideInLeftAnimator;
 import jp.wasabeef.recyclerview.animators.adapters.AlphaInAnimationAdapter;
 import jp.wasabeef.recyclerview.animators.adapters.ScaleInAnimationAdapter;
-import me.drakeet.materialdialog.MaterialDialog;
 
 /**
  * Created by josedlpozo on 9/6/15.
@@ -109,7 +109,6 @@ public class ProcessesFragment extends Fragment {
 
     public int contador = 0;
 
-    MaterialDialog mMaterialDialog;
 
     public static ProcessesFragment newInstance() {
         return new ProcessesFragment();
@@ -164,7 +163,6 @@ public class ProcessesFragment extends Fragment {
         mRecyclerView.getItemAnimator().setMoveDuration(1000);
         mRecyclerView.getItemAnimator().setChangeDuration(1000);
 
-        mMaterialDialog = new MaterialDialog(getActivity());
 
         // ScrollListener para animacion de fab
         EndlessRecyclerOnScrollListener myRecyclerViewOnScrollListener = new EndlessRecyclerOnScrollListener(layoutManager) {
@@ -313,17 +311,12 @@ public class ProcessesFragment extends Fragment {
                                             DecimalFormat twoDecimalForm = new DecimalFormat("#.##");
                                             double memory = Math.abs((availMem2 - availMem1)) / (1024.0 * 1024.0);
                                             twoDecimalForm.format(memory);
-                                            mMaterialDialog.setTitle("OptimizApp")
-                                                    .setMessage("Han sido liberados: " + twoDecimalForm.format(memory) + " MB")
-                                                    .setPositiveButton(
-                                                            "OK", new View.OnClickListener() {
-                                                                @Override
-                                                                public void onClick(View v) {
-                                                                    mMaterialDialog.dismiss();
-
-                                                                }
-                                                            }
-                                                    )
+                                            new MaterialDialog.Builder(getActivity())
+                                                    .title(R.string.app_name)
+                                                    .content("Han sido liberados: " + twoDecimalForm.format(memory) + " MB")
+                                                    .positiveColorRes(R.color.red)
+                                                    .positiveText("OK")
+                                                    .icon(getResources().getDrawable(R.mipmap.ic_launcher))
                                                     .show();
                                             //Toast.makeText(getActivity(), "Han sido liberados: " + twoDecimalForm.format(memory) + " MB", Toast.LENGTH_SHORT).show();
                                             contador = 0;
@@ -367,19 +360,15 @@ public class ProcessesFragment extends Fragment {
                                             ActivityManager.MemoryInfo memoryInfo = new ActivityManager.MemoryInfo();
                                             activityManager.getMemoryInfo(memoryInfo);
                                             DecimalFormat twoDecimalForm = new DecimalFormat("#.##");
+                                            availMem2 = memoryInfo.availMem;
                                             double memory = Math.abs((availMem2 - availMem1)) / (1024.0 * 1024.0);
                                             twoDecimalForm.format(memory);
-                                            mMaterialDialog.setTitle("OptimizApp")
-                                                    .setMessage("Han sido liberados: " + twoDecimalForm.format(memory) + " MB")
-                                                    .setPositiveButton(
-                                                            "OK", new View.OnClickListener() {
-                                                                @Override
-                                                                public void onClick(View v) {
-                                                                    mMaterialDialog.dismiss();
-
-                                                                }
-                                                            }
-                                                    )
+                                            new MaterialDialog.Builder(getActivity())
+                                                    .title(R.string.app_name)
+                                                    .content("Han sido liberados: " + twoDecimalForm.format(memory) + " MB")
+                                                    .positiveText("OK")
+                                                    .positiveColorRes(R.color.red)
+                                                    .icon(getResources().getDrawable(R.mipmap.ic_launcher))
                                                     .show();
                                             contador = 0;
                                             refresh();

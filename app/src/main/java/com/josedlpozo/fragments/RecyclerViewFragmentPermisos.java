@@ -18,6 +18,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.github.florent37.materialviewpager.MaterialViewPagerHelper;
 import com.github.florent37.materialviewpager.adapter.RecyclerViewMaterialAdapter;
 import com.josedlpozo.adapters.RecyclerViewPermisosAdapter;
@@ -40,7 +41,6 @@ import fr.castorflex.android.circularprogressbar.CircularProgressBar;
 import fr.castorflex.android.circularprogressbar.CircularProgressDrawable;
 import jp.wasabeef.recyclerview.animators.adapters.AlphaInAnimationAdapter;
 import jp.wasabeef.recyclerview.animators.adapters.ScaleInAnimationAdapter;
-import me.drakeet.materialdialog.MaterialDialog;
 
 /**
  * Created by josedlpozo on 12/6/15.
@@ -138,19 +138,20 @@ public class RecyclerViewFragmentPermisos extends Fragment {
                 showLoadingProgress();
                 if (mCursor.moveToFirst()) {
                     hideLoadingProgress();
-                    mMaterialDialog = new MaterialDialog(getActivity());
-                    mMaterialDialog.setTitle(permiso.substring(19, longitud))
-                            .setMessage(mCursor.getString(mCursor.getColumnIndex(perm.COLUMNA_DESCRIPCION)))
-                            .setPositiveButton(
-                                    "OK", new View.OnClickListener() {
-                                        @Override
-                                        public void onClick(View v) {
-                                            mMaterialDialog.dismiss();
-                                            descripcion = "No disponible.";
+                    new MaterialDialog.Builder(getActivity())
+                            .title(permiso.substring(19, longitud))
+                            .content(mCursor.getString(mCursor.getColumnIndex(perm.COLUMNA_DESCRIPCION)))
+                            .positiveColorRes(R.color.blue)
+                            .positiveText("OK")
+                            .icon(getResources().getDrawable(R.mipmap.ic_launcher))
+                            .callback(new MaterialDialog.ButtonCallback() {
+                                @Override
+                                public void onPositive(MaterialDialog dialog) {
+                                    descripcion = "No disponible.";
+                                }
 
-                                        }
-                                    }
-                            ).show();
+                            })
+                            .show();
                     db.close();
                 } else {
                     showLoadingProgress();
@@ -279,18 +280,19 @@ public class RecyclerViewFragmentPermisos extends Fragment {
         protected void onPostExecute(Void result) {
             super.onPostExecute(result);
             hideLoadingProgress();
-            mMaterialDialog = new MaterialDialog(getActivity());
-            mMaterialDialog.setTitle(permiso.substring(19, permiso.length()))
-                    .setMessage(descripcion).setPositiveButton(
-                    "OK", new View.OnClickListener() {
+            new MaterialDialog.Builder(getActivity())
+                    .title(permiso.substring(19, permiso.length()))
+                    .content(descripcion)
+                    .positiveText("OK")
+                    .icon(getResources().getDrawable(R.mipmap.ic_launcher))
+                    .callback(new MaterialDialog.ButtonCallback() {
                         @Override
-                        public void onClick(View v) {
-                            mMaterialDialog.dismiss();
+                        public void onPositive(MaterialDialog dialog) {
                             descripcion = "No disponible.";
-
                         }
-                    }
-            ).show();
+
+                    })
+                    .show();
         }
     }
 }

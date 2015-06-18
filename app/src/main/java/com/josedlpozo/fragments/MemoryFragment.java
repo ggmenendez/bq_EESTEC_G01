@@ -150,7 +150,7 @@ public class MemoryFragment extends Fragment {
                 ram2.setText("/" + twoDecimalForm.format(totalMemf));
             }
             if (Build.VERSION.SDK_INT > 18) {
-                interna1.setText(String.valueOf(Float.parseFloat(getTotalInternalMemorySize18().replace(",", "")) - Float.parseFloat(getAvailableInternalMemorySize18().replace(",", ""))));
+                interna1.setText(String.valueOf((int) (Float.parseFloat(getTotalInternalMemorySize18().replace(",", "")) - Float.parseFloat(getAvailableInternalMemorySize18().replace(",", "")))));
                 interna2.setText("/" + getTotalInternalMemorySize18().replace(",", ""));
                 int progress = (int) ((Float.parseFloat(getTotalInternalMemorySize18().replace(",", "")) - Float.parseFloat(getAvailableInternalMemorySize18().replace(",", ""))) / Float.parseFloat(getTotalInternalMemorySize18().replace(",", "")) * 100);
                 Log.d("xxx", "1" + progress);
@@ -166,7 +166,7 @@ public class MemoryFragment extends Fragment {
                 }
                 arc2.setProgress(progress);
             } else {
-                interna1.setText(String.valueOf(Float.parseFloat(getTotalInternalMemorySize().replace(",", "")) - Float.parseFloat(getAvailableInternalMemorySize().replace(",", ""))));
+                interna1.setText(String.valueOf((int) (Float.parseFloat(getTotalInternalMemorySize().replace(",", "")) - Float.parseFloat(getAvailableInternalMemorySize().replace(",", "")))));
                 interna2.setText("/" + getTotalInternalMemorySize().replace(",", ""));
                 int progress = (int) ((Float.parseFloat(getTotalInternalMemorySize().replace(",", "")) - Float.parseFloat(getAvailableInternalMemorySize().replace(",", ""))) / Float.parseFloat(getTotalInternalMemorySize().replace(",", "")) * 100);
                 Log.d("xxx", "2" + progress);
@@ -185,7 +185,7 @@ public class MemoryFragment extends Fragment {
 
             if (externa) {
                 if (Build.VERSION.SDK_INT > 18) {
-                    externa1.setText(String.valueOf(Float.parseFloat(getTotalExternalMemorySize18().replace(",", "")) - Float.parseFloat(getAvailableExternalMemorySize18().replace(",", ""))));
+                    externa1.setText(String.valueOf((int) (Float.parseFloat(getTotalExternalMemorySize18().replace(",", "")) - Float.parseFloat(getAvailableExternalMemorySize18().replace(",", "")))));
                     externa2.setText("/" + getTotalExternalMemorySize18().replace(",", ""));
                     int progress = (int) ((Float.parseFloat(getTotalExternalMemorySize18().replace(",", "")) - Float.parseFloat(getAvailableExternalMemorySize18().replace(",", ""))) / Float.parseFloat(getTotalExternalMemorySize18().replace(",", "")) * 100);
                     Log.d("xxx", "3" + progress);
@@ -201,7 +201,7 @@ public class MemoryFragment extends Fragment {
                     }
                     arc3.setProgress(progress);
                 } else {
-                    externa1.setText(String.valueOf(Float.parseFloat(getTotalExternalMemorySize().replace(",", "")) - Float.parseFloat(getAvailableExternalMemorySize().replace(",", ""))));
+                    externa1.setText(String.valueOf((int) (Float.parseFloat(getTotalExternalMemorySize().replace(",", "")) - Float.parseFloat(getAvailableExternalMemorySize().replace(",", "")))));
                     externa2.setText("/" + getTotalExternalMemorySize().replace(",", ""));
                     int progress = (int) ((Float.parseFloat(getTotalExternalMemorySize().replace(",", "")) - Float.parseFloat(getAvailableExternalMemorySize().replace(",", ""))) / Float.parseFloat(getTotalExternalMemorySize().replace(",", "")) * 100);
                     Log.d("xxx", "4" + progress);
